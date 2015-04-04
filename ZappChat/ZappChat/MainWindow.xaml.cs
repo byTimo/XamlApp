@@ -23,6 +23,18 @@ namespace ZappChat
         public MainWindow()
         {
             InitializeComponent();
+            testMessage.MessageText = "LFDLFDLFDFLDFLFSDLFLFL";
+            testMessage.MessageDate = "sdadadada";
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void HideButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
         }
     }
 }
