@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace ZappChat
+namespace ZappChat.Controls
 {
 	/// <summary>
 	/// Логика взаимодействия для MessageControl.xaml
@@ -22,11 +14,11 @@ namespace ZappChat
 	        EventManager.RegisterRoutedEvent("DeleteMessage", RoutingStrategy.Bubble,
 	            typeof (RoutedEvent), typeof (MessageControl));
 
-	    public static DependencyProperty MessageTextProperty =
-	        DependencyProperty.Register("MessageText", typeof (string), typeof (MessageControl),
-	            new FrameworkPropertyMetadata("Сообщение"));
-	    public static DependencyProperty MessageDateProperty =
+	    public static readonly DependencyProperty MessageTextProperty =
 	        DependencyProperty.Register("MessageText", typeof (string), typeof (MessageControl));
+
+	    public static readonly DependencyProperty MessageDateProperty =
+	        DependencyProperty.Register("MessageDate", typeof (string), typeof (MessageControl));
 
 	    public string MessageText
 	    {
@@ -47,7 +39,23 @@ namespace ZappChat
         }
 		public MessageControl()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
+            Trashcan.Click += Trashcan_Click;
 		}
+
+        private void UserControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Trashcan.Visibility = Visibility.Visible;
+        }
+
+        private void UserControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Trashcan.Visibility = Visibility.Collapsed;
+        }
+
+	    private void Trashcan_Click(object sender, RoutedEventArgs e)
+	    {
+	        Trashcan.Background = Brushes.Black;
+	    }
 	}
 }

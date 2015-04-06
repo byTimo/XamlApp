@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ZappChat
+namespace CreateAndTestNewControls
 {
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
@@ -23,16 +23,6 @@ namespace ZappChat
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void HideButton_Click_1(object sender, RoutedEventArgs e)
-        {
-            WindowState = WindowState.Minimized;
         }
     }
 }
