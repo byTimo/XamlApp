@@ -2,10 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:ZappChat.Controls"
-        Title="MainWindow" Height="204" Width="460">
-   
-		<Grid Width="{Binding Width, ElementName=path}" Height="{Binding Height, ElementName=path}">
-    		<controls:MessageControl MessageText="Hey, how are you? dfgdgdgdsdgdsetwsxcvsdgstwtgsg"/>
-		</Grid>
+        xmlns:local="clr-namespace:CreateAndTestNewControls"
+        Title="MainWindow" Height="316.667" Width="503.333">
+
+    <Grid>		
+		<local:BlueTopMenu x:Name="menu" HorizontalAlignment="Left" VerticalAlignment="Top" Height="197.666" MouseUp="BlueTopMenu_MouseUp"/>
+    </Grid>
         
 </Window>

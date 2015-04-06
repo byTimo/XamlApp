@@ -4,6 +4,6 @@
 	x:Class="CreateAndTestNewControls.App"
 	StartupUri="MainWindow.xaml">
 	<Application.Resources>
-
+		<ResourceDictionary Source="Themes\BlueTopMenuTemplate.xaml"/>
 	</Application.Resources>
 </Application>

@@ -1,0 +1,32 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Здесь необходимо определить записи словаря ресурсов. -->
+	<Style x:Key="SettingsButton" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Path Data="M11.000132,-0.1418168 L9.5451723,-0.098710344 8.7816044,0.07775 7.9695202,0.21878376 7.2662418,0.37490577 6.6096525,0.60946406 6.0944679,0.78195777 5.5786358,1.0326437 4.9382017,1.3773278 4.4544118,1.6434811 4.1420974,1.8778924 3.7199084,2.1909416 3.48531,2.4106275 3.0951219,2.7553476 2.6418056,3.2094212 2.2352166,3.6949543 1.9387545,4.0556459 1.6882738,4.4626798 1.2357061,5.1675235 0.81427447,6.0134771 0.53255732,6.7652135 0.3453333,7.3133544 0.20447478,8.0023089 0.048369717,8.9737063&#xA;0.016998389,9.3967017 0.016998389,10.618327 0.00099968616,112.762 393.96907,112.76201 394.03192,-0.016785893" Fill="#FFEAE6E6" RenderTransformOrigin="0.5,0.5" Stretch="Fill">
+								<Path.RenderTransform>
+									<TransformGroup>
+										<ScaleTransform ScaleY="-1"/>
+										<SkewTransform/>
+										<RotateTransform/>
+										<TranslateTransform/>
+									</TransformGroup>
+								</Path.RenderTransform>
+							</Path>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True"/>
+							<Trigger Property="IsDefaulted" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True"/>
+							<Trigger Property="IsPressed" Value="True"/>
+							<Trigger Property="IsEnabled" Value="False"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+</ResourceDictionary>

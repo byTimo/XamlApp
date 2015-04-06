@@ -7,178 +7,6 @@
         Title="MainWindow" WindowStyle="None"
 		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="691" Width="1040"
 		ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-	<Window.Resources>
-		<Style x:Key="MessageButton" TargetType="{x:Type Button}">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type Button}">
-						<Grid>
-							<Rectangle Fill="#FF1FB6E4" RadiusX="15" RadiusY="15" Stroke="#FF64CEEE" StrokeThickness="2"/>
-							<StackPanel x:Name="stackPanel" HorizontalAlignment="Stretch" Height="{Binding Height, ElementName=stackPanel}" VerticalAlignment="Stretch" Width="{Binding Width, ElementName=stackPanel}" Orientation="Horizontal">
-								<TextBlock HorizontalAlignment="Center" Height="Auto" Margin="15,0,0,0" TextWrapping="Wrap" Text="Сообщения" VerticalAlignment="Center" Width="Auto" FontSize="17.333" FontFamily="Arar" Foreground="White"/>
-							</StackPanel>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsFocused" Value="True"/>
-							<Trigger Property="IsDefaulted" Value="True"/>
-							<Trigger Property="IsMouseOver" Value="True"/>
-							<Trigger Property="IsPressed" Value="True"/>
-							<Trigger Property="IsEnabled" Value="False"/>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-		<Style x:Key="MyQuariesButton" TargetType="{x:Type Button}">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type Button}">
-						<ControlTemplate.Resources>
-							<Storyboard x:Key="OnMouseEnter1">
-								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="gradMain">
-									<EasingColorKeyFrame KeyTime="0" Value="#0064CEEE"/>
-									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#FF64CEEE"/>
-								</ColorAnimationUsingKeyFrames>
-							</Storyboard>
-							<Storyboard x:Key="OnMouseLeave1">
-								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="gradMain">
-									<EasingColorKeyFrame KeyTime="0" Value="#FF64CEEE"/>
-									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#0064CEEE"/>
-								</ColorAnimationUsingKeyFrames>
-							</Storyboard>
-						</ControlTemplate.Resources>
-						<Grid>
-							<Rectangle x:Name="main" Fill="#FF1FB6E4" RadiusX="15" RadiusY="15" Stroke="#FF64CEEE" StrokeThickness="2" Margin="0,0,-5.333,0"/>
-							<Rectangle x:Name="gradMain" RadiusX="15" RadiusY="15" Stroke="#FF64CEEE" StrokeThickness="2" Margin="0,0,-5.333,0">
-								<Rectangle.Fill>
-									<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-										<GradientStop Color="#0064CEEE" Offset="1"/>
-										<GradientStop/>
-										<GradientStop Color="#00B3E7F6" Offset="0.5"/>
-									</LinearGradientBrush>
-								</Rectangle.Fill>
-							</Rectangle>
-							<StackPanel x:Name="stackPanel" HorizontalAlignment="Stretch" Height="{Binding Height, ElementName=stackPanel}" VerticalAlignment="Stretch" Width="{Binding Width, ElementName=stackPanel}" Orientation="Horizontal">
-								<TextBlock HorizontalAlignment="Center" Height="Auto" Margin="10,0,0,0" TextWrapping="Wrap" Text="Мои запросы" VerticalAlignment="Center" Width="Auto" FontSize="17.333" FontFamily="/ZappChat;component/Fonts/#Arial" Foreground="White" FontWeight="Bold"/>
-							</StackPanel>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<EventTrigger RoutedEvent="Mouse.MouseEnter">
-								<BeginStoryboard Storyboard="{StaticResource OnMouseEnter1}"/>
-							</EventTrigger>
-							<EventTrigger RoutedEvent="Mouse.MouseLeave">
-								<BeginStoryboard x:Name="OnMouseLeave1_BeginStoryboard" Storyboard="{StaticResource OnMouseLeave1}"/>
-							</EventTrigger>
-							<Trigger Property="IsFocused" Value="True"/>
-							<Trigger Property="IsDefaulted" Value="True"/>
-							<Trigger Property="IsMouseOver" Value="True"/>
-							<Trigger Property="IsPressed" Value="True"/>
-							<Trigger Property="IsEnabled" Value="False"/>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-		<Style x:Key="StatusButton" TargetType="{x:Type Button}">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type Button}">
-						<Grid Height="80" VerticalAlignment="Top" Width="130" Background="#FFEAE6E6">
-							<StackPanel Orientation="Horizontal">
-								<Ellipse x:Name="statusIndicate" Width="15" Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="15" Fill="#FF62A062"/>
-								<Label x:Name="statusMassage" Content="В сети" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,27.02" Width="61.883" FontFamily="/ZappChat;component/Fonts/#Arial" FontWeight="Bold" FontSize="16" Foreground="#FFA49C9C"/>
-							</StackPanel>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsFocused" Value="True"/>
-							<Trigger Property="IsDefaulted" Value="True"/>
-							<Trigger Property="IsMouseOver" Value="True"/>
-							<Trigger Property="IsPressed" Value="True"/>
-							<Trigger Property="IsEnabled" Value="False"/>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-		<Style x:Key="SettingsButton" TargetType="{x:Type Button}">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type Button}">
-						<Grid>
-							<Path Data="M11.000132,-0.1418168 L9.5451723,-0.098710344 8.7816044,0.07775 7.9695202,0.21878376 7.2662418,0.37490577 6.6096525,0.60946406 6.0944679,0.78195777 5.5786358,1.0326437 4.9382017,1.3773278 4.4544118,1.6434811 4.1420974,1.8778924 3.7199084,2.1909416 3.48531,2.4106275 3.0951219,2.7553476 2.6418056,3.2094212 2.2352166,3.6949543 1.9387545,4.0556459 1.6882738,4.4626798 1.2357061,5.1675235 0.81427447,6.0134771 0.53255732,6.7652135 0.3453333,7.3133544 0.20447478,8.0023089 0.048369717,8.9737063&#xA;0.016998389,9.3967017 0.016998389,10.618327 0.00099968616,112.762 393.96907,112.76201 394.03192,-0.016785893" Fill="#FFEAE6E6" RenderTransformOrigin="0.5,0.5" Stretch="Fill">
-								<Path.RenderTransform>
-									<TransformGroup>
-										<ScaleTransform ScaleY="-1"/>
-										<SkewTransform/>
-										<RotateTransform/>
-										<TranslateTransform/>
-									</TransformGroup>
-								</Path.RenderTransform>
-							</Path>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsFocused" Value="True"/>
-							<Trigger Property="IsDefaulted" Value="True"/>
-							<Trigger Property="IsMouseOver" Value="True"/>
-							<Trigger Property="IsPressed" Value="True"/>
-							<Trigger Property="IsEnabled" Value="False"/>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-		<Style x:Key="MinimazeButton" TargetType="{x:Type Button}">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type Button}">
-						<ControlTemplate.Resources>
-							<Storyboard x:Key="OnMouseEnter1">
-								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="gradMacket">
-									<EasingColorKeyFrame KeyTime="0" Value="#001FB6E4"/>
-									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#FF1FB6E4"/>
-								</ColorAnimationUsingKeyFrames>
-								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Stroke).(SolidColorBrush.Color)" Storyboard.TargetName="gradMacket">
-									<EasingColorKeyFrame KeyTime="0" Value="#FF64CEEE"/>
-									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#B24ACEFF"/>
-								</ColorAnimationUsingKeyFrames>
-							</Storyboard>
-							<Storyboard x:Key="OnMouseLeave1">
-								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="gradMacket">
-									<EasingColorKeyFrame KeyTime="0" Value="#FF1FB6E4"/>
-									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#001FB6E4"/>
-								</ColorAnimationUsingKeyFrames>
-							</Storyboard>
-						</ControlTemplate.Resources>
-						<Grid>
-							<Rectangle x:Name="macket" RadiusY="45" RadiusX="45" Stroke="#FF64CEEE" StrokeThickness="1" Fill="#FFCDCBCB"/>
-							<Rectangle x:Name="gradMacket" RadiusY="45" RadiusX="45" Stroke="#B24ACEFF" StrokeThickness="1">
-								<Rectangle.Fill>
-									<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-										<GradientStop Color="#000091F5" Offset="1"/>
-										<GradientStop Color="#00C3C3C3"/>
-									</LinearGradientBrush>
-								</Rectangle.Fill>
-							</Rectangle>
-							<Rectangle Fill="#FF1FB6E4" HorizontalAlignment="Left" Height="2" Margin="8,20,0,0" VerticalAlignment="Top" Width="15"/>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<EventTrigger RoutedEvent="Mouse.MouseLeave">
-								<BeginStoryboard x:Name="OnMouseLeave1_BeginStoryboard" Storyboard="{StaticResource OnMouseLeave1}"/>
-							</EventTrigger>
-							<Trigger Property="IsFocused" Value="True"/>
-							<Trigger Property="IsDefaulted" Value="True"/>
-							<Trigger Property="IsMouseOver" Value="True"/>
-							<EventTrigger RoutedEvent="Mouse.MouseEnter">
-								<BeginStoryboard Storyboard="{StaticResource OnMouseEnter1}"/>
-							</EventTrigger>
-							<Trigger Property="IsPressed" Value="True"/>
-							<Trigger Property="IsEnabled" Value="False"/>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-	</Window.Resources>
 	<Border x:Name="border" CornerRadius="10" Background="#FFCDCBCB">
 		<Grid x:Name="mainStack" >
 			<Grid.ColumnDefinitions>
@@ -192,10 +20,7 @@
 					<RowDefinition Height="70*"/>
 				</Grid.RowDefinitions>
 				<Path Grid.Row="0" Data="M11.000132,-0.1418168 L9.5451723,-0.098710344 8.7816044,0.07775 7.9695202,0.21878376 7.2662418,0.37490577 6.6096525,0.60946406 6.0944679,0.78195777 5.5786358,1.0326437 4.9382017,1.3773278 4.4544118,1.6434811 4.1420974,1.8778924 3.7199084,2.1909416 3.48531,2.4106275 3.0951219,2.7553476 2.6418056,3.2094212 2.2352166,3.6949543 1.9387545,4.0556459 1.6882738,4.4626798 1.2357061,5.1675235 0.81427447,6.0134771 0.53255732,6.7652135 0.3453333,7.3133544 0.20447478,8.0023089 0.048369717,8.9737063&#xA;0.016998389,9.3967017 0.016998389,10.618327 0.00099968616,112.762 393.96907,112.76201 394.03192,-0.016785893" Fill="#FF1FB6E4" HorizontalAlignment="Left" Height="112.625" Margin="0,-0.125,0,0" Stretch="Fill" VerticalAlignment="Top" Width="400.156"/>
-                <StackPanel x:Name="MessageStack" Grid.Row="1" Background="#FFEAE6E6" CanHorizontallyScroll="True" Margin="0,0,0,5">
-                    <controls:MessageControl MessageDate="18.09" MessageText="У вас есть передний бампер на трактор советского союза?" Margin="0,0,0,2"/>
-					<controls:MessageControl MessageDate="18.09" MessageText="У вас есть передний бампер на трактор советского союза?"/>
-                </StackPanel>
+                <StackPanel x:Name="MessageStack" Grid.Row="1" Background="#FFEAE6E6" CanHorizontallyScroll="True" Margin="0,0,0,5"/>
 				<StackPanel x:Name="downStackPanel" Grid.Row="2" Background="#00C3C3C3" Orientation="Horizontal" Margin="0,0,0,-10">
 								
 					<Button x:Name="SettingsButton" Content="Button" HorizontalAlignment="Left" Height="79.875" Style="{DynamicResource SettingsButton}" VerticalAlignment="Bottom" Width="264" Background="#FFEAE6E6" Cursor="Hand"/>
@@ -203,11 +28,11 @@
 					<Button x:Name="StatusButton" Content="Button" Margin="5,0,0,0" Style="{DynamicResource StatusButton}" Background="#FFEAE6E6" Cursor="Hand"/>
 					
 				</StackPanel>
-				<Button Grid.Row="0" x:Name="MessageButton" Content="Button" HorizontalAlignment="Left" Height="41.501" Margin="233.335,37.168,0,0" Style="{DynamicResource MessageButton}" VerticalAlignment="Top" Width="123.333" Cursor="Hand"/>
-				<Button Grid.Row="0" x:Name="MyQuariesButton" Content="Button" HorizontalAlignment="Left" Height="41.501" Margin="99.002,37.168,0,0" Style="{DynamicResource MyQuariesButton}" VerticalAlignment="Top" Width="123.333" Cursor="Hand"/>
+				<Button Grid.Row="0" x:Name="MessageButton" Content="Button" HorizontalAlignment="Left" Height="41.501" Margin="238.335,37.168,0,0" Style="{DynamicResource MessageButton}" VerticalAlignment="Top" Width="123.333" Cursor="Hand"/>
+				<Button Grid.Row="0" x:Name="MyQuariesButton" Content="Button" HorizontalAlignment="Left" Height="41.501" Margin="104.002,37.168,0,0" Style="{DynamicResource MyQuariesButton}" VerticalAlignment="Top" Width="129.333" Cursor="Hand"/>
 								
 			</Grid>
-			<Button x:Name="CloseButton" HorizontalAlignment="Right" Height="30" Margin="0,12.5,12.5,0" Style="{DynamicResource roundButton}" VerticalAlignment="Top" Width="30" Grid.Column="1" Click="CloseButton_Click" Cursor=""/>
+			<Button x:Name="CloseButton" HorizontalAlignment="Right" Height="30" Margin="0,12.5,12.5,0" Style="{DynamicResource ExitButton}" VerticalAlignment="Top" Width="30" Grid.Column="1" Click="CloseButton_Click" Cursor=""/>
 			<Button x:Name="MinimazeButton" HorizontalAlignment="Right" Height="30" Style="{DynamicResource MinimazeButton}" VerticalAlignment="Top" Width="30" Margin="0,12.5,47.5,0" Grid.Column="1" Click="HideButton_Click_1"/>
 			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
 		</Grid>

@@ -24,5 +24,10 @@ namespace CreateAndTestNewControls
         {
             InitializeComponent();
         }
+
+        private void BlueTopMenu_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            menu.IsDeleteDialog = !menu.IsDeleteDialog;
+        }
     }
 }

@@ -13,15 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CreateAndTestNewControls
+namespace ZappChat.Controls
 {
-    [TemplateVisualState(Name = "Normal", GroupName = "ViewStates"),
-    TemplateVisualState(Name = "DeleteDialog", GroupName = "ViewStates")]
-    public class MainPanel : StackPanel
+    public class BlueTopMenu : Control
     {
-        static MainPanel()
+        static BlueTopMenu()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(MainPanel), new FrameworkPropertyMetadata(typeof(MainPanel)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(BlueTopMenu), new FrameworkPropertyMetadata(typeof(BlueTopMenu)));
         }
     }
 }
