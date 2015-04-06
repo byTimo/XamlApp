@@ -4,6 +4,10 @@
 	x:Class="CreateAndTestNewControls.App"
 	StartupUri="MainWindow.xaml">
 	<Application.Resources>
-		<ResourceDictionary Source="Themes\BlueTopMenuTemplate.xaml"/>
+		<ResourceDictionary Source="Themes\BlueTopMenuTemplate.xaml">
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="Themes/GreyButtonTemplate.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</Application.Resources>
 </Application>

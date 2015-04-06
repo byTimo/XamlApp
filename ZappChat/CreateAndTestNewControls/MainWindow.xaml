@@ -4,9 +4,13 @@
         xmlns:controls="clr-namespace:ZappChat.Controls"
         xmlns:local="clr-namespace:CreateAndTestNewControls"
         Title="MainWindow" Height="316.667" Width="503.333">
+	<Window.Resources>
+		
+	</Window.Resources>
 
-    <Grid>		
-		<local:BlueTopMenu x:Name="menu" HorizontalAlignment="Left" VerticalAlignment="Top" Height="197.666" MouseUp="BlueTopMenu_MouseUp"/>
-    </Grid>
+    <Grid>
+    	<local:BlueTopMenu Content="BlueTopMenu" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="220.333" Width="400.156"/>
+		
+	</Grid>
         
 </Window>
