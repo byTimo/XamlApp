@@ -6,8 +6,53 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="{x:Type Button}">
-						<Grid>
-							<Path Data="M11.000132,-0.1418168 L9.5451723,-0.098710344 8.7816044,0.07775 7.9695202,0.21878376 7.2662418,0.37490577 6.6096525,0.60946406 6.0944679,0.78195777 5.5786358,1.0326437 4.9382017,1.3773278 4.4544118,1.6434811 4.1420974,1.8778924 3.7199084,2.1909416 3.48531,2.4106275 3.0951219,2.7553476 2.6418056,3.2094212 2.2352166,3.6949543 1.9387545,4.0556459 1.6882738,4.4626798 1.2357061,5.1675235 0.81427447,6.0134771 0.53255732,6.7652135 0.3453333,7.3133544 0.20447478,8.0023089 0.048369717,8.9737063&#xA;0.016998389,9.3967017 0.016998389,10.618327 0.00099968616,112.762 393.96907,112.76201 394.03192,-0.016785893" Fill="#FFEAE6E6" RenderTransformOrigin="0.5,0.5" Stretch="Fill">
+						<Grid Cursor="Hand">
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="White"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="MouseOver">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF1FB6E4"/>
+											</ColorAnimationUsingKeyFrames>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="White"/>
+											</ColorAnimationUsingKeyFrames>
+											<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Offset)" Storyboard.TargetName="path">
+												<EasingDoubleKeyFrame KeyTime="0" Value="0.448"/>
+											</DoubleAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Pressed">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF1FB6E4"/>
+											</ColorAnimationUsingKeyFrames>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF1FB6E4"/>
+											</ColorAnimationUsingKeyFrames>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="path">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF1FB6E4"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Disabled"/>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<Path x:Name="path" Data="M11.000132,-0.1418168 L9.5451723,-0.098710344 8.7816044,0.07775 7.9695202,0.21878376 7.2662418,0.37490577 6.6096525,0.60946406 6.0944679,0.78195777 5.5786358,1.0326437 4.9382017,1.3773278 4.4544118,1.6434811 4.1420974,1.8778924 3.7199084,2.1909416 3.48531,2.4106275 3.0951219,2.7553476 2.6418056,3.2094212 2.2352166,3.6949543 1.9387545,4.0556459 1.6882738,4.4626798 1.2357061,5.1675235 0.81427447,6.0134771 0.53255732,6.7652135 0.3453333,7.3133544 0.20447478,8.0023089 0.048369717,8.9737063&#xA;0.016998389,9.3967017 0.016998389,10.618327 0.00099968616,112.762 393.96907,112.76201 394.03192,-0.016785893" RenderTransformOrigin="0.5,0.5" Stretch="Fill">
+								<Path.Fill>
+									<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+										<GradientStop Color="White"/>
+										<GradientStop Color="White" Offset="1"/>
+										<GradientStop Color="White" Offset="0.57"/>
+									</LinearGradientBrush>
+								</Path.Fill>
 								<Path.RenderTransform>
 									<TransformGroup>
 										<ScaleTransform ScaleY="-1"/>
@@ -17,6 +62,8 @@
 									</TransformGroup>
 								</Path.RenderTransform>
 							</Path>
+							<Image Margin="40,0,0,0" Source="/ZappChat;component/Images/SettingsButton.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Height="30"/>
+							<Label Content="Настройки" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="75,0,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="20" FontWeight="Bold" Foreground="#FFA4A4A4"/>
 						</Grid>
 						<ControlTemplate.Triggers>
 							<Trigger Property="IsFocused" Value="True"/>

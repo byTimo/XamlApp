@@ -1,25 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ZappChat.Controls
 {
-    public class BlueTopMenu : Control
+    [TemplateVisualState(Name = "Normal", GroupName = "ViewStates"),
+     TemplateVisualState(Name = "DeleteDialog", GroupName = "ViewStates")]
+    public class BlueTopMenu : ContentControl
     {
+        public static readonly DependencyProperty IsDeleteDialogProperty =
+            DependencyProperty.Register("IsDeleteDialog", typeof (bool), typeof (BlueTopMenu),
+                new FrameworkPropertyMetadata(false));
         static BlueTopMenu()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(BlueTopMenu), new FrameworkPropertyMetadata(typeof(BlueTopMenu)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof (BlueTopMenu),
+                new FrameworkPropertyMetadata(typeof (BlueTopMenu)));
+        }
+        public bool IsDeleteDialog
+        {
+            get { return (bool) GetValue(IsDeleteDialogProperty); }
+            set
+            {
+                SetValue(IsDeleteDialogProperty, value);
+                ChangeVisualState();
+            }
+        }
+
+        private void ChangeVisualState()
+        {
+            VisualStateManager.GoToState(this, IsDeleteDialog ? "DeleteDialog" : "Normal", true);
         }
     }
 }

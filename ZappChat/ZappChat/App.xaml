@@ -8,12 +8,14 @@
 	<!-- Ресурсы, масштабируемые на уровне приложения, должны определяться здесь.-->
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes\ExitButtonTemplate.xaml"/>
+				<ResourceDictionary Source="/Themes/ExitButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/MyQuariesButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/SettingsButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/StatusButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/MinimazeButton.xaml"/>	
+				<ResourceDictionary Source="/Themes/MinimazeButtonTemplate.xaml"/>
+				<ResourceDictionary Source="/Themes/GreyButtonTemplate.xaml"/>
+				<ResourceDictionary Source="/Themes/BlueTopMenuTemplate.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
