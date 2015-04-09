@@ -6,7 +6,7 @@
     mc:Ignorable="d" x:Class="ZappChat.MainWindow"
         Title="MainWindow" WindowStyle="None"
 		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="687" Width="1024"
-		ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+		ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
 	<Border x:Name="border" CornerRadius="10" Background="#FFCDCBCB">
 		<Grid x:Name="mainStack" >
 			<Grid.ColumnDefinitions>
@@ -18,8 +18,8 @@
 					<RowDefinition Height="10*"/>
 					<RowDefinition Height="1.6*"/>
 				</Grid.RowDefinitions>
-                <StackPanel x:Name="MessageStack" Background="White" CanHorizontallyScroll="True" Margin="0,113,0,0">
-                </StackPanel>
+                <ListBox x:Name="MessageBox" Margin="0,113,0,0" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                         SelectionMode="Single"/>
                 <Grid x:Name="DownGridPanel" Grid.Row="1" Background="#00C3C3C3" Margin="0,5,0,0">
                 	<Grid.ColumnDefinitions>
                 		<ColumnDefinition Width="10*"/>
@@ -27,8 +27,13 @@
                 	</Grid.ColumnDefinitions>
                 	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" />	
                 </Grid>
-				<controls:BlueTopMenu Grid.Row="0
-				" ClipToBounds="False" x:Name="BlueMenu" Margin="0" VerticalAlignment="Top" Height="183" />
+                <controls:BlueTopMenu Grid.Row="0" ClipToBounds="False" x:Name="BlueMenu" Margin="0" VerticalAlignment="Top" >
+					<StackPanel Height="109.867" Orientation="Horizontal" Width="374">
+						<Button x:Name="menuButton" Content="Button" Width="40" Template="{DynamicResource MenuButton}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" Margin="20,0,0,0" Cursor="Hand"/>
+						<Button x:Name="myQuariesButton" Style="{DynamicResource MyQuariesButton}" Content="Мои запросы" HorizontalAlignment="Left" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Height="37" Margin="15,0,0,0" Cursor="Hand"/>
+						<controls:MessageButton x:Name="messageButton" Content="Сообщения" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" Foreground="White" FontWeight="Bold" Margin="15,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="37" Cursor="Hand" />
+					</StackPanel>
+                </controls:BlueTopMenu>
 
             </Grid>
 			<Button x:Name="CloseButton" HorizontalAlignment="Right" Height="30" Margin="0,12.5,12.5,0" Style="{DynamicResource ExitButton}" VerticalAlignment="Top" Width="30" Grid.Column="1" Click="CloseButton_Click" Cursor=""/>
@@ -36,6 +41,8 @@
 			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
             <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="206,145,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
             <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="206,192,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+            <TextBox x:Name="text" Grid.Column="1" HorizontalAlignment="Left" Height="33.334" Margin="56.667,243.333,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="112.666"/>
+            <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Height="18" Margin="206,249.333,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
         </Grid>
 		
 	</Border>

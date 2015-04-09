@@ -43,11 +43,18 @@ namespace ZappChat
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MessageStack.Children.Add(new MessageControl()
-            {
-                MessageText = "TTTTTTTTTTTTTTEEEEEEeeeeeeeeeeeeesssssssssstttttt",
-                MessageDate = "18 march"
-            });
+            MessageBox.Items.Add(new MessageControl {MessageText = "asdasdadasdadaивапвпвпвпвапвапвапвапвапвапвапвапвап", MessageDate = "161621621"});
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            messageButton.MessagesCount = text.Text;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            BlueMenu.SetStartupState();
+            messageButton.SetStartupState();
         }
     }
 }

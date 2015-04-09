@@ -3,14 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:ZappChat.Controls"
         xmlns:local="clr-namespace:CreateAndTestNewControls"
-        Title="MainWindow" Height="316.667" Width="503.333">
-	<Window.Resources>
-		
-	</Window.Resources>
+        Title="MainWindow" Height="316.667" Width="503.333" Loaded="Window_Loaded">
 
-    <Grid>
-    	<local:BlueTopMenu Content="BlueTopMenu" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="220.333" Width="400.156"/>
-		
+
+    <Grid Margin="0,0,47,59">
+		<local:MessageButton x:Name="testBlue" Content="Сообщения" FontFamily="Arial" FontSize="14.667" FontWeight="Bold" Foreground="White" Width="160" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40"/>
+		<Button Content="Button" HorizontalAlignment="Left" Height="18" Margin="138.5,72,0,0" VerticalAlignment="Top" Width="48" Click="Button_Click"/>
+		<TextBox x:Name="test" HorizontalAlignment="Left" Height="22" Margin="131.5,45,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="115.5"/>
 	</Grid>
-        
+
 </Window>

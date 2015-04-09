@@ -6,21 +6,29 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="{x:Type Button}">
-						<ControlTemplate.Resources>
-							<Storyboard x:Key="OnMouseEnter1">
-								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="gradMain">
-									<EasingColorKeyFrame KeyTime="0" Value="#0064CEEE"/>
-									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#FF64CEEE"/>
-								</ColorAnimationUsingKeyFrames>
-							</Storyboard>
-							<Storyboard x:Key="OnMouseLeave1">
-								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="gradMain">
-									<EasingColorKeyFrame KeyTime="0" Value="#FF64CEEE"/>
-									<EasingColorKeyFrame KeyTime="0:0:0.3" Value="#0064CEEE"/>
-								</ColorAnimationUsingKeyFrames>
-							</Storyboard>
-						</ControlTemplate.Resources>
 						<Grid Margin="0,0,0.167,0">
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal">
+										<Storyboard/>
+									</VisualState>
+									<VisualState x:Name="MouseOver">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="gradMain">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF64CEEE"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Pressed">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="main">
+												<EasingColorKeyFrame KeyTime="0" Value="#FF64CEEE"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Disabled"/>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
 							<Rectangle x:Name="main" Fill="#FF1FB6E4" RadiusX="15" RadiusY="15" Stroke="#FF64CEEE" StrokeThickness="2" Margin="0"/>
 							<Rectangle x:Name="gradMain" RadiusX="15" RadiusY="15" Stroke="#FF64CEEE" StrokeThickness="2" Margin="0">
 								<Rectangle.Fill>
@@ -31,17 +39,9 @@
 									</LinearGradientBrush>
 								</Rectangle.Fill>
 							</Rectangle>
-							<StackPanel x:Name="stackPanel" HorizontalAlignment="Stretch" Height="{Binding Height, ElementName=stackPanel}" VerticalAlignment="Stretch" Width="{Binding Width, ElementName=stackPanel}" Orientation="Horizontal">
-								<TextBlock HorizontalAlignment="Center" Height="Auto" Margin="7,0,0,0" TextWrapping="Wrap" Text="Мои запросы" VerticalAlignment="Center" Width="Auto" FontSize="17.333" FontFamily="/ZappChat;component/Fonts/#Arial" Foreground="White" FontWeight="Bold"/>
-							</StackPanel>
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Width="Auto" Margin="15,0"/>
 						</Grid>
 						<ControlTemplate.Triggers>
-							<EventTrigger RoutedEvent="Mouse.MouseEnter">
-								<BeginStoryboard Storyboard="{StaticResource OnMouseEnter1}"/>
-							</EventTrigger>
-							<EventTrigger RoutedEvent="Mouse.MouseLeave">
-								<BeginStoryboard x:Name="OnMouseLeave1_BeginStoryboard" Storyboard="{StaticResource OnMouseLeave1}"/>
-							</EventTrigger>
 							<Trigger Property="IsFocused" Value="True"/>
 							<Trigger Property="IsDefaulted" Value="True"/>
 							<Trigger Property="IsMouseOver" Value="True"/>

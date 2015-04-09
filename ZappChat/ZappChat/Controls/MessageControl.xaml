@@ -7,7 +7,7 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.MessageControl"
 	x:Name="messageControl"
-	d:DesignWidth="574" d:DesignHeight="109" Cursor="Hand" Width="400" Height="70" Background="White" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
+	d:DesignWidth="574" d:DesignHeight="109" Cursor="Hand" Width="Auto" Height="70" Background="White" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
 	<UserControl.Resources>
 		<Storyboard x:Key="TimerOpacityChange">
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Timer">
@@ -26,8 +26,8 @@
 		<Image x:Name="Timer" Source="/ZappChat;component/Images/TimerImage.png" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="25,0,0,0" Width="20"/>
         <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="53,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="9.333" FontFamily="/ZappChat;component/Fonts/#Arial" FontWeight="Bold" Foreground="#FFA49C9C" Width="50" Text="{Binding ElementName=messageControl,Path=MessageDate}">
         </TextBlock>
-	    <TextBlock x:Name="Text" HorizontalAlignment="Left" Margin="107,0,0,0" Text="{Binding ElementName=messageControl,Path=MessageText}" VerticalAlignment="Center" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" FontWeight="Bold" Width="260"/>
-		<Rectangle x:Name="GradientRectangle" HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="138.5" Margin="261.5,0,0,0">
+	    <TextBlock x:Name="Text" HorizontalAlignment="Left" Margin="107,0,0,0" Text="вапвпвпвпвпвпвпвапвапвапвапвапвапва" VerticalAlignment="Center" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" FontWeight="Bold" Width="260"/>
+		<Rectangle x:Name="GradientRectangle" HorizontalAlignment="Right" Width="120" Margin="0">
 			<Rectangle.Fill>
 				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
 					<LinearGradientBrush.RelativeTransform>
@@ -43,7 +43,7 @@
 				</LinearGradientBrush>
 			</Rectangle.Fill>
 		</Rectangle>
-        <Button x:Name="Trashcan" HorizontalAlignment="Right" VerticalAlignment="Center" Background="#00000000" BorderBrush="#00000000" Margin="0,0,15,0" Visibility="Collapsed">
+        <Button x:Name="Trashcan" HorizontalAlignment="Right" VerticalAlignment="Center" Background="#00000000" BorderBrush="#00000000" Margin="0,0,10,0" Width="20" Height="25" HorizontalContentAlignment="Center" Visibility="Collapsed">
             <Image Source="/ZappChat;component/Images/TrashcanImage.png" Width="17" Height="20"/>
         </Button>
     </Grid>

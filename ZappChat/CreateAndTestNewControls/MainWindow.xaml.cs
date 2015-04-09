@@ -23,11 +23,17 @@ namespace CreateAndTestNewControls
         public MainWindow()
         {
             InitializeComponent();
+            testBlue.SetStartupState();
         }
 
-        private void BlueTopMenu_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
+            testBlue.MessagesCount = test.Text;
+        }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            testBlue.SetStartupState();
         }
     }
 }

@@ -25,6 +25,11 @@ namespace ZappChat.Controls
             }
         }
 
+        public void SetStartupState()
+        {
+            ChangeVisualState();
+        }
+
         private void ChangeVisualState()
         {
             VisualStateManager.GoToState(this, IsDeleteDialog ? "DeleteDialog" : "Normal", true);

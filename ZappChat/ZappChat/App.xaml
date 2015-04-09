@@ -16,6 +16,8 @@
 				<ResourceDictionary Source="/Themes/MinimazeButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/GreyButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/BlueTopMenuTemplate.xaml"/>
+				<ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
+				<ResourceDictionary Source="/Themes/MenuButtonTemplate.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
