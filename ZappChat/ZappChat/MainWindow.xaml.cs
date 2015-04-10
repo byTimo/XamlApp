@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ZappChat.Controls;
+using ZappChat.Core;
 
 namespace ZappChat
 {
@@ -21,9 +22,16 @@ namespace ZappChat
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
+            AppEventManager.ConnectionEventHandler += (s, e) => { statusButton.Status = e.ConnectionStatus; };
+            AppEventManager.SendMessageEventHandler += (s, e) =>
+            {
+                messageButton.MessagesCount++;
+                MessageBox.Items.Add(new MessageControl(new Dialogue(e.Message.Author, new List<Message>{e.Message})));
+            };
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -36,19 +44,5 @@ namespace ZappChat
             WindowState = WindowState.Minimized;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            BlueMenu.IsDeleteDialog = !BlueMenu.IsDeleteDialog;
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Items.Add(new MessageControl {MessageText = "asdasdadasdadaивапвпвпвпвапвапвапвапвапвапвапвапвап", MessageDate = "161621621"});
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            messageButton.MessagesCount = int.Parse(text.Text);
-        }
     }
 }

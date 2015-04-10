@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
 	x:Class="ZappChat.App"
-	StartupUri="MainWindow.xaml">
+	StartupUri="MainWindow.xaml" Startup="Application_Startup">
 	<Application.Resources>
 	<!-- Ресурсы, масштабируемые на уровне приложения, должны определяться здесь.-->
 		<ResourceDictionary>

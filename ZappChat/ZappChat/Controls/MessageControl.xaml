@@ -26,7 +26,7 @@
 		<Image x:Name="Timer" Source="/ZappChat;component/Images/TimerImage.png" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="25,0,0,0" Width="20"/>
         <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="53,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="9.333" FontFamily="/ZappChat;component/Fonts/#Arial" FontWeight="Bold" Foreground="#FFA49C9C" Width="50" Text="{Binding ElementName=messageControl,Path=MessageDate}">
         </TextBlock>
-	    <TextBlock x:Name="Text" HorizontalAlignment="Left" Margin="107,0,0,0" Text="вапвпвпвпвпвпвпвапвапвапвапвапвапва" VerticalAlignment="Center" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" FontWeight="Bold" Width="260"/>
+	    <TextBlock x:Name="Text" HorizontalAlignment="Left" Margin="107,0,0,0" Text="{Binding ElementName=messageControl, Path=MessageText}" VerticalAlignment="Center" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" FontWeight="Bold" Width="260"/>
 		<Rectangle x:Name="GradientRectangle" HorizontalAlignment="Right" Width="120" Margin="0">
 			<Rectangle.Fill>
 				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">

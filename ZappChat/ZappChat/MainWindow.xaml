@@ -25,7 +25,8 @@
                 		<ColumnDefinition Width="10*"/>
                 		<ColumnDefinition Width="5.5*"/>
                 	</Grid.ColumnDefinitions>
-                	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" />	
+                	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" />
+					<controls:StatusButton x:Name="statusButton" Grid.Column="1" Style="{DynamicResource StatusButtonTemplate}" />
                 </Grid>
                 <controls:BlueTopMenu Grid.Row="0" ClipToBounds="False" x:Name="BlueMenu" Margin="0" VerticalAlignment="Top" >
 					<StackPanel Height="109.867" Orientation="Horizontal" Width="374">
@@ -39,10 +40,6 @@
 			<Button x:Name="CloseButton" HorizontalAlignment="Right" Height="30" Margin="0,12.5,12.5,0" Style="{DynamicResource ExitButton}" VerticalAlignment="Top" Width="30" Grid.Column="1" Click="CloseButton_Click" Cursor=""/>
 			<Button x:Name="MinimazeButton" HorizontalAlignment="Right" Height="30" Style="{DynamicResource MinimazeButton}" VerticalAlignment="Top" Width="30" Margin="0,12.5,47.5,0" Grid.Column="1" Click="HideButton_Click_1"/>
 			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
-            <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="206,145,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-            <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="206,192,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-            <TextBox x:Name="text" Grid.Column="1" HorizontalAlignment="Left" Height="33.334" Margin="56.667,243.333,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="112.666"/>
-            <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Height="18" Margin="206,249.333,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
         </Grid>
 		
 	</Border>

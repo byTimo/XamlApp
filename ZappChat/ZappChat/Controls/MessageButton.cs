@@ -9,11 +9,12 @@ namespace ZappChat.Controls
     public class MessageButton : Button
     {
         public static readonly DependencyProperty MessagesCountProperty =
-            DependencyProperty.Register("MessagesCount", typeof (string), typeof (MessageButton));
+            DependencyProperty.Register("MessagesCount", typeof (string), typeof (MessageButton),
+            new FrameworkPropertyMetadata("0"));
 
         public int MessagesCount
         {
-            get { return (int)GetValue(MessagesCountProperty); }
+            get { return int.Parse(GetValue(MessagesCountProperty) as string); }
             set { SetValue(MessagesCountProperty, SetMessagesCount(value)); }
         }
         static MessageButton()
@@ -37,7 +38,8 @@ namespace ZappChat.Controls
             if(number >= 100)
             {
                 VisualStateManager.GoToState(this, "UnreadMessages", true);
-                return "99+";
+                //TODO <- Раньше здесь было 99+, но для этого нужно менять get у MessageCount
+                return number.ToString(CultureInfo.InvariantCulture);
             }
             VisualStateManager.GoToState(this, "UnreadMessages", true);
             return number.ToString(CultureInfo.InvariantCulture);

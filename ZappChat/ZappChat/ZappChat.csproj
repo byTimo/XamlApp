@@ -54,6 +54,11 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Core\Dialogue.cs" />
+    <Compile Include="Core\Message.cs" />
+    <Compile Include="ServerEmulation.xaml.cs">
+      <DependentUpon>ServerEmulation.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -65,7 +70,11 @@
     <Compile Include="Controls\BlueTopMenu.cs" />
     <Compile Include="Controls\FlipPanel.cs" />
     <Compile Include="Controls\MessageButton.cs" />
-    <Compile Include="Delegates.cs" />
+    <Compile Include="Controls\StatusButton.cs" />
+    <Compile Include="Core\Delegates.cs" />
+    <Compile Include="Core\Enums.cs" />
+    <Compile Include="Core\EventArgs.cs" />
+    <Compile Include="Core\EventManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -73,6 +82,10 @@
     <Page Include="Controls\MessageControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ServerEmulation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\FlipPanelTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>

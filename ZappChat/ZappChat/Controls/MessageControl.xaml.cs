@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ZappChat.Core;
 
 namespace ZappChat.Controls
 {
@@ -10,9 +11,7 @@ namespace ZappChat.Controls
 	/// </summary>
 	public partial class MessageControl : UserControl
 	{
-	    public static readonly RoutedEvent DeleteMessageEvent =
-	        EventManager.RegisterRoutedEvent("DeleteMessage", RoutingStrategy.Bubble,
-	            typeof (RoutedEvent), typeof (MessageControl));
+        public Dialogue Dialogue { get; set; }
 
 	    public static readonly DependencyProperty MessageTextProperty =
 	        DependencyProperty.Register("MessageText", typeof (string), typeof (MessageControl));
@@ -32,17 +31,23 @@ namespace ZappChat.Controls
             set { SetValue(MessageDateProperty, value); }
 	    }
 
-        public event RoutedEventHandler DeleteMessage
-        {
-            add { AddHandler(DeleteMessageEvent, value); }
-            remove { RemoveHandler(DeleteMessageEvent, value); }
-        }
 		public MessageControl()
 		{
 			InitializeComponent();
             Trashcan.Click += Trashcan_Click;
 		}
 
+	    public MessageControl(Dialogue dialogue) : this()
+	    {
+	        Dialogue = dialogue;
+            UpdateControl();
+	    }
+
+	    public void UpdateControl()
+	    {
+            MessageText = Dialogue.GetLatMessage().Text;
+            MessageDate = Dialogue.GetLatMessage().Date;
+	    }
         private void UserControl_MouseEnter(object sender, MouseEventArgs e)
         {
             Trashcan.Visibility = Visibility.Visible;
