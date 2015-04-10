@@ -63,6 +63,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controls\BlueTopMenu.cs" />
+    <Compile Include="Controls\FlipPanel.cs" />
     <Compile Include="Controls\MessageButton.cs" />
     <Compile Include="Delegates.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -70,6 +71,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Controls\MessageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\FlipPanelTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

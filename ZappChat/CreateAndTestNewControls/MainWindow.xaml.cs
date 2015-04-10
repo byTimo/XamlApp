@@ -23,17 +23,11 @@ namespace CreateAndTestNewControls
         public MainWindow()
         {
             InitializeComponent();
-            testBlue.SetStartupState();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            testBlue.MessagesCount = test.Text;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            testBlue.SetStartupState();
+            TestFlip.IsFliped = !TestFlip.IsFliped;
         }
     }
 }

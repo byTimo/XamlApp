@@ -24,10 +24,10 @@ namespace ZappChat.Controls
                 ChangeVisualState();
             }
         }
-
-        public void SetStartupState()
+        public override void OnApplyTemplate()
         {
-            ChangeVisualState();
+            base.OnApplyTemplate();
+            VisualStateManager.GoToState(this, "Normal", false);
         }
 
         private void ChangeVisualState()

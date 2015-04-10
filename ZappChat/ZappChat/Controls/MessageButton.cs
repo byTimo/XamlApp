@@ -11,18 +11,19 @@ namespace ZappChat.Controls
         public static readonly DependencyProperty MessagesCountProperty =
             DependencyProperty.Register("MessagesCount", typeof (string), typeof (MessageButton));
 
-        public string MessagesCount
+        public int MessagesCount
         {
-            get { return GetValue(MessagesCountProperty) as string; }
-            set { SetValue(MessagesCountProperty, SetMessagesCount(int.Parse(value))); }
+            get { return (int)GetValue(MessagesCountProperty); }
+            set { SetValue(MessagesCountProperty, SetMessagesCount(value)); }
         }
         static MessageButton()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MessageButton), new FrameworkPropertyMetadata(typeof(MessageButton)));
         }
 
-        public void SetStartupState()
+        public override void OnApplyTemplate()
         {
+            base.OnApplyTemplate();
             SetMessagesCount(0);
         }
 

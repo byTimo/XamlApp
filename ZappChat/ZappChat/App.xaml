@@ -18,6 +18,7 @@
 				<ResourceDictionary Source="/Themes/BlueTopMenuTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/MenuButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

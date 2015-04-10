@@ -48,13 +48,7 @@ namespace ZappChat
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            messageButton.MessagesCount = text.Text;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            BlueMenu.SetStartupState();
-            messageButton.SetStartupState();
+            messageButton.MessagesCount = int.Parse(text.Text);
         }
     }
 }
