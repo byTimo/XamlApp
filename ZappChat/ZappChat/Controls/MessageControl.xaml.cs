@@ -60,7 +60,7 @@ namespace ZappChat.Controls
 
 	    private void Trashcan_Click(object sender, RoutedEventArgs e)
 	    {
-	        Trashcan.Background = Brushes.Black;
+	        AppEventManager.DeleteConfirmationDialogueEvent(this, Dialogue, false);
 	    }
 	}
 }

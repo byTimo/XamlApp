@@ -20,6 +20,7 @@
 				</Grid.RowDefinitions>
                 <ListBox x:Name="MessageBox" Margin="0,113,0,0" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled"
                          SelectionMode="Single"/>
+				<Rectangle x:Name="ControlBlocker" Grid.Row="0" Fill="#B2FFFFFF" Margin="0,113,0,0" Visibility="Collapsed"/>
                 <Grid x:Name="DownGridPanel" Grid.Row="1" Background="#00C3C3C3" Margin="0,5,0,0">
                 	<Grid.ColumnDefinitions>
                 		<ColumnDefinition Width="10*"/>

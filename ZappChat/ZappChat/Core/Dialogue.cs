@@ -31,5 +31,25 @@ namespace ZappChat.Core
         {
             return Messages.GetEnumerator();
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Dialogue) obj);
+        }
+
+        protected bool Equals(Dialogue other)
+        {
+            return Equals(Messages, other.Messages) && string.Equals(Interlocutor, other.Interlocutor);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Messages != null ? Messages.GetHashCode() : 0) * 397) ^ (Interlocutor != null ? Interlocutor.GetHashCode() : 0);
+            }
+        }
     }
 }

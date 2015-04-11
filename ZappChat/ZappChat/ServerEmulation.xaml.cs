@@ -38,7 +38,7 @@ namespace ZappChat
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             var m = new Message(author.Text, message.Text);
-            AppEventManager.SendMessageEvent(this, m);
+            AppEventManager.TakeMessageEvent(this, m);
         }
     }
 }

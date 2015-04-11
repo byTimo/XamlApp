@@ -28,5 +28,26 @@ namespace ZappChat.Core
         }
         public Message(string author, string text) : this(author, text, DateTime.Now) { }
 
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Message) obj);
+        }
+        protected bool Equals(Message other)
+        {
+            return string.Equals(Author, other.Author) && string.Equals(Date, other.Date) && string.Equals(Text, other.Text);
+        }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = (Author != null ? Author.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Date != null ? Date.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Text != null ? Text.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 }

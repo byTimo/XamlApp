@@ -12,13 +12,25 @@ namespace ZappChat.Core
         }
     }
 
-    public class SendMessageEventArgs : EventArgs
+    public class MessagingEventArgs : EventArgs
     {
         public readonly Message Message;
 
-        public SendMessageEventArgs(Message message)
+        public MessagingEventArgs(Message message)
         {
             Message = message;
+        }
+    }
+
+    public class DeletingEventArgs : EventArgs
+    {
+        public readonly Dialogue DeletedDialogue;
+        public readonly bool IsConfirmed;
+
+        public DeletingEventArgs(Dialogue deleteDialogue, bool isConfirmed)
+        {
+            DeletedDialogue = deleteDialogue;
+            IsConfirmed = isConfirmed;
         }
     }
 }
