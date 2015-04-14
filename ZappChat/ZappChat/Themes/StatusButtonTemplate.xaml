@@ -10,7 +10,7 @@
 					<Border Background="White">
 						<StackPanel Orientation="Horizontal">
 							<Ellipse x:Name="StatusIndicater" HorizontalAlignment="Left" VerticalAlignment="Center" Width="20" Height="20" Margin="20,0,0,0" Fill="{TemplateBinding IndicaterColor}" />
-							<Label x:Name="StatusText" Content="{TemplateBinding StatusText}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" FontWeight="Bold" Background="#00000000" Foreground="#FFA49C9C" />
+							<Label x:Name="StatusText" Content="{TemplateBinding StatusText}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontWeight="Bold" Background="#00000000" Foreground="#FFA49C9C" />
 						</StackPanel>
 					</Border>
 					</ControlTemplate>

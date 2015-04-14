@@ -62,8 +62,8 @@
 									</TransformGroup>
 								</Path.RenderTransform>
 							</Path>
-							<Image Margin="40,0,0,0" Source="/ZappChat;component/Images/SettingsButton.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Height="30"/>
-							<Label Content="Настройки" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="75,0,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="20" FontWeight="Bold" Foreground="#FFA4A4A4"/>
+							<Image Margin="25,0,0,0" Source="/ZappChat;component/Images/SettingsButton.png" HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Height="30"/>
+							<Label Content="Настройки клиента" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="55,0,0,0" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="20" FontWeight="Bold" Foreground="#FFA4A4A4"/>
 						</Grid>
 						<ControlTemplate.Triggers>
 							<Trigger Property="IsFocused" Value="True"/>

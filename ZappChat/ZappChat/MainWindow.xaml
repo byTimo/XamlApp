@@ -32,8 +32,8 @@
                 <controls:BlueTopMenu Grid.Row="0" ClipToBounds="False" x:Name="BlueMenu" Margin="0" VerticalAlignment="Top" >
 					<StackPanel Height="109.867" Orientation="Horizontal" Width="374">
 						<Button x:Name="menuButton" Content="Button" Width="40" Template="{DynamicResource MenuButton}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" Margin="20,0,0,0" Cursor="Hand"/>
-						<Button x:Name="myQuariesButton" Style="{DynamicResource MyQuariesButton}" Content="Мои запросы" HorizontalAlignment="Left" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Height="37" Margin="15,0,0,0" Cursor="Hand"/>
-						<controls:MessageButton x:Name="messageButton" Content="Сообщения" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" Foreground="White" FontWeight="Bold" Margin="15,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="37" Cursor="Hand" />
+						<Button x:Name="myQuariesButton" Style="{DynamicResource MyQuariesButton}" Content="Мои запросы" HorizontalAlignment="Left" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Height="37" Margin="15,0,0,0" Cursor="Hand"/>
+						<controls:MessageButton x:Name="messageButton" Content="Сообщения" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" Foreground="White" FontWeight="Bold" Margin="15,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="37" Cursor="Hand" />
 					</StackPanel>
                 </controls:BlueTopMenu>
             </Grid>
@@ -49,7 +49,7 @@
 							<Setter.Value>
 						        <ControlTemplate TargetType="TabItem">
 						            <Border x:Name="Panel" BorderBrush="#FFA4A4A4" BorderThickness="1" CornerRadius="10" Padding="10,5">
-						            	<TextBlock Text="{TemplateBinding Header}" Foreground="#FFA49C9C" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" FontWeight="Bold"/>
+						            	<TextBlock Text="{TemplateBinding Header}" Foreground="#FFA49C9C" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" FontWeight="Bold"/>
 						            </Border>
 						            <ControlTemplate.Triggers>
 						                <Trigger Property="IsSelected" Value="True"/>
@@ -60,8 +60,6 @@
 						</Setter>
 					</Style>
 				</TabControl.Resources>
-				<TabItem Header="Сегодня" Content="sdfsdf"/>
-				<TabItem Header="Вчера" Content="fffddfd"/>
 			</TabControl>
 
         </Grid>

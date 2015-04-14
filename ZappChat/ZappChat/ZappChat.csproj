@@ -54,11 +54,18 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Controls\QueryControl.xaml.cs">
+      <DependentUpon>QueryControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Core\Dialogue.cs" />
     <Compile Include="Core\Message.cs" />
     <Compile Include="ServerEmulation.xaml.cs">
       <DependentUpon>ServerEmulation.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\QueryControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -194,11 +201,23 @@
     </BlendEmbeddedFont>
   </ItemGroup>
   <ItemGroup>
+    <BlendEmbeddedFont Include="Fonts\AmN34IOv.ttf">
+      <IsSystemFont>True</IsSystemFont>
+      <All>True</All>
+      <AutoFill>True</AutoFill>
+      <Uppercase>True</Uppercase>
+      <Lowercase>True</Lowercase>
+      <Numbers>True</Numbers>
+      <Punctuation>True</Punctuation>
+    </BlendEmbeddedFont>
     <Resource Include="Images\FileButton.png" />
     <Resource Include="Images\SettingsButton.png" />
     <Resource Include="Images\TimerImage.png" />
     <Resource Include="Images\TrashcanImage.png" />
     <Resource Include="Images\TrashcanImageBlue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Tick.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Expression\Blend\.NETFramework\v4.5\Microsoft.Expression.Blend.WPF.targets" />

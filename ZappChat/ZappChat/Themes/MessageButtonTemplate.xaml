@@ -73,7 +73,7 @@
 							</Border.Background>
 						</Border>
 						<Border x:Name="border2" Grid.Column="1" BorderThickness="0,2,2,2" CornerRadius="0,15,15,0" BorderBrush="#FF64CEEE" Background="White" />
-						<TextBox x:Name="Counter" Text="{TemplateBinding MessagesCount}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" FontFamily="Arial" FontSize="14.667" FontWeight="Bold" Foreground="#FF1FB6E4" Margin="1,0"/>
+						<TextBox x:Name="Counter" Text="{TemplateBinding MessagesCount}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="0" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" FontWeight="Bold" Foreground="#FF1FB6E4" Margin="1,0"/>
 						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Width="Auto" Margin="15,0"/>
 					</Grid>
 					<ControlTemplate.Triggers>
