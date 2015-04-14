@@ -19,6 +19,7 @@
 				<ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/MenuButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/TabControlZappChatTemplate.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

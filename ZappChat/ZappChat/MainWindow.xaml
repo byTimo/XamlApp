@@ -36,13 +36,35 @@
 						<controls:MessageButton x:Name="messageButton" Content="Сообщения" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" Foreground="White" FontWeight="Bold" Margin="15,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="37" Cursor="Hand" />
 					</StackPanel>
                 </controls:BlueTopMenu>
-
             </Grid>
 			<Button x:Name="CloseButton" HorizontalAlignment="Right" Height="30" Margin="0,12.5,12.5,0" Style="{DynamicResource ExitButton}" VerticalAlignment="Top" Width="30" Grid.Column="1" Click="CloseButton_Click" Cursor=""/>
 			<Button x:Name="MinimazeButton" HorizontalAlignment="Right" Height="30" Style="{DynamicResource MinimazeButton}" VerticalAlignment="Top" Width="30" Margin="0,12.5,47.5,0" Grid.Column="1" Click="HideButton_Click_1"/>
 			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
+			
+			<!--Left part of window-->
+			<TabControl Grid.Column="1" Margin="40,60,10,0" Style="{DynamicResource TabControlZappChat}">
+				<TabControl.Resources>
+					<Style TargetType="TabItem">
+						<Setter Property="Template">
+							<Setter.Value>
+						        <ControlTemplate TargetType="TabItem">
+						            <Border x:Name="Panel" BorderBrush="#FFA4A4A4" BorderThickness="1" CornerRadius="10" Padding="10,5">
+						            	<TextBlock Text="{TemplateBinding Header}" Foreground="#FFA49C9C" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" FontWeight="Bold"/>
+						            </Border>
+						            <ControlTemplate.Triggers>
+						                <Trigger Property="IsSelected" Value="True"/>
+						                <Trigger Property="IsSelected" Value="False"/>
+						            </ControlTemplate.Triggers>
+						        </ControlTemplate>
+						    </Setter.Value>
+						</Setter>
+					</Style>
+				</TabControl.Resources>
+				<TabItem Header="Сегодня" Content="sdfsdf"/>
+				<TabItem Header="Вчера" Content="fffddfd"/>
+			</TabControl>
+
         </Grid>
-		
 	</Border>
 
 </Window>
