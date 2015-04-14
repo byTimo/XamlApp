@@ -5,11 +5,12 @@
 	StartupUri="MainWindow.xaml">
 	<Application.Resources>
 		<ResourceDictionary Source="Themes\BlueTopMenuTemplate.xaml">
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="Themes/GreyButtonTemplate.xaml"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/GreyButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
+                <ResourceDictionary Source="/Themes/ChatTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
 	</Application.Resources>
 </Application>

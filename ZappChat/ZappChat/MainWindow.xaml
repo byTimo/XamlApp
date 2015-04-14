@@ -42,25 +42,6 @@
 			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
 			
 			<!--Left part of window-->
-			<TabControl Grid.Column="1" Margin="40,60,10,0" Style="{DynamicResource TabControlZappChat}">
-				<TabControl.Resources>
-					<Style TargetType="TabItem">
-						<Setter Property="Template">
-							<Setter.Value>
-						        <ControlTemplate TargetType="TabItem">
-						            <Border x:Name="Panel" BorderBrush="#FFA4A4A4" BorderThickness="1" CornerRadius="10" Padding="10,5">
-						            	<TextBlock Text="{TemplateBinding Header}" Foreground="#FFA49C9C" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" FontWeight="Bold"/>
-						            </Border>
-						            <ControlTemplate.Triggers>
-						                <Trigger Property="IsSelected" Value="True"/>
-						                <Trigger Property="IsSelected" Value="False"/>
-						            </ControlTemplate.Triggers>
-						        </ControlTemplate>
-						    </Setter.Value>
-						</Setter>
-					</Style>
-				</TabControl.Resources>
-			</TabControl>
 
         </Grid>
 	</Border>

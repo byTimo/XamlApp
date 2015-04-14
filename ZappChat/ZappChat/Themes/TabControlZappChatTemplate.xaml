@@ -33,5 +33,20 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style TargetType="TabItem">
+		<Setter Property="Template">
+			<Setter.Value>
+		        <ControlTemplate TargetType="TabItem">
+		            <Border x:Name="Panel" BorderBrush="#FFA4A4A4" BorderThickness="1" CornerRadius="10" Padding="10,5">
+		            	<TextBlock Text="{TemplateBinding Header}" Foreground="#FFA49C9C" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" FontWeight="Bold"/>
+		            </Border>
+		            <ControlTemplate.Triggers>
+		                <Trigger Property="IsSelected" Value="True"/>
+		                <Trigger Property="IsSelected" Value="False"/>
+		            </ControlTemplate.Triggers>
+		        </ControlTemplate>
+		    </Setter.Value>
+		</Setter>
+	</Style>
 	<!-- Здесь необходимо определить записи словаря ресурсов. -->
 </ResourceDictionary>

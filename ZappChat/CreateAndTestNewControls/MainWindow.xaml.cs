@@ -24,10 +24,5 @@ namespace CreateAndTestNewControls
         {
             InitializeComponent();
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            TestFlip.IsFliped = !TestFlip.IsFliped;
-        }
     }
 }
