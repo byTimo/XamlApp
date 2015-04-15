@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="BlueTopMenu.cs" />
     <Compile Include="Chat.cs" />
+    <Compile Include="CornerRadiusButton.cs" />
     <Compile Include="FlipPanel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -98,6 +99,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\ChatTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\CornerRadiusButtonTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

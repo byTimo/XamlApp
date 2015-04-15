@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/ChatTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/CornerRadiusButtonTemplate.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 	</Application.Resources>

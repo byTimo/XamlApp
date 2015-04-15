@@ -1,43 +1,43 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:CreateAndTestNewControls">
-    <Style TargetType="{x:Type local:Chat}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:Chat}">
-                	<Grid Background="{TemplateBinding Background}" Margin="30,0,0,0">
-                		<Grid.RowDefinitions>
-                			<RowDefinition Height="1*"/>
-							<RowDefinition Height="1*"/>
-							<RowDefinition Height="1*"/>
+                    xmlns:local="clr-namespace:CreateAndTestNewControls" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+	<Style TargetType="{x:Type local:Chat}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type local:Chat}">
+					<Grid Background="{TemplateBinding Background}" Margin="30,0,0,0">
+						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="1*"/>
-							<RowDefinition Height="1*"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
-                		<Button Grid.Row="0" Content="Button" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Center" Width="75"/>
-						<TextBlock Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="37.333" Foreground="#FF2FB6E5" Margin="30,0,0,0" VerticalAlignment="Center"/>
+						<Button Grid.Row="0" Content="Button" HorizontalAlignment="Left" Margin="30,15,0,15" VerticalAlignment="Top" Width="75"/>
+						<TextBlock Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="37.333" Foreground="#FF2FB6E5" Margin="30,15,5,15" VerticalAlignment="Top"/>
 						<Grid Grid.Row="2" Margin="30,0,0,0">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="13*"/>
 								<ColumnDefinition Width="9*"/>
 							</Grid.ColumnDefinitions>
-							<Border Grid.Column="0" Margin="0,10,5,10" CornerRadius="10" BorderBrush="#FFE2E2E3" BorderThickness="2" Padding="0" Background="White">
+							<Border Grid.Column="0" Margin="0,10,5,20" CornerRadius="10" BorderBrush="#FFE2E2E3" BorderThickness="2" Padding="0,10" Background="White">
 								<TextBlock Text="{TemplateBinding Car}" VerticalAlignment="Center" FontFamily="Arial" FontSize="21.333" Margin="15,0" Foreground="#FFC9C9CA"/>
 							</Border>
-							<Border Grid.Column="1" Margin="0,10,5,10" CornerRadius="10" BorderBrush="#FFE2E2E3" BorderThickness="2" Padding="0,0,15,0" Background="White">
-								<TextBlock Text="{TemplateBinding Vin}" VerticalAlignment="Center" FontFamily="Arial" FontSize="21.333" Margin="15,0,0,0" Foreground="#FFC9C9CA"/>
+							<Border Grid.Column="1" Margin="0,10,5,20" CornerRadius="10" BorderBrush="#FFE2E2E3" BorderThickness="2" Padding="0,10" Background="White">
+								<TextBlock Text="{TemplateBinding Vin}" VerticalAlignment="Center" FontFamily="Arial" FontSize="21.333" Margin="15,0" Foreground="#FFC9C9CA"/>
 							</Border>
 						</Grid>
 						<Rectangle Grid.Row="3" Height="200" Fill="White"/>
-						<Border Grid.Row="4" Margin="30,5,5,5" CornerRadius="10" BorderThickness="2" Background="White" BorderBrush="#FFC4E1EA">
+						<Border Grid.Row="4" Margin="30,15,5,5" CornerRadius="10" BorderThickness="2" Background="White" BorderBrush="#FFC4E1EA" Padding="0,20,0,10">
 							<TextBox Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF2FB6E5" FontFamily="Arial" VerticalAlignment="Center" FontSize="18.667" Margin="15,0" Style="{DynamicResource TextBoxStyle}"/>
 						</Border>
-						<Button Content="Отправить" HorizontalAlignment="Left" Margin="30,5,0,5" Grid.Row="5" VerticalAlignment="Center" Width="75" BorderThickness="1"/>
+						<local:CornerRadiusButton Grid.Row="5" Content="Отправить" CornerRadius="10" FontFamily="Arial" FontSize="17.333" Margin="30,10,0,15" Background="#FFB8A3A3" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="#FF4E6652" BorderThickness="1" Height="Auto" Padding="10,5" />
 					</Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 	<Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
 		<Setter Property="Template">
 			<Setter.Value>

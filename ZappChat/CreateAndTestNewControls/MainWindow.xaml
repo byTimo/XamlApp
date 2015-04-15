@@ -5,7 +5,7 @@
         xmlns:local="clr-namespace:CreateAndTestNewControls"
         Title="MainWindow" Height="600" Width="800" Background="#FFC5B8B8">
     <Grid>
-        <local:Chat Margin="0,0,5,0" Background="#FFf9fafb" DialogueTitle="YGDSGsfsfssdfsfssfsdf"/>
+        <local:Chat Margin="0,0,5,0" Background="#FFf9fafb" DialogueTitle="Левое крыло на камри" Height="571"/>
     </Grid>
 
 </Window>
