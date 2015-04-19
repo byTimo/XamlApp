@@ -54,6 +54,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Controls\ListMessages.cs" />
     <Compile Include="Controls\QueryControl.xaml.cs">
       <DependentUpon>QueryControl.xaml</DependentUpon>
     </Compile>
@@ -76,7 +77,7 @@
     </Compile>
     <Compile Include="Controls\BlueTopMenu.cs" />
     <Compile Include="Controls\FlipPanel.cs" />
-    <Compile Include="Controls\MessageButton.cs" />
+    <Compile Include="Controls\SliderButton.cs" />
     <Compile Include="Controls\StatusButton.cs" />
     <Compile Include="Core\Delegates.cs" />
     <Compile Include="Core\Enums.cs" />
@@ -87,6 +88,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Controls\MessageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ListMessagesTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -111,17 +116,13 @@
       <SubType>Designer</SubType>
       <ContainsDesignTimeResources>true</ContainsDesignTimeResources>
     </Page>
-    <Page Include="Themes\MessageButtonTemplate.xaml">
+    <Page Include="Themes\SliderButtonTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\BlueTopMenuTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\GreyButtonTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>

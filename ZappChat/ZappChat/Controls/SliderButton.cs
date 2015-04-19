@@ -1,25 +1,28 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace ZappChat.Controls
 {
     [TemplateVisualState(Name = "NoUnreadMessages", GroupName = "MessageView"),
-    TemplateVisualState(Name = "UnreadMessages", GroupName = "MessageView")]
-    public class MessageButton : Button
+     TemplateVisualState(Name = "UnreadMessages", GroupName = "MessageView")]
+    public class SliderButton : RadioButton
     {
         public static readonly DependencyProperty MessagesCountProperty =
-            DependencyProperty.Register("MessagesCount", typeof (string), typeof (MessageButton),
-            new FrameworkPropertyMetadata("0"));
+            DependencyProperty.Register("MessagesCount", typeof (string), typeof (SliderButton),
+                new FrameworkPropertyMetadata("0"));
 
         public int MessagesCount
         {
-            get { return int.Parse(GetValue(MessagesCountProperty) as string); }
+            get { return ParseProperatyValue(GetValue(MessagesCountProperty) as string); }
             set { SetValue(MessagesCountProperty, SetMessagesCount(value)); }
         }
-        static MessageButton()
+
+        static SliderButton()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(MessageButton), new FrameworkPropertyMetadata(typeof(MessageButton)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof (SliderButton),
+                new FrameworkPropertyMetadata(typeof (SliderButton)));
         }
 
         public override void OnApplyTemplate()
@@ -35,7 +38,7 @@ namespace ZappChat.Controls
                 VisualStateManager.GoToState(this, "NoUnreadMessages", true);
                 return "";
             }
-            if(number >= 100)
+            if (number >= 100)
             {
                 VisualStateManager.GoToState(this, "UnreadMessages", true);
                 //TODO <- Раньше здесь было 99+, но для этого нужно менять get у MessageCount
@@ -43,6 +46,11 @@ namespace ZappChat.Controls
             }
             VisualStateManager.GoToState(this, "UnreadMessages", true);
             return number.ToString(CultureInfo.InvariantCulture);
+        }
+
+        private static int ParseProperatyValue(string value)
+        {
+            return value == "" ? 0 : int.Parse(value);
         }
     }
 }

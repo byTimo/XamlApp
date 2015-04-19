@@ -10,9 +10,16 @@
 
         public static event MessagingEventHandler TakeMessage;
 
-        public static void TakeMessageEvent(object sender, Message message)
+        public static void TakeMessageEvent(object sender,int dialogueId, Message message)
         {
-            TakeMessage(sender, new MessagingEventArgs(message));
+            TakeMessage(sender, new MessagingEventArgs(dialogueId, message));
+        }
+
+        public static event SentQueryEventHandler SentQuery;
+
+        public static void SentQueryEvent(object sender, int dialogueId, string query)
+        {
+            SentQuery(sender, new SentQueryEventArgs(dialogueId, query));
         }
         //TODO SendMessageEvent and SendMessageEventHadler
 

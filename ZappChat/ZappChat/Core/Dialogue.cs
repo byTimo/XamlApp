@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,21 +10,64 @@ namespace ZappChat.Core
 {
     public class Dialogue : IEnumerable
     {
+        public int Id { get; private set; }
+        public bool ContainQuery { get; private set; }
+
+        private string quary;
+        public string Query
+        {
+            get { return quary; }
+            set
+            {
+                quary = value;
+                ContainQuery = true;
+            }
+        }
+        public DateTime LastDateTime { get; private set; }
+        public string LastMessageDate { get; private set; }
         public List<Message> Messages { get; private set; }
         public string Interlocutor { get; private set; }
 
-        public Dialogue(string interlocutor, List<Message> messages)
+        private Dialogue(int id, string interlocutor, DateTime messageDate)
         {
+            Id = id;
             Interlocutor = interlocutor;
+            LastDateTime = messageDate;
+            LastMessageDate = messageDate.ToString("M", new CultureInfo("ru-RU"));
+        }
+
+        public Dialogue(int id, string interlocutor, List<Message> messages)
+            : this(id, interlocutor, messages[messages.Count - 1].DateTime)
+        {
             Messages = messages;
         }
 
+        public Dialogue(int id, string interlocutor, DateTime messageDate, string quary)
+            : this(id, interlocutor, messageDate)
+        {
+            Query = quary;
+        }
+
+        public Dialogue(int id, string interlocutor, string quary, List<Message> messages)
+            : this(id, interlocutor, messages)
+        {
+            Query = quary;
+        }
+
+
         public void AddMessage(Message newMessage)
         {
+            LastDateTime = newMessage.DateTime;
+            LastMessageDate = newMessage.Date;
             Messages.Add(newMessage);
         }
 
-        public Message GetLatMessage()
+        public string GetTitleMessage()
+        {
+            return ContainQuery ? Query : GetLastMessage().Text;
+        }
+
+        public Message GetLastMessage()
         {
             return Messages[Messages.Count - 1];
         }

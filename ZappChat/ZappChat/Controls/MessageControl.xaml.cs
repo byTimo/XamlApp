@@ -45,8 +45,8 @@ namespace ZappChat.Controls
 
 	    public void UpdateControl()
 	    {
-            MessageText = Dialogue.GetLatMessage().Text;
-            MessageDate = Dialogue.GetLatMessage().Date;
+	        MessageText = Dialogue.GetTitleMessage();
+	        MessageDate = Dialogue.LastMessageDate;
 	    }
         private void UserControl_MouseEnter(object sender, MouseEventArgs e)
         {

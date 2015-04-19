@@ -9,24 +9,26 @@ namespace ZappChat.Core
 {
     public class Message
     {
+        public int Id { get; private set; }
+        public MessageStatus Status { get; set; }
         public string Author { get; private set; }
+
+        public DateTime DateTime { get; private set; }
+
+        //TODO Использовать, как строковое представление даты, когда появиться реализация сообщений
         public string Date { get; private set; }
         public string Text { get; private set; }
 
-        public Message(string author, string text, DateTime date )
+        public Message(int id, string author, string text, DateTime date, MessageStatus messageStatus)
         {
+            Id = id;
             Author = author;
             Text = text;
+            DateTime = date;
             Date = date.ToString("M", new CultureInfo("ru-RU"));
+            Status = messageStatus;
         }
-
-        public Message(string author, string text, string date)
-        {
-            Author = author;
-            Text = text;
-            Date = date;
-        }
-        public Message(string author, string text) : this(author, text, DateTime.Now) { }
+        public Message(int id, string author, string text, MessageStatus messageStatus) : this(id, author, text, DateTime.Now, messageStatus) { }
 
         public override bool Equals(object obj)
         {

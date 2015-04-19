@@ -14,11 +14,25 @@ namespace ZappChat.Core
 
     public class MessagingEventArgs : EventArgs
     {
+        public readonly int DialogueId;
         public readonly Message Message;
 
-        public MessagingEventArgs(Message message)
+        public MessagingEventArgs(int id, Message message)
         {
+            DialogueId = id;
             Message = message;
+        }
+    }
+
+    public class SentQueryEventArgs : EventArgs
+    {
+        public readonly int DialogueId;
+        public readonly string Query;
+
+        public SentQueryEventArgs(int id, string query)
+        {
+            DialogueId = id;
+            Query = query;
         }
     }
 

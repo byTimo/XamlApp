@@ -20,6 +20,7 @@ namespace ZappChat
     /// </summary>
     public partial class ServerEmulation : Window
     {
+        private int messageId = 1;
         public ServerEmulation()
         {
             InitializeComponent();
@@ -37,8 +38,16 @@ namespace ZappChat
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            var m = new Message(author.Text, message.Text);
-            AppEventManager.TakeMessageEvent(this, m);
+            if (message.Text != "" && author.Text != "")
+            {
+                var Message = new Message(messageId, author.Text, message.Text, MessageStatus.Sent);
+                AppEventManager.TakeMessageEvent(this, int.Parse(id.Text), Message);
+                messageId++;
+            }
+           /* if (quary.Text != "")
+            {
+                AppEventManager.SentQueryEvent(this, int.Parse(id.Text), quary.Text);
+            }*/
         }
     }
 }

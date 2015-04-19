@@ -9,17 +9,17 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Themes/ExitButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
+				<ResourceDictionary Source="/Themes/SliderButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/MyQuariesButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/SettingsButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/StatusButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/MinimazeButtonTemplate.xaml"/>
 				<ResourceDictionary Source="/Themes/GreyButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/BlueTopMenuTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/MessageButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/MenuButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/BlueTopMenuTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/MenuButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/TabControlZappChatTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/ListMessagesTemplate.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
