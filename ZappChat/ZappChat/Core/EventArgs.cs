@@ -51,4 +51,14 @@ namespace ZappChat.Core
             IsConfirmed = isConfirmed;
         }
     }
+
+    public class DialogueOpenEventArgs : EventArgs
+    {
+        public readonly Dialogue OpenedDialogue;
+
+        public DialogueOpenEventArgs(Dialogue dialogue)
+        {
+            OpenedDialogue = dialogue;
+        }
+    }
 }

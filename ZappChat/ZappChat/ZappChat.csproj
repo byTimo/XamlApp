@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Controls\Chat.cs" />
+    <Compile Include="Controls\ChatMessage.cs" />
     <Compile Include="Controls\CornerRadiusButton.cs" />
     <Compile Include="Controls\ListMessages.cs" />
     <Compile Include="Controls\QueryControl.xaml.cs">
@@ -100,6 +101,10 @@
     <Page Include="Themes\CornerRadiusButtonTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ChatMessageTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\ListMessagesTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>

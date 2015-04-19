@@ -7,7 +7,7 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.MessageControl"
 	x:Name="messageControl"
-	d:DesignWidth="574" d:DesignHeight="109" Cursor="Hand" Width="384" Height="70" Background="White" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
+	d:DesignHeight="109" Cursor="Hand" Width="384" Height="70" Background="White" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
 	<UserControl.Resources>
 		<Storyboard x:Key="TimerOpacityChange">
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Timer">

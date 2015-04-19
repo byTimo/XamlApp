@@ -28,6 +28,20 @@ namespace ZappChat
             AppEventManager.Connection += (s, e) => { statusButton.Status = e.ConnectionStatus; };
             AppEventManager.DeleteConfirmationDialogue += (s, e) => { ControlBlocker.Visibility = Visibility.Visible; };
             AppEventManager.DeleteDialogue += (s, e) => { ControlBlocker.Visibility = Visibility.Collapsed; };
+            AppEventManager.TakeMessage += (s, e) =>
+            {
+                if (chat.DialogueId == e.DialogueId)
+                {
+                    chat.ChatMessages.Add(new ChatMessage(e.Message));
+                    chat.DialogueTitle = string.IsNullOrEmpty(chat.Query) ? e.Message.Text : chat.Query;
+                }
+            };
+            AppEventManager.OpenDialogue += (s, e) =>
+            {
+                tabs.Visibility = Visibility.Collapsed;
+                chat.Visibility = Visibility.Visible;
+                chat.OpenDialogue(s,e);
+            };
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -55,5 +69,10 @@ namespace ZappChat
             base.OnMouseLeftButtonDown(e);
             DragMove();
         }
+
+        private void SettingButton_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
     }
 }

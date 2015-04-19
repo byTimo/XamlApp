@@ -28,7 +28,7 @@
 								<TextBlock Text="{TemplateBinding Vin}" VerticalAlignment="Center" FontFamily="Arial" FontSize="18.667" Margin="0" Foreground="#FFC9C9CA"/>
 							</Border>
 						</Grid>
-						<ContentPresenter Grid.Row="3"/>
+						<ListBox x:Name="MessageChat"  Grid.Row="3" BorderThickness="0" Background="White" BorderBrush="{x:Null}"/>
 						<Border Grid.Row="4" Margin="30,15,12,10" CornerRadius="10" BorderThickness="2" Background="White" BorderBrush="#FFC4E1EA" Padding="15,10,15,5">
 							<TextBox Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF2FB6E5" FontFamily="Arial" VerticalAlignment="Center" FontSize="18.667" Style="{DynamicResource TextBoxStyle}" UndoLimit="0" />
 						</Border>

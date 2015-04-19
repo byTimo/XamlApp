@@ -22,6 +22,7 @@
                 <ResourceDictionary Source="/Themes/ListMessagesTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/ChatTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/CornerRadiusButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/ChatMessageTemplate.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

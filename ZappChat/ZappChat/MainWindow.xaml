@@ -26,7 +26,7 @@
                 		<ColumnDefinition Width="10*"/>
                 		<ColumnDefinition Width="5.5*"/>
                 	</Grid.ColumnDefinitions>
-                	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" />
+                	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" Click="SettingButton_Click" />
 					<controls:StatusButton x:Name="statusButton" Grid.Column="1" Style="{DynamicResource StatusButtonTemplate}" />
                 </Grid>
                 <controls:BlueTopMenu Grid.Row="0" ClipToBounds="False" x:Name="BlueMenu" Margin="0" VerticalAlignment="Top" >
@@ -47,14 +47,8 @@
 			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
 			
 			<!--Left part of window-->
-			<controls:FlipPanel Grid.Column="1" IsFliped="True" Margin="20,60,0,0">
-				<controls:FlipPanel.FrontContent>
-					<controls:Chat Background="#FFF9FAFB" Margin="0,0,10,0" />
-				</controls:FlipPanel.FrontContent>
-				<controls:FlipPanel.BackContent>
-					<ListBox/>
-				</controls:FlipPanel.BackContent>
-			</controls:FlipPanel>
+			<TabControl x:Name="tabs" Style="{DynamicResource TabControlZappChat}" Grid.Column="1" BorderThickness="0" BorderBrush="{x:Null}" Margin="28,55,12,0" />
+			<controls:Chat x:Name="chat" Visibility="Collapsed" Grid.Column="1" Background="White" Margin="30,55,10,0"/>
         </Grid>
 	</Border>
 

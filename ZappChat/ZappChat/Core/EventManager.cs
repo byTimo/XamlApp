@@ -38,5 +38,12 @@ namespace ZappChat.Core
         {
             DeleteDialogue(sender, new DeletingEventArgs(dialogue, isConfirmed));
         }
+
+        public static event OpenDialogueEventHandler OpenDialogue;
+
+        public static void OpenDialogueEvent(object sender, Dialogue dialogue)
+        {
+            OpenDialogue(sender, new DialogueOpenEventArgs(dialogue));
+        }
     }
 }

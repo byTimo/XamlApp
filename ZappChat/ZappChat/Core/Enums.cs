@@ -13,4 +13,11 @@
         Read,
         Error
     }
+
+    public enum MessageType
+    {
+        User,
+        Interlocutor,
+        System
+    }
 }

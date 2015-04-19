@@ -33,6 +33,7 @@ namespace ZappChat.Controls
             base.OnApplyTemplate();
             DialogueWithQuery = new ObservableCollection<MessageControl>();
             DialogueWithoutQuery = new ObservableCollection<MessageControl>();
+            SelectionChanged += OpenDialogue;
             AppEventManager.TakeMessage += AddNewMessage;
             AppEventManager.DeleteDialogue += DelMessage;
             AppEventManager.TakeQuery += TakeQuery;
@@ -93,6 +94,13 @@ namespace ZappChat.Controls
             {
                 DialogueWithQuery.Insert(0, new MessageControl(new Dialogue(e.DialogueId,e.Interlocutor,e.Query, e.Time)));
             }
+        }
+
+        public void OpenDialogue(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedDialogue = (SelectedItem as MessageControl);
+            if(selectedDialogue == null) return;
+            AppEventManager.OpenDialogueEvent(selectedDialogue, selectedDialogue.Dialogue);
         }
         public void SelectWithoutQuery()
         {

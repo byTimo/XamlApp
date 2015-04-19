@@ -8,4 +8,6 @@
 
     public delegate void DeletingDialogueEventHandler(object sender, DeletingEventArgs e);
 
+    public delegate void OpenDialogueEventHandler(object sender, DialogueOpenEventArgs e);
+
 }

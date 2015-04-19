@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using ZappChat.Core;
 
 namespace ZappChat.Controls
 {
@@ -48,6 +49,10 @@ namespace ZappChat.Controls
             VisualStateManager.GoToState(this, "FrontContent", false);
         }
 
+        public void Flip()
+        {
+            IsFliped = !IsFliped;
+        }
         private void ChangeVisualState()
         {
             VisualStateManager.GoToState(this, IsFliped ? "BackView" : "FrontView", true);
