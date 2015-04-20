@@ -1,4 +1,6 @@
-﻿namespace ZappChat.Core
+﻿using System;
+
+namespace ZappChat.Core
 {
     static class AppEventManager
     {
@@ -15,11 +17,11 @@
             TakeMessage(sender, new MessagingEventArgs(dialogueId, message));
         }
 
-        public static event SentQueryEventHandler SentQuery;
+        public static event TakeQueryEventHandler TakeQuery;
 
-        public static void SentQueryEvent(object sender, int dialogueId, string query)
+        public static void TakeQueryEvent(object sender, int dialogueId, string interlocutor, string query, DateTime time)
         {
-            SentQuery(sender, new SentQueryEventArgs(dialogueId, query));
+            TakeQuery(sender, new TakeQueryEventArgs(dialogueId, interlocutor, query, time));
         }
         //TODO SendMessageEvent and SendMessageEventHadler
 

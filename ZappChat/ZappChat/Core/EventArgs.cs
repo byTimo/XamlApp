@@ -24,15 +24,19 @@ namespace ZappChat.Core
         }
     }
 
-    public class SentQueryEventArgs : EventArgs
+    public class TakeQueryEventArgs : EventArgs
     {
         public readonly int DialogueId;
+        public readonly string Interlocutor;
         public readonly string Query;
+        public readonly DateTime Time;
 
-        public SentQueryEventArgs(int id, string query)
+        public TakeQueryEventArgs(int id, string interlocutor, string query, DateTime time)
         {
             DialogueId = id;
+            Interlocutor = interlocutor;
             Query = query;
+            Time = time;
         }
     }
 

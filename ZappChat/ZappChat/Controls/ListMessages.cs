@@ -28,12 +28,14 @@ namespace ZappChat.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ListMessages), new FrameworkPropertyMetadata(typeof(ListMessages)));
         }
 
-        public ListMessages()
+        public override void OnApplyTemplate()
         {
+            base.OnApplyTemplate();
             DialogueWithQuery = new ObservableCollection<MessageControl>();
             DialogueWithoutQuery = new ObservableCollection<MessageControl>();
             AppEventManager.TakeMessage += AddNewMessage;
             AppEventManager.DeleteDialogue += DelMessage;
+            AppEventManager.TakeQuery += TakeQuery;
         }
 
         public void AddNewMessage(object sender, MessagingEventArgs e)
@@ -74,6 +76,24 @@ namespace ZappChat.Controls
             }
         }
 
+        public void TakeQuery(object sender, TakeQueryEventArgs e)
+        {
+            var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId);
+            if (thisDialogue != null)
+            {
+                thisDialogue.Dialogue.Query = e.Query;
+                thisDialogue.UpdateControl();
+                var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
+                DialogueWithoutQuery.Move(indexThisDialogue, 0);
+                // Добавление диалога с запросом и сообщениями в список диалогов с запросами - нужно ли так делать?
+                DialogueWithQuery.Insert(0,thisDialogue);
+            }
+            thisDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId);
+            if (thisDialogue == null)
+            {
+                DialogueWithQuery.Insert(0, new MessageControl(new Dialogue(e.DialogueId,e.Interlocutor,e.Query, e.Time)));
+            }
+        }
         public void SelectWithoutQuery()
         {
             ItemsSource = DialogueWithoutQuery;

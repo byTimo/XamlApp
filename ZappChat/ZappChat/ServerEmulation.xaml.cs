@@ -44,10 +44,10 @@ namespace ZappChat
                 AppEventManager.TakeMessageEvent(this, int.Parse(id.Text), Message);
                 messageId++;
             }
-           /* if (quary.Text != "")
+            if (quary.Text != "" && author.Text != "")
             {
-                AppEventManager.SentQueryEvent(this, int.Parse(id.Text), quary.Text);
-            }*/
+                AppEventManager.TakeQueryEvent(this, int.Parse(id.Text), author.Text, quary.Text, DateTime.Now);
+            }
         }
     }
 }

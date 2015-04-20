@@ -41,17 +41,11 @@ namespace ZappChat.Core
         {
             Messages = messages;
         }
-
-        public Dialogue(int id, string interlocutor, DateTime messageDate, string quary)
-            : this(id, interlocutor, messageDate)
+        public Dialogue(int id, string interlocutor, string quary, DateTime time)
+            : this(id, interlocutor, time)
         {
             Query = quary;
-        }
-
-        public Dialogue(int id, string interlocutor, string quary, List<Message> messages)
-            : this(id, interlocutor, messages)
-        {
-            Query = quary;
+            Messages = new List<Message>();
         }
 
 

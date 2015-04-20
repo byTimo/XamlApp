@@ -4,7 +4,7 @@
 
     public delegate void MessagingEventHandler(object sender, MessagingEventArgs e);
 
-    public delegate void SentQueryEventHandler(object sender, SentQueryEventArgs e);
+    public delegate void TakeQueryEventHandler(object sender, TakeQueryEventArgs e);
 
     public delegate void DeletingDialogueEventHandler(object sender, DeletingEventArgs e);
 
