@@ -54,6 +54,8 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Controls\Chat.cs" />
+    <Compile Include="Controls\CornerRadiusButton.cs" />
     <Compile Include="Controls\ListMessages.cs" />
     <Compile Include="Controls\QueryControl.xaml.cs">
       <DependentUpon>QueryControl.xaml</DependentUpon>
@@ -88,6 +90,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Controls\MessageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\ChatTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\CornerRadiusButtonTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

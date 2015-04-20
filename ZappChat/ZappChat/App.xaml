@@ -20,6 +20,8 @@
                 <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/TabControlZappChatTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/ListMessagesTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/ChatTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/CornerRadiusButtonTemplate.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

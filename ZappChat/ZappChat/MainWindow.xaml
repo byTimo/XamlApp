@@ -6,9 +6,9 @@
     mc:Ignorable="d" x:Class="ZappChat.MainWindow"
         Title="MainWindow" WindowStyle="None"
 		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="687" Width="1024"
-		ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-	<Border x:Name="border" CornerRadius="10" Background="#FFCDCBCB">
-		<Grid x:Name="mainStack" >
+		ResizeMode="CanResize" WindowStartupLocation="CenterScreen">
+	<Border x:Name="border" CornerRadius="10" Background="#FFEDF0F1">
+		<Grid x:Name="mainGrid" >
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="197*"/>
 				<ColumnDefinition Width="315*"/>
@@ -47,7 +47,14 @@
 			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
 			
 			<!--Left part of window-->
-
+			<controls:FlipPanel Grid.Column="1" IsFliped="True" Margin="20,60,0,0">
+				<controls:FlipPanel.FrontContent>
+					<controls:Chat Background="#FFF9FAFB" Margin="0,0,10,0" />
+				</controls:FlipPanel.FrontContent>
+				<controls:FlipPanel.BackContent>
+					<ListBox/>
+				</controls:FlipPanel.BackContent>
+			</controls:FlipPanel>
         </Grid>
 	</Border>
 

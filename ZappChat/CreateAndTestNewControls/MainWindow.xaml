@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:ZappChat.Controls"
         xmlns:local="clr-namespace:CreateAndTestNewControls"
-        Title="MainWindow" Height="600" Width="800" Background="#FFC5B8B8">
+        Title="MainWindow" Height="627" Width="610" Background="#FFC5B8B8">
     <Grid>
-        <local:Chat Margin="0,0,5,0" Background="#FFf9fafb" DialogueTitle="Левое крыло на камри" Height="571"/>
+        <local:Chat Margin="0,0,5,0" Background="#FFF9FAFB" DialogueTitle="Левое крыло на камри"/>
     </Grid>
 
 </Window>

@@ -49,5 +49,11 @@ namespace ZappChat
         {
             Messages.SelectWithoutQuery();
         }
+
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            DragMove();
+        }
     }
 }

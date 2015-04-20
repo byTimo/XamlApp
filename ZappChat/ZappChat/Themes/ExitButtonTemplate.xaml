@@ -25,7 +25,7 @@
 								</Storyboard>
 							</ControlTemplate.Resources>
 							<Grid>
-								<Rectangle x:Name="macket" RadiusY="45" RadiusX="45" Stroke="#FF64CEEE" StrokeThickness="1" Fill="#FFCDCBCB"/>
+								<Rectangle x:Name="macket" RadiusY="45" RadiusX="45" Stroke="#FF64CEEE" StrokeThickness="1" Fill="#FFEEF1F3"/>
 								<Rectangle x:Name="gradMacket" RadiusY="45" RadiusX="45" Stroke="#B24ACEFF" StrokeThickness="1">
 									<Rectangle.Fill>
 										<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
