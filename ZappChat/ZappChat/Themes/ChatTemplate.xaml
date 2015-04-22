@@ -14,7 +14,7 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
-						<local:CornerRadiusButton CornerRadius="5" Grid.Row="0" Content="Назад" HorizontalAlignment="Left" Margin="30,15,0,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="#FFFDFEFE" BorderThickness="0" Padding="5" BorderBrush="{x:Null}" FontSize="13.333" FontFamily="Arial" Foreground="#FFA1A2A2" Cursor="Hand"/>
+						<local:CornerRadiusButton x:Name="Back" CornerRadius="5" Grid.Row="0" Content="Назад" HorizontalAlignment="Left" Margin="30,15,0,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="#FFFDFEFE" BorderThickness="0" Padding="5" BorderBrush="{x:Null}" FontSize="13.333" FontFamily="Arial" Foreground="#FFA1A2A2" Cursor="Hand"/>
 						<TextBlock Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="32" Foreground="#FF2FB6E5" Margin="30,5,5,5" VerticalAlignment="Top"/>
 						<Grid Grid.Row="2" Margin="30,0,0,0">
 							<Grid.ColumnDefinitions>

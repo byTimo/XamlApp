@@ -34,47 +34,45 @@ namespace ZappChat.Controls
             DialogueWithQuery = new ObservableCollection<MessageControl>();
             DialogueWithoutQuery = new ObservableCollection<MessageControl>();
             SelectionChanged += OpenDialogue;
-            AppEventManager.TakeMessage += AddNewMessage;
-            AppEventManager.DeleteDialogue += DelMessage;
-            AppEventManager.TakeQuery += TakeQuery;
+            //AppEventManager.TakeMessage += AddNewMessage;
+            //AppEventManager.DeleteDialogue += DelMessage;
+            //AppEventManager.TakeQuery += TakeQuery;
         }
 
-        public void AddNewMessage(object sender, MessagingEventArgs e)
+        public void AddNewMessageToList(int dialogueId, Message message)
         {
-            var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId);
+            var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
             if (thisDialogue == null)
             {
-                DialogueWithoutQuery.Insert(0, new MessageControl(new Dialogue(e.DialogueId, e.Message.Author, new List<Message> { e.Message })));
+                DialogueWithoutQuery.Insert(0, new MessageControl(new Dialogue(dialogueId, message.Author, new List<Message> { message })));
             }
             else
             {
-                thisDialogue.Dialogue.AddMessage(e.Message);
+                thisDialogue.Dialogue.AddMessage(message);
                 thisDialogue.UpdateControl();
                 var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
                 DialogueWithoutQuery.Move(indexThisDialogue,0);
             }
 
-            thisDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId);
+            thisDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
             if (thisDialogue != null)
             {
-                thisDialogue.Dialogue.AddMessage(e.Message);
+                thisDialogue.Dialogue.AddMessage(message);
                 thisDialogue.UpdateControl();
                 var indexThisDialogue = DialogueWithQuery.IndexOf(thisDialogue);
                 DialogueWithQuery.Move(indexThisDialogue, 0);
             }
         }
 
-        public void DelMessage(object sender, DeletingEventArgs e)
+        public void RemoveDialogueFromLists(int dialogueId)
         {
-            if (e.IsConfirmed)
-            {
-                var delDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id);
-                if (delDialogue != null)
-                    DialogueWithoutQuery.Remove(delDialogue);
-                delDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id);
-                if (delDialogue != null)
-                    DialogueWithQuery.Remove(delDialogue);
-            }
+            var delDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
+            if (delDialogue != null)
+                DialogueWithoutQuery.Remove(delDialogue);
+            delDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
+            if (delDialogue != null)
+                DialogueWithQuery.Remove(delDialogue);
+
         }
 
         public void TakeQuery(object sender, TakeQueryEventArgs e)
@@ -100,8 +98,29 @@ namespace ZappChat.Controls
         {
             var selectedDialogue = (SelectedItem as MessageControl);
             if(selectedDialogue == null) return;
+
             AppEventManager.OpenDialogueEvent(selectedDialogue, selectedDialogue.Dialogue);
+            SelectedIndex = -1;//TODO test
         }
+
+        public void ChangeMessageStatus(Dialogue changedDialogue)
+        {
+            var openedDialogue =
+                DialogueWithoutQuery.FirstOrDefault(control => control.Dialogue.Id == changedDialogue.Id);
+            if (openedDialogue != null)
+                foreach (var message in openedDialogue.Dialogue.Messages)
+                {
+                    message.Status = MessageStatus.Read;
+                }
+            openedDialogue =
+                DialogueWithQuery.FirstOrDefault(control => control.Dialogue.Id == changedDialogue.Id);
+            if (openedDialogue != null)
+                foreach (var message in openedDialogue.Dialogue.Messages)
+                {
+                    message.Status = MessageStatus.Read;
+                }
+        }
+
         public void SelectWithoutQuery()
         {
             ItemsSource = DialogueWithoutQuery;

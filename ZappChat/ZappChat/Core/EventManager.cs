@@ -45,5 +45,12 @@ namespace ZappChat.Core
         {
             OpenDialogue(sender, new DialogueOpenEventArgs(dialogue));
         }
+
+        public static event CloseDialogueEventHandler CloseDialogue;
+
+        public static void CloseDialogueEvent()
+        {
+            CloseDialogue();
+        }
     }
 }

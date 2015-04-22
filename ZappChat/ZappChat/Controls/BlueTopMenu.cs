@@ -33,11 +33,6 @@ namespace ZappChat.Controls
         {
             base.OnApplyTemplate();
             VisualStateManager.GoToState(this, "Normal", false);
-            AppEventManager.DeleteConfirmationDialogue += (s, e) =>
-            {
-                DeleteDialogue = e.DeletedDialogue;
-                SwapState();
-            };
             var yesButton = GetTemplateChild("Yes") as Button;
             yesButton.Click += (s, e) =>
             {
@@ -59,6 +54,12 @@ namespace ZappChat.Controls
         public void SwapState()
         {
             IsDeleteDialog = !IsDeleteDialog;
+        }
+
+        public void DeleteDialgoueQery(Dialogue dialogue)
+        {
+            DeleteDialogue = dialogue;
+            SwapState();
         }
         private void ChangeVisualState()
         {

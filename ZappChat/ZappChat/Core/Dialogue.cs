@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace ZappChat.Core
         public List<Message> Messages { get; private set; }
         public string Interlocutor { get; private set; }
 
+        public Dialogue() { }
         private Dialogue(int id, string interlocutor, DateTime messageDate)
         {
             Id = id;

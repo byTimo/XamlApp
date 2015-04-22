@@ -17,11 +17,11 @@ using ZappChat.Core;
 
 namespace ZappChat.Controls
 {
+    [TemplatePart(Name = "Back", Type = typeof(CornerRadiusButton))]
     public class Chat : Control
     {
-        public int DialogueId { get; private set; }
-        //TODO Пока добавил, потом это нужно переделеать
-        public string Query { get; set; }
+        public Dialogue CurrentDialogue { get; set; }
+
         public static readonly DependencyProperty ChatMessagesProperty = DependencyProperty.Register("ChatMessages",
             typeof (ObservableCollection<ChatMessage>), typeof (Chat),
             new FrameworkPropertyMetadata(new ObservableCollection<ChatMessage>()));
@@ -64,21 +64,47 @@ namespace ZappChat.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Chat), new FrameworkPropertyMetadata(typeof(Chat)));
         }
 
-        public void OpenDialogue(object sender, DialogueOpenEventArgs e)
+        public void OpenDialogue(Dialogue opendedDialogue)
         {
-            DialogueId = e.OpenedDialogue.Id;
-            Query = e.OpenedDialogue.Query;
-            DialogueTitle = e.OpenedDialogue.GetTitleMessage();
+            CurrentDialogue = opendedDialogue;
+            DialogueTitle = CurrentDialogue.GetTitleMessage();
+
+            foreach (var message in CurrentDialogue.Messages)
+            {
+                message.Status = MessageStatus.Read;
+            }
+
             ChatMessages = new ObservableCollection<ChatMessage>();
-            foreach (var message in e.OpenedDialogue)
+            foreach (var message in CurrentDialogue)
             {
                 ChatMessages.Add(new ChatMessage(message as Message));
             }
-            
+
+        }
+
+        public void AddNewMessageToChat(int dialogueId, Message message)
+        {
+            CurrentDialogue.Messages.Add(message);
+
+            DialogueTitle = CurrentDialogue.GetTitleMessage();
+            ChatMessages.Add(new ChatMessage(message));
         }
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+            ChatMessages = new ObservableCollection<ChatMessage>();
+            CurrentDialogue = new Dialogue();
+            var backButton = GetTemplateChild("Back") as CornerRadiusButton;
+            backButton.Click += (s, e) =>
+            {
+                CloseDialogue();
+                AppEventManager.CloseDialogueEvent();
+            };
+        }
+
+        public void CloseDialogue()
+        {
+            CurrentDialogue = new Dialogue();
             ChatMessages = new ObservableCollection<ChatMessage>();
         }
     }

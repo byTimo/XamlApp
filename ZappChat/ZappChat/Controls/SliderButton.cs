@@ -15,7 +15,7 @@ namespace ZappChat.Controls
 
         public int MessagesCount
         {
-            get { return ParseProperatyValue(GetValue(MessagesCountProperty) as string); }
+            get { return ParsePropertyValue(GetValue(MessagesCountProperty) as string); }
             set { SetValue(MessagesCountProperty, SetMessagesCount(value)); }
         }
 
@@ -48,7 +48,7 @@ namespace ZappChat.Controls
             return number.ToString(CultureInfo.InvariantCulture);
         }
 
-        private static int ParseProperatyValue(string value)
+        private static int ParsePropertyValue(string value)
         {
             return value == "" ? 0 : int.Parse(value);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,24 +27,89 @@ namespace ZappChat
         {
             InitializeComponent();
             AppEventManager.Connection += (s, e) => { statusButton.Status = e.ConnectionStatus; };
-            AppEventManager.DeleteConfirmationDialogue += (s, e) => { ControlBlocker.Visibility = Visibility.Visible; };
-            AppEventManager.DeleteDialogue += (s, e) => { ControlBlocker.Visibility = Visibility.Collapsed; };
+
             AppEventManager.TakeMessage += (s, e) =>
             {
-                if (chat.DialogueId == e.DialogueId)
+                var message = e.Message;
+                message.Status = MessageStatus.Delivered;
+                //Реагирование на приход нового сообщения:
+                //Чата
+                if (e.DialogueId == chat.CurrentDialogue.Id)
                 {
-                    chat.ChatMessages.Add(new ChatMessage(e.Message));
-                    chat.DialogueTitle = string.IsNullOrEmpty(chat.Query) ? e.Message.Text : chat.Query;
+                    message.Status = MessageStatus.Read;
+                    chat.AddNewMessageToChat(e.DialogueId, message);
                 }
+                //Кнопки "Сообщения"
+                var haveNotReadMessage = FindNotReadMessageToMessageControls(Dialogues.DialogueWithoutQuery,
+                    e.DialogueId);
+                if (message.Status != MessageStatus.Read && !haveNotReadMessage)
+                    messageButton.MessagesCount++;
+                //Списка диалогов
+                Dialogues.AddNewMessageToList(e.DialogueId,message);
             };
+
+            AppEventManager.DeleteConfirmationDialogue += (s, e) =>
+            {
+                //Реагирование по запросу на удаление:
+                //Блокера:
+                ControlBlocker.Visibility = Visibility.Visible;
+                //Синего меню:
+                BlueMenu.DeleteDialgoueQery(e.DeletedDialogue);
+            };
+            AppEventManager.DeleteDialogue += (s, e) =>
+            {
+                //Реагирование по запросу на удаление:
+                if (e.IsConfirmed)
+                {
+                    //Кнопки сообщения:
+                    if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithoutQuery, e.DeletedDialogue.Id))
+                        messageButton.MessagesCount--;
+                    //Кнопка запросов:
+                    if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithQuery, e.DeletedDialogue.Id))
+                        myQuaryButton.MessagesCount--;
+                    //Чата
+                    if (chat.CurrentDialogue.Id == e.DeletedDialogue.Id)
+                    {
+                        chat.CloseDialogue();
+                        ShowDialogue(false);
+                    }
+                    //Списка диалогов
+                    Dialogues.RemoveDialogueFromLists(e.DeletedDialogue.Id);
+                }
+                //Блокера:
+                ControlBlocker.Visibility = Visibility.Collapsed;
+            };
+
             AppEventManager.OpenDialogue += (s, e) =>
             {
-                tabs.Visibility = Visibility.Collapsed;
-                chat.Visibility = Visibility.Visible;
-                chat.OpenDialogue(s,e);
+                ShowDialogue(true);
+                //Реагирование на открытие диалога:
+                //Кнопки сообщений
+                if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithoutQuery, e.OpenedDialogue.Id))
+                    messageButton.MessagesCount--;
+                //Кнопка запросов:
+                if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithQuery, e.OpenedDialogue.Id))
+                    myQuaryButton.MessagesCount--;
+                //Список диалогов:
+                Dialogues.ChangeMessageStatus(e.OpenedDialogue);
+                //Чата
+                chat.OpenDialogue(e.OpenedDialogue);
             };
+            AppEventManager.CloseDialogue += () => ShowDialogue(false);
         }
 
+        private bool FindNotReadMessageToMessageControls(ObservableCollection<MessageControl> collection, int dialogueId)
+        {
+            if (collection.Count(x => x.Dialogue.Id == dialogueId) == 0) return false;
+            return collection.Where(c => c.Dialogue.Id == dialogueId)
+                    .Any(d => d.Dialogue.Messages.All(m => m.Status == MessageStatus.Delivered));
+        }
+
+        private void ShowDialogue(bool solution)
+        {
+            tabs.Visibility = solution ? Visibility.Hidden : Visibility.Visible;
+            chat.Visibility = solution ? Visibility.Visible : Visibility.Hidden;
+        }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -56,12 +122,12 @@ namespace ZappChat
 
         private void myQuaryButton_Checked(object sender, RoutedEventArgs e)
         {
-            Messages.SelectWithQuery();
+            Dialogues.SelectWithQuery();
         }
 
         private void messageButton_Checked(object sender, RoutedEventArgs e)
         {
-            Messages.SelectWithoutQuery();
+            Dialogues.SelectWithoutQuery();
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

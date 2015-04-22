@@ -18,7 +18,7 @@
 					<RowDefinition Height="10*"/>
 					<RowDefinition Height="1.6*"/>
 				</Grid.RowDefinitions>
-				<controls:ListMessages x:Name="Messages" Grid.Row="0" Background="White" Margin="0,113,0,0"/>
+				<controls:ListMessages x:Name="Dialogues" Grid.Row="0" Background="White" Margin="0,113,0,0"/>
                 
 				<Rectangle x:Name="ControlBlocker" Grid.Row="0" Fill="#B2FFFFFF" Margin="0,113,0,0" Visibility="Collapsed"/>
                 <Grid x:Name="DownGridPanel" Grid.Row="1" Background="#00C3C3C3" Margin="0,5,0,0">
@@ -48,7 +48,7 @@
 			
 			<!--Left part of window-->
 			<TabControl x:Name="tabs" Style="{DynamicResource TabControlZappChat}" Grid.Column="1" BorderThickness="0" BorderBrush="{x:Null}" Margin="28,55,12,0" />
-			<controls:Chat x:Name="chat" Visibility="Collapsed" Grid.Column="1" Background="White" Margin="30,55,10,0"/>
+			<controls:Chat x:Name="chat" Visibility="Hidden" Grid.Column="1" Background="White" Margin="30,55,10,0"/>
         </Grid>
 	</Border>
 
