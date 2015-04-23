@@ -40,9 +40,10 @@ namespace ZappChat
                     chat.AddNewMessageToChat(e.DialogueId, message);
                 }
                 //Кнопки "Сообщения"
-                var haveNotReadMessage = FindNotReadMessageToMessageControls(Dialogues.DialogueWithoutQuery,
-                    e.DialogueId);
-                if (message.Status != MessageStatus.Read && !haveNotReadMessage)
+                if (message.Status != MessageStatus.Read
+                    &&
+                    IsControlHaveUnreadMessageForTakeMessage(
+                        Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId)))
                     messageButton.MessagesCount++;
                 //Списка диалогов
                 Dialogues.AddNewMessageToList(e.DialogueId,message);
@@ -62,10 +63,13 @@ namespace ZappChat
                 if (e.IsConfirmed)
                 {
                     //Кнопки сообщения:
-                    if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithoutQuery, e.DeletedDialogue.Id))
+                    if (
+                        IsControlHaveUnreadMessage(
+                            Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
                         messageButton.MessagesCount--;
                     //Кнопка запросов:
-                    if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithQuery, e.DeletedDialogue.Id))
+                    if (IsControlHaveUnreadMessage(
+                            Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
                         myQuaryButton.MessagesCount--;
                     //Чата
                     if (chat.CurrentDialogue.Id == e.DeletedDialogue.Id)
@@ -84,25 +88,55 @@ namespace ZappChat
             {
                 ShowDialogue(true);
                 //Реагирование на открытие диалога:
-                //Кнопки сообщений
-                if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithoutQuery, e.OpenedDialogue.Id))
-                    messageButton.MessagesCount--;
-                //Кнопка запросов:
-                if (FindNotReadMessageToMessageControls(Dialogues.DialogueWithQuery, e.OpenedDialogue.Id))
-                    myQuaryButton.MessagesCount--;
+                //Кнопки сообщения:
+                    if (
+                        IsControlHaveUnreadMessage(
+                            Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
+                        messageButton.MessagesCount--;
+                    //Кнопка запросов:
+                    if (IsControlHaveUnreadMessage(
+                            Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
+                        myQuaryButton.MessagesCount--;
                 //Список диалогов:
                 Dialogues.ChangeMessageStatus(e.OpenedDialogue);
                 //Чата
                 chat.OpenDialogue(e.OpenedDialogue);
             };
             AppEventManager.CloseDialogue += () => ShowDialogue(false);
+            AppEventManager.TakeQuery += (s, e) =>
+            {
+                //Реагирование на получение запроса:
+                //Кнопки запросов
+                if(chat.CurrentDialogue.Id != e.DialogueId)
+                    myQuaryButton.MessagesCount++;
+                //Списка диалогов
+                Dialogues.TakeQuery(e.DialogueId, e.Interlocutor, e.Query, e.Time);
+                //Чата
+                if(chat.CurrentDialogue.Id == e.DialogueId)
+                    chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
+            };
         }
 
-        private bool FindNotReadMessageToMessageControls(ObservableCollection<MessageControl> collection, int dialogueId)
+        //private bool FindNotReadMessageToObservableCollection(ObservableCollection<MessageControl> collection, int dialogueId)
+        //{
+        //    if (collection.Count(x => x.Dialogue.Id == dialogueId) == 0) return false;
+        //    return FindNotReadMessageToMessageControl(collection.FirstOrDefault(x => x.Dialogue.Id == dialogueId));
+        //}
+        //private bool FindNotReadMessageToMessageControl(MessageControl messageControl)
+        //{
+        //    if (messageControl == null) return false;
+        //    return messageControl.Dialogue.Messages.All(message => message.Status == MessageStatus.Read);
+        //}
+
+        private bool IsControlHaveUnreadMessageForTakeMessage(MessageControl control)
         {
-            if (collection.Count(x => x.Dialogue.Id == dialogueId) == 0) return false;
-            return collection.Where(c => c.Dialogue.Id == dialogueId)
-                    .Any(d => d.Dialogue.Messages.All(m => m.Status == MessageStatus.Delivered));
+            if (control == null) return true;
+            return control.Dialogue.Messages.All(mes => mes.Status == MessageStatus.Read);
+        }
+        private bool IsControlHaveUnreadMessage(MessageControl control)
+        {
+            if (control == null) return false;
+            return control.Dialogue.Messages.Any(mes => mes.Status != MessageStatus.Read);
         }
 
         private void ShowDialogue(bool solution)

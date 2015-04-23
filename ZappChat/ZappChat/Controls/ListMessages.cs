@@ -41,26 +41,43 @@ namespace ZappChat.Controls
 
         public void AddNewMessageToList(int dialogueId, Message message)
         {
-            var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
-            if (thisDialogue == null)
+            var thisDialogueInListQuery = DialogueWithQuery.Any(x => x.Dialogue.Id == dialogueId);
+
+            if (thisDialogueInListQuery)
             {
-                DialogueWithoutQuery.Insert(0, new MessageControl(new Dialogue(dialogueId, message.Author, new List<Message> { message })));
+                var thisDialogue = DialogueWithQuery.First(x => x.Dialogue.Id == dialogueId);
+                thisDialogue.Dialogue.AddMessage(message);
+                var indexThisDialogue = DialogueWithQuery.IndexOf(thisDialogue);
+                DialogueWithQuery.Move(indexThisDialogue, 0);
+                var thisDialogueWithoutQuery = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
+                if(thisDialogueWithoutQuery == null)
+                    DialogueWithoutQuery.Insert(0, thisDialogue);
+
+                thisDialogue.UpdateControl();
             }
             else
             {
-                thisDialogue.Dialogue.AddMessage(message);
-                thisDialogue.UpdateControl();
-                var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
-                DialogueWithoutQuery.Move(indexThisDialogue,0);
-            }
+                var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
+                if (thisDialogue == null)
+                {
+                    DialogueWithoutQuery.Insert(0,
+                        new MessageControl(new Dialogue(dialogueId, message.Author, new List<Message> {message})));
+                }
+                else
+                {
+                    thisDialogue.Dialogue.AddMessage(message);
+                    var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
+                    DialogueWithoutQuery.Move(indexThisDialogue, 0);
 
-            thisDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
-            if (thisDialogue != null)
-            {
-                thisDialogue.Dialogue.AddMessage(message);
-                thisDialogue.UpdateControl();
-                var indexThisDialogue = DialogueWithQuery.IndexOf(thisDialogue);
-                DialogueWithQuery.Move(indexThisDialogue, 0);
+                    var thisDialogueWithQuery = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
+                    if (thisDialogueWithQuery != null)
+                    {
+                        indexThisDialogue = DialogueWithQuery.IndexOf(thisDialogueWithQuery);
+                        DialogueWithQuery.Move(indexThisDialogue, 0);
+                    }
+
+                    thisDialogue.UpdateControl();
+                }
             }
         }
 
@@ -75,22 +92,23 @@ namespace ZappChat.Controls
 
         }
 
-        public void TakeQuery(object sender, TakeQueryEventArgs e)
+        public void TakeQuery(int dialogueId, string interlocutor, string query, DateTime time)
         {
-            var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId);
+            var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
             if (thisDialogue != null)
             {
-                thisDialogue.Dialogue.Query = e.Query;
-                thisDialogue.UpdateControl();
+                thisDialogue.Dialogue.Query = query;
                 var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
                 DialogueWithoutQuery.Move(indexThisDialogue, 0);
                 // Добавление диалога с запросом и сообщениями в список диалогов с запросами - нужно ли так делать?
                 DialogueWithQuery.Insert(0,thisDialogue);
+
+                thisDialogue.UpdateControl();
             }
-            thisDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId);
+            thisDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueId);
             if (thisDialogue == null)
             {
-                DialogueWithQuery.Insert(0, new MessageControl(new Dialogue(e.DialogueId,e.Interlocutor,e.Query, e.Time)));
+                DialogueWithQuery.Insert(0, new MessageControl(new Dialogue(dialogueId,interlocutor,query, time)));
             }
         }
 

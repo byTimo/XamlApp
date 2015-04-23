@@ -11,5 +11,4 @@
     public delegate void OpenDialogueEventHandler(object sender, DialogueOpenEventArgs e);
 
     public delegate void CloseDialogueEventHandler();
-
 }
