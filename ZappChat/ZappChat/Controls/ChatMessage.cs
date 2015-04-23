@@ -41,6 +41,16 @@ namespace ZappChat.Controls
             get { return GetValue(TextMessageProperty) as string; }
             set { SetValue(TextMessageProperty, value); }
         }
+
+        public static readonly DependencyProperty TextAlignmentProperty = DependencyProperty.Register("TextAlignment",
+            typeof (TextAlignment), typeof (ChatMessage),
+            new FrameworkPropertyMetadata(TextAlignment.Left));
+
+        public TextAlignment TextAlignment
+        {
+            get { return (TextAlignment) GetValue(TextAlignmentProperty); }
+            set { SetValue(TextAlignmentProperty, value); }
+        }
         static ChatMessage()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ChatMessage), new FrameworkPropertyMetadata(typeof(ChatMessage)));
@@ -54,14 +64,13 @@ namespace ZappChat.Controls
             {
                 case MessageType.User:
                     TextMessage = mes.Text;
-                    HorizontalAlignment = HorizontalAlignment.Right;
-                    Margin = new Thickness(50.0,0,0,0);
+                    TextAlignment = TextAlignment.Right;
+                    HorizontalContentAlignment = HorizontalAlignment.Right;
                     break;
                 case MessageType.Interlocutor:
                     AuthorMessage = mes.Author;
                     TextMessage = mes.Text;
-                    HorizontalAlignment = HorizontalAlignment.Left;
-                    Margin = new Thickness(0,0,50,0);
+                    HorizontalContentAlignment = HorizontalAlignment.Left;
                     break;
             }
         }

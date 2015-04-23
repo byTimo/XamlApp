@@ -6,13 +6,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ChatMessage}">
-                    <Grid Background="{TemplateBinding Background}">
+                    <Grid Background="{TemplateBinding Background}" Margin="30,0,10,0">
                     	<Grid.RowDefinitions>
                     		<RowDefinition Height="Auto"/>
                     		<RowDefinition Height="*"/>
                     	</Grid.RowDefinitions>
-						<TextBox Grid.Row="0" Text="{TemplateBinding AuthorMessage}" Margin="{TemplateBinding Margin}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Background="{x:Null}" BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Foreground="#FF2FB6E5"/>
-                        <TextBox Grid.Row="1" Text="{TemplateBinding TextMessage}" Margin="{TemplateBinding Margin}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" Background="{x:Null}" BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="18.667"/>
+                        <TextBox Grid.Row="0" Text="{TemplateBinding AuthorMessage}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" TextAlignment="{TemplateBinding TextAlignment}" Background="{x:Null}" BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Foreground="#FF2FB6E5"/>
+                        <!--<TextBox Grid.Row="1" Text="{TemplateBinding TextMessage}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" TextAlignment="{TemplateBinding TextAlignment}" Background="{x:Null}" BorderThickness="0" BorderBrush="{x:Null}" IsReadOnly="True" TextWrapping="Wrap" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="18.667"/>-->
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

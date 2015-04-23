@@ -65,7 +65,7 @@ namespace ZappChat.Core
 
         public Message GetLastMessage()
         {
-            return Messages[Messages.Count - 1];
+            return Messages.Last(x => x.Author != "");
         }
         public IEnumerator GetEnumerator()
         {

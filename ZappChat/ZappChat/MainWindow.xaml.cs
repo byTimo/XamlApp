@@ -115,18 +115,8 @@ namespace ZappChat
                 if(chat.CurrentDialogue.Id == e.DialogueId)
                     chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
             };
+            AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
         }
-
-        //private bool FindNotReadMessageToObservableCollection(ObservableCollection<MessageControl> collection, int dialogueId)
-        //{
-        //    if (collection.Count(x => x.Dialogue.Id == dialogueId) == 0) return false;
-        //    return FindNotReadMessageToMessageControl(collection.FirstOrDefault(x => x.Dialogue.Id == dialogueId));
-        //}
-        //private bool FindNotReadMessageToMessageControl(MessageControl messageControl)
-        //{
-        //    if (messageControl == null) return false;
-        //    return messageControl.Dialogue.Messages.All(message => message.Status == MessageStatus.Read);
-        //}
 
         private bool IsControlHaveUnreadMessageForTakeMessage(MessageControl control)
         {

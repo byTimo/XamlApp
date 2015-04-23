@@ -121,6 +121,11 @@ namespace ZappChat.Controls
             SelectedIndex = -1;//TODO test
         }
 
+        //public void SendMessage(int dialogueID)
+        //{
+        //    //var thisDialogue = DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == dialogueID);
+        //}
+
         public void ChangeMessageStatus(Dialogue changedDialogue)
         {
             var openedDialogue =

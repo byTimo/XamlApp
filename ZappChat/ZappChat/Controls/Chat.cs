@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,7 +18,9 @@ using ZappChat.Core;
 
 namespace ZappChat.Controls
 {
-    [TemplatePart(Name = "Back", Type = typeof(CornerRadiusButton))]
+    [TemplatePart(Name = "Back", Type = typeof(CornerRadiusButton)),
+     TemplatePart(Name = "Send", Type = typeof(CornerRadiusButton)),
+     TemplatePart(Name = "UserInput", Type = typeof(TextBox))]
     public class Chat : Control
     {
         public Dialogue CurrentDialogue { get; set; }
@@ -84,8 +87,8 @@ namespace ZappChat.Controls
 
         public void AddNewMessageToChat(int dialogueId, Message message)
         {
-            DialogueTitle = CurrentDialogue.GetTitleMessage();
             ChatMessages.Add(new ChatMessage(message));
+            DialogueTitle = CurrentDialogue.GetTitleMessage();
         }
         public override void OnApplyTemplate()
         {
@@ -98,12 +101,30 @@ namespace ZappChat.Controls
                 CloseDialogue();
                 AppEventManager.CloseDialogueEvent();
             };
+            var sendButton = GetTemplateChild("Send") as CornerRadiusButton;
+            sendButton.Click += (s, e) =>
+            {
+                var userInput = GetTemplateChild("UserInput") as TextBox;
+                if (userInput != null && userInput.Text != "")
+                {
+                    //TODO когда нибудь сюда нужно добавить поддержку логина а не просто пустой автор 
+                    AppEventManager.SendMessageEvent(this, CurrentDialogue.Id,
+                        new Message(CurrentDialogue.Id, "", userInput.Text, MessageStatus.Read));
+                    userInput.Text = "";
+                }
+            };
         }
 
         public void CloseDialogue()
         {
             CurrentDialogue = new Dialogue();
             ChatMessages = new ObservableCollection<ChatMessage>();
+        }
+
+        public void SendMessage(Message message)
+        {
+            CurrentDialogue.AddMessage(message);
+            ChatMessages.Add(new ChatMessage(message));
         }
     }
 }

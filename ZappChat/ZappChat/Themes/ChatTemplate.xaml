@@ -30,9 +30,9 @@
 						</Grid>
 						<ListBox x:Name="MessageChat"  Grid.Row="3" BorderThickness="0" Background="White" BorderBrush="{x:Null}" ItemsSource="{TemplateBinding ChatMessages}"/>
 						<Border Grid.Row="4" Margin="30,15,12,10" CornerRadius="10" BorderThickness="2" Background="White" BorderBrush="#FFC4E1EA" Padding="15,10,15,5">
-							<TextBox Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF2FB6E5" FontFamily="Arial" VerticalAlignment="Center" FontSize="18.667" Style="{DynamicResource TextBoxStyle}" UndoLimit="0" />
+							<TextBox x:Name="UserInput" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF2FB6E5" FontFamily="Arial" VerticalAlignment="Center" FontSize="18.667" Style="{DynamicResource TextBoxStyle}" UndoLimit="0" />
 						</Border>
-						<local:CornerRadiusButton Grid.Row="5" Content="Отправить" CornerRadius="10" FontFamily="Arial" FontSize="18.667" Margin="30,5,0,20" Background="#FF2FB6E5" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="{x:Null}" BorderThickness="0" Height="Auto" Padding="20,10" Width="Auto" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Cursor="Hand" />
+						<local:CornerRadiusButton x:Name="Send" Grid.Row="5" Content="Отправить" CornerRadius="10" FontFamily="Arial" FontSize="18.667" Margin="30,5,0,20" Background="#FF2FB6E5" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="{x:Null}" BorderThickness="0" Height="Auto" Padding="20,10" Width="Auto" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Cursor="Hand" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

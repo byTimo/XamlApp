@@ -11,7 +11,7 @@
 		<TextBox x:Name="quary" HorizontalAlignment="Left" Height="23" Margin="353,36,0,0" TextWrapping="Wrap" Text="Quary" VerticalAlignment="Top" Width="120"/>
 		<TextBox x:Name="id" HorizontalAlignment="Left" Height="23" Margin="319,10,0,0" TextWrapping="Wrap" Text="Dialogue id" VerticalAlignment="Top" Width="76"/>
 		<Label Content="Received messages" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top"/>
-		<ListView HorizontalAlignment="Left" Height="100" Margin="10,88.96,0,0" VerticalAlignment="Top" Width="508">
+		<ListView x:Name="Messages" HorizontalAlignment="Left" Height="100" Margin="10,88.96,0,0" VerticalAlignment="Top" Width="508">
 			<ListView.View>
 				<GridView>
 					<GridViewColumn/>

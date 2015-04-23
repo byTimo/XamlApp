@@ -24,6 +24,7 @@ namespace ZappChat
         public ServerEmulation()
         {
             InitializeComponent();
+            AppEventManager.SendMessage += (sender, args) => Messages.Items.Add(args.Message.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -49,5 +50,6 @@ namespace ZappChat
                 AppEventManager.TakeQueryEvent(this, int.Parse(id.Text), author.Text, quary.Text, DateTime.Now);
             }
         }
+        
     }
 }
