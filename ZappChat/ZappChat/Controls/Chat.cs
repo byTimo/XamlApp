@@ -84,8 +84,6 @@ namespace ZappChat.Controls
 
         public void AddNewMessageToChat(int dialogueId, Message message)
         {
-            CurrentDialogue.Messages.Add(message);
-
             DialogueTitle = CurrentDialogue.GetTitleMessage();
             ChatMessages.Add(new ChatMessage(message));
         }
