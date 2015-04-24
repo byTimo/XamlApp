@@ -14,7 +14,19 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
-						<local:CornerRadiusButton x:Name="Back" CornerRadius="5" Grid.Row="0" Content="Назад" HorizontalAlignment="Left" Margin="30,15,0,10" VerticalAlignment="Stretch" VerticalContentAlignment="Top" HorizontalContentAlignment="Center" Background="#FFFDFEFE" BorderThickness="0" Padding="5" BorderBrush="{x:Null}" FontSize="13.333" FontFamily="Arial" Foreground="#FFA1A2A2" Cursor="Hand"/>
+						<local:CornerRadiusButton x:Name="Back" CornerRadius="5" Grid.Row="0" HorizontalAlignment="Left" Margin="30,15,0,10" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" BorderThickness="0" Padding="0" BorderBrush="{x:Null}" Cursor="Hand" Width="Auto" Height="Auto">
+							<local:CornerRadiusButton.Background>
+								<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+									<GradientStop Color="#FFFDFEFE" Offset="0"/>
+									<GradientStop Color="#FFFDFEFE" Offset="1"/>
+									<GradientStop Color="#FFFDFEFE" Offset="0.57"/>
+								</LinearGradientBrush>
+							</local:CornerRadiusButton.Background>
+							<StackPanel Orientation="Horizontal" Margin="10,5">
+								<Image Height="8" Source="/ZappChat;component/Images/Cross.png" Stretch="Fill" Width="8" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,0"/>	
+								<TextBlock Text="Назад" Width="Auto" Height="Auto" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Foreground="#FFA1A2A2" HorizontalAlignment="Left" VerticalAlignment="Center"/>						
+							</StackPanel>
+						</local:CornerRadiusButton>
 						<TextBlock Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="32" Foreground="#FF2FB6E5" Margin="30,5,5,5" VerticalAlignment="Top"/>
 						<Grid Grid.Row="2" Margin="30,0,0,0">
 							<Grid.ColumnDefinitions>
@@ -28,11 +40,11 @@
 								<TextBlock Text="{TemplateBinding Vin}" VerticalAlignment="Center" FontFamily="Arial" FontSize="18.667" Margin="0" Foreground="#FFC9C9CA"/>
 							</Border>
 						</Grid>
-						<ListBox x:Name="MessageChat"  Grid.Row="3" BorderThickness="0" Background="White" BorderBrush="{x:Null}" ItemsSource="{TemplateBinding ChatMessages}" Style="{DynamicResource ChatMessageList}"/>
-						<Border Grid.Row="4" Margin="30,15,12,10" CornerRadius="10" BorderThickness="2" Background="White" BorderBrush="#FFC4E1EA" Padding="15,10,15,5">
-							<TextBox x:Name="UserInput" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF2FB6E5" FontFamily="Arial" VerticalAlignment="Center" FontSize="18.667" Style="{DynamicResource TextBoxStyle}" UndoLimit="0" />
+						<ListBox x:Name="MessageChat"  Grid.Row="3" BorderThickness="0" Background="White" BorderBrush="{x:Null}" Style="{DynamicResource ChatMessageList}"  ItemsSource="{TemplateBinding ChatMessages}"/>
+						<Border Grid.Row="4" Margin="30,15,12,10" CornerRadius="10" BorderThickness="2" Background="White" BorderBrush="#FFC4E1EA" Padding="15,10,15,5" Width="Auto">
+							<TextBox x:Name="UserInput" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF2FB6E5" FontFamily="Arial" VerticalAlignment="Center" FontSize="18.667" Style="{DynamicResource TextBoxStyle}" UndoLimit="0" Width="541" TextWrapping="Wrap" MaxHeight="75" />
 						</Border>
-						<local:CornerRadiusButton x:Name="Send" Grid.Row="5" Content="Отправить" CornerRadius="10" FontFamily="Arial" FontSize="18.667" Margin="30,5,0,20" Background="#FF2FB6E5" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="{x:Null}" BorderThickness="0" Height="Auto" Padding="20,10" Width="Auto" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Cursor="Hand" />
+						<local:CornerRadiusButton x:Name="Send" Grid.Row="5" Content="Отправить" CornerRadius="10" FontFamily="Arial" FontSize="18.667" Margin="30,5,0,20" Background="#FF2FB6E5" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="{x:Null}" BorderThickness="0" Height="Auto" Padding="40,15" Width="Auto" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Cursor="Hand" Foreground="#FFF0F8FD" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

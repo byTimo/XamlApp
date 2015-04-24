@@ -47,7 +47,7 @@
                 				<ColumnDefinition Width="*"/>
                 				<ColumnDefinition Width="Auto"/>
                 			</Grid.ColumnDefinitions>
-                			<Ellipse Grid.Column="0" x:Name="StatusIndicater" HorizontalAlignment="Left" VerticalAlignment="Center" Width="15" Height="15" Margin="20,0,0,0" Fill="{TemplateBinding IndicaterColor}" Grid.ColumnSpan="1" />
+                			<Ellipse Grid.Column="0" x:Name="StatusIndicater" HorizontalAlignment="Left" VerticalAlignment="Center" Width="15" Height="15" Margin="20,0,0,0" Grid.ColumnSpan="1" Fill="{TemplateBinding IndicaterColor}"/>
                 			<Label Grid.Column="1" x:Name="StatusText" Content="{TemplateBinding StatusText}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" FontWeight="Normal" Background="#00000000" Foreground="#FFA49C9C"/>
                 			<Image Grid.Column="2" Margin="0,0,10,0" Source="/ZappChat;component/Images/arrow.png" Stretch="Fill" Height="15" HorizontalAlignment="Right" VerticalAlignment="Center" Width="10"/>
                 		</Grid>

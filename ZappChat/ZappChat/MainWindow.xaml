@@ -27,7 +27,7 @@
                 		<ColumnDefinition Width="5.5*"/>
                 	</Grid.ColumnDefinitions>
                 	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" Click="SettingButton_Click" Cursor="Hand" />
-					<controls:StatusButton x:Name="statusButton" Grid.Column="1" Style="{DynamicResource StatusButtonTemplate}" Cursor="Hand" />
+					<controls:StatusButton x:Name="statusButton" Grid.Column="1" Style="{DynamicResource StatusButtonTemplate}" Cursor="Hand"/>
                 </Grid>
                 <controls:BlueTopMenu Grid.Row="0" ClipToBounds="False" x:Name="BlueMenu" Margin="0" VerticalAlignment="Top" >
 					<Grid Height="109.867" Width="374">

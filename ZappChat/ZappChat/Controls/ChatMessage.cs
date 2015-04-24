@@ -51,6 +51,20 @@ namespace ZappChat.Controls
             get { return (TextAlignment) GetValue(TextAlignmentProperty); }
             set { SetValue(TextAlignmentProperty, value); }
         }
+        public static readonly DependencyProperty AuthorMarginProperty = DependencyProperty.Register("AuthorMargin",
+            typeof(Thickness), typeof(ChatMessage));
+        public Thickness AuthorMargin
+        {
+            get { return (Thickness)GetValue(AuthorMarginProperty); }
+            set { SetValue(AuthorMarginProperty, value);  }
+        }
+        public static readonly DependencyProperty TextMarginProperty = DependencyProperty.Register("TextMargin",
+        typeof(Thickness), typeof(ChatMessage));
+        public Thickness TextMargin
+        {
+            get { return (Thickness)GetValue(TextMarginProperty); }
+            set { SetValue(TextMarginProperty, value); }
+        }
         static ChatMessage()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ChatMessage), new FrameworkPropertyMetadata(typeof(ChatMessage)));
@@ -66,11 +80,15 @@ namespace ZappChat.Controls
                     TextMessage = mes.Text;
                     TextAlignment = TextAlignment.Right;
                     HorizontalContentAlignment = HorizontalAlignment.Right;
+                    AuthorMargin = new Thickness(100, 5, 0, 10);
+                    TextMargin = new Thickness(100, 0, 0, 5);
                     break;
                 case MessageType.Interlocutor:
                     AuthorMessage = mes.Author;
                     TextMessage = mes.Text;
                     HorizontalContentAlignment = HorizontalAlignment.Left;
+                    AuthorMargin = new Thickness(0, 5, 100, 10);
+                    TextMargin = new Thickness(0, 0, 100, 5);
                     break;
             }
         }

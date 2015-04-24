@@ -31,11 +31,11 @@ namespace ZappChat.Controls
             }
         }
         public static readonly DependencyProperty IndicaterColorProperty =
-            DependencyProperty.Register("IndicaterColor", typeof(SolidColorBrush), typeof(StatusButton));
+            DependencyProperty.Register("IndicaterColor", typeof(LinearGradientBrush), typeof(StatusButton));
 
-        public SolidColorBrush IndicaterColor
+        public LinearGradientBrush IndicaterColor
         {
-            get { return (SolidColorBrush)GetValue(IndicaterColorProperty); }
+            get { return (LinearGradientBrush)GetValue(IndicaterColorProperty); }
             set { SetValue(IndicaterColorProperty, value); }
         }
 
@@ -63,11 +63,17 @@ namespace ZappChat.Controls
             switch (nowStatus)
             {
                 case AppStatus.Connect:
-                    IndicaterColor = Brushes.Green;
+                    IndicaterColor = new LinearGradientBrush(new GradientStopCollection{
+                        new GradientStop(Color.FromArgb(255,173,228,95),0),
+                        new GradientStop(Color.FromArgb(255,155,196,60),100.0)
+                    });
                     StatusText = "В сети";
                     break;
                 case AppStatus.Disconnect:
-                    IndicaterColor = Brushes.Red;
+                    IndicaterColor = new LinearGradientBrush(new GradientStopCollection{
+                        new GradientStop(Color.FromArgb(255,228,63,60),0),
+                        new GradientStop(Color.FromArgb(255,225,95,95),1.0)
+                    });
                     StatusText = "Не в сети";
                     break;
             }
