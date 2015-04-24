@@ -16,7 +16,7 @@
 			<Grid Grid.Column="0" x:Name="LeftPanel" >
 				<Grid.RowDefinitions>
 					<RowDefinition Height="10*"/>
-					<RowDefinition Height="1.6*"/>
+					<RowDefinition Height="1.2*"/>
 				</Grid.RowDefinitions>
 				<controls:ListMessages x:Name="Dialogues" Grid.Row="0" Background="White" Margin="0,113,0,0"/>
                 
@@ -26,8 +26,8 @@
                 		<ColumnDefinition Width="10*"/>
                 		<ColumnDefinition Width="5.5*"/>
                 	</Grid.ColumnDefinitions>
-                	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" Click="SettingButton_Click" />
-					<controls:StatusButton x:Name="statusButton" Grid.Column="1" Style="{DynamicResource StatusButtonTemplate}" />
+                	<Button x:Name="SettingButton" Grid.Column="0" Style="{DynamicResource SettingsButton}" Margin="0,0,2,0" Click="SettingButton_Click" Cursor="Hand" />
+					<controls:StatusButton x:Name="statusButton" Grid.Column="1" Style="{DynamicResource StatusButtonTemplate}" Cursor="Hand" />
                 </Grid>
                 <controls:BlueTopMenu Grid.Row="0" ClipToBounds="False" x:Name="BlueMenu" Margin="0" VerticalAlignment="Top" >
 					<Grid Height="109.867" Width="374">
@@ -36,19 +36,22 @@
 							<ColumnDefinition Width="1*"/>
 							<ColumnDefinition Width="1*"/>
 						</Grid.ColumnDefinitions>
-                		<Button Grid.Column="0" x:Name="menuButton" Content="Button" Width="40" Template="{DynamicResource MenuButton}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" Margin="20,34.934,20,34.933" Cursor="Hand"/>
-                		<controls:SliderButton GroupName="TopMenuButtons" Grid.Column="1" x:Name="myQuaryButton" Content="Мои запросы" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Height="37" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" Foreground="White" FontWeight="Bold" Grid.ColumnSpan="2" Padding="0" Checked="myQuaryButton_Checked" />
-                		<controls:SliderButton GroupName="TopMenuButtons" Grid.Column="2" x:Name="messageButton" Content="Сообщения" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="14.667" Foreground="White" FontWeight="Bold" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="37" Cursor="Hand" Checked="messageButton_Checked"/>
+                		<Button Grid.Column="0" x:Name="menuButton" Content="Button" Width="45" Template="{DynamicResource MenuButton}" HorizontalAlignment="Left" VerticalAlignment="Center" Height="45" Margin="10,0" Cursor="Hand"/>
+                		<controls:SliderButton GroupName="TopMenuButtons" Grid.Column="1" x:Name="myQuaryButton" Content="Мои запросы" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Height="40" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="16" Foreground="White" FontWeight="Bold" Grid.ColumnSpan="2" Padding="0" Checked="myQuaryButton_Checked" Cursor="Hand" />
+                		<controls:SliderButton GroupName="TopMenuButtons" Grid.Column="2" x:Name="messageButton" Content="Сообщения" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="16" Foreground="White" FontWeight="Bold" Margin="12,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Height="40" Cursor="Hand" Checked="messageButton_Checked"/>
                 	</Grid>
                 </controls:BlueTopMenu>
             </Grid>
 			<Button x:Name="CloseButton" HorizontalAlignment="Right" Height="30" Margin="0,12.5,12.5,0" Style="{DynamicResource ExitButton}" VerticalAlignment="Top" Width="30" Grid.Column="1" Click="CloseButton_Click" Cursor=""/>
 			<Button x:Name="MinimazeButton" HorizontalAlignment="Right" Height="30" Style="{DynamicResource MinimazeButton}" VerticalAlignment="Top" Width="30" Margin="0,12.5,47.5,0" Grid.Column="1" Click="HideButton_Click_1"/>
-			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Height="32.5" Margin="10,10,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Width="159.333" Foreground="#FF747474" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" TextAlignment="Center"/>
+			<TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="40,15,0,0" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Foreground="#FF999B9C" FontSize="14.667" FontFamily="/ZappChat;component/Fonts/#Arial" Height="21"/>
 			
 			<!--Left part of window-->
-			<TabControl x:Name="tabs" Style="{DynamicResource TabControlZappChat}" Grid.Column="1" BorderThickness="0" BorderBrush="{x:Null}" Margin="28,55,12,0" />
-			<controls:Chat x:Name="chat" Visibility="Hidden" Grid.Column="1" Background="White" Margin="30,55,10,0"/>
+			<TabControl x:Name="tabs" Style="{DynamicResource TabControlZappChat}" Grid.Column="1" BorderThickness="0" BorderBrush="{x:Null}" Margin="30,55,12,0">
+				<TabItem Header="Сегодня"/>
+				<TabItem Header="Завтра"/>
+			</TabControl>
+			<controls:Chat x:Name="chat" Visibility="Visible" Grid.Column="1" Background="White" Margin="30,55,10,0"/>
         </Grid>
 	</Border>
 
