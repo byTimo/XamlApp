@@ -56,6 +56,9 @@
     </ApplicationDefinition>
     <Compile Include="Controls\Chat.cs" />
     <Compile Include="Controls\ChatMessage.cs" />
+    <Compile Include="Controls\CircularProgressBar.xaml.cs">
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CornerRadiusButton.cs" />
     <Compile Include="Controls\ListMessages.cs" />
     <Compile Include="Controls\LoginButton.cs" />
@@ -71,6 +74,10 @@
     <Compile Include="ServerEmulation.xaml.cs">
       <DependentUpon>ServerEmulation.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\CircularProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\QueryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -78,6 +85,10 @@
     <Page Include="LoginWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\LoginWindowStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

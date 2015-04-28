@@ -25,7 +25,6 @@ namespace ZappChat.Controls
         private PasswordBox _password;
         private TextBox _text;
         private ToggleButton _showButton;
-        private string _secret;
         public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register("CornerRadius",
             typeof (CornerRadius), typeof (PasswordControl));
 
@@ -43,6 +42,15 @@ namespace ZappChat.Controls
             get { return (bool) GetValue(ViewPasswordProperty); }
             set { SetValue(ViewPasswordProperty, value); }
         }
+
+        public static readonly DependencyProperty SecretProperty = DependencyProperty.Register("Secret", typeof (string),
+            typeof (PasswordControl), new FrameworkPropertyMetadata(""));
+
+        private string Secret
+        {
+            get { return GetValue(SecretProperty) as string; }
+            set { SetValue(SecretProperty, value); }
+        }
         static PasswordControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof (PasswordControl),
@@ -59,34 +67,50 @@ namespace ZappChat.Controls
             {
                 if (!ViewPassword)
                 {
-                    _text.Text = "Пароль";
-                    _text.Visibility = Visibility.Hidden;
+                    _text.Visibility = Visibility.Collapsed;
+                    _password.Visibility = Visibility.Visible;
                     Keyboard.Focus(_password);
                 }
             };
-            _text.TextChanged += (sender, args) => { _secret = _text.Text; };
             _password.LostKeyboardFocus += (sender, args) =>
             {
                 if (_password.Password == string.Empty)
                 {
                     _text.Visibility = Visibility.Visible;
+                    _password.Visibility = Visibility.Collapsed;
+                    _text.Text = "Пароль";
                 }
             };
-            _password.PasswordChanged += (sender, args) => { _secret = _password.Password; };
             _showButton.Checked += (sender, args) =>
             {
+                Secret = _password.Password;
                 ViewPassword = true;
                 _text.Visibility = Visibility.Visible;
                 _password.Visibility = Visibility.Collapsed;
-                _text.Text = _secret;
+                _text.Foreground = Brushes.Black;
+                _text.Text = Secret;
             };
             _showButton.Unchecked += (sender, args) =>
             {
+                Secret = _text.Text;
                 ViewPassword = false;
-                _text.Visibility = Visibility.Collapsed;
-                _password.Visibility = Visibility.Visible;
-                _password.Password = _secret;
+                if (Secret == "")
+                {
+                    _text.Text = "Пароль";
+                }
+                else
+                {
+                    _text.Visibility = Visibility.Collapsed;
+                    _password.Visibility = Visibility.Visible;
+                }
+                _text.Foreground = new SolidColorBrush(Color.FromRgb(141, 141, 141));
+                _password.Password = Secret;
             };
+        }
+
+        public string GetPassword()
+        {
+            return _text.Visibility == Visibility.Visible && _text.Text != "Пароль" ? _text.Text : _password.Password;
         }
     }
 }

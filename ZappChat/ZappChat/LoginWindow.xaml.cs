@@ -19,6 +19,7 @@ namespace ZappChat
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private bool loginEmpty = true;
         public LoginWindow()
         {
             InitializeComponent();
@@ -37,6 +38,22 @@ namespace ZappChat
         {
             base.OnMouseLeftButtonDown(e);
             DragMove();
+        }
+
+        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (!loginEmpty) return;
+            (sender as TextBox).Text = "";
+            loginEmpty = false;
+        }
+
+        private void TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if ((sender as TextBox).Text == "")
+            {
+                (sender as TextBox).Text = "E-mail";
+                loginEmpty = true;
+            }
         }
 
     }

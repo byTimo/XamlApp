@@ -25,6 +25,7 @@
                 <ResourceDictionary Source="/Themes/ChatMessageTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/LoginButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/PasswordControlTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/LoginWindowStyles.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>
