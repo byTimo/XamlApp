@@ -34,11 +34,24 @@ namespace ZappChat.Controls
         public string Text
         {
             get { return GetValue(TextProperty) as string; }
-            set { SetValue(TextProperty,value); }
+            set { SetValue(TextProperty, value); }
         }
+
         static LoginButton()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(LoginButton), new FrameworkPropertyMetadata(typeof(LoginButton)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof (LoginButton),
+                new FrameworkPropertyMetadata(typeof (LoginButton)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            VisualStateManager.GoToState(this, "Static", false);
+        }
+
+        public void SwapState(bool isLogin)
+        {
+            VisualStateManager.GoToState(this, isLogin ? "Loading" : "Static", true);
         }
     }
 }

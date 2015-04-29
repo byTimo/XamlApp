@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ZappChat.Controls;
 
 namespace ZappChat
 {
@@ -19,6 +20,7 @@ namespace ZappChat
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private bool test = false;
         private bool loginEmpty = true;
         public LoginWindow()
         {
@@ -54,6 +56,12 @@ namespace ZappChat
                 (sender as TextBox).Text = "E-mail";
                 loginEmpty = true;
             }
+        }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            test = !test;
+            (sender as LoginButton).SwapState(test);
         }
 
     }
