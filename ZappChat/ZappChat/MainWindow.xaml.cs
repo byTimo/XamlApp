@@ -26,6 +26,18 @@ namespace ZappChat
         public MainWindow()
         {
             InitializeComponent();
+            var tab = new TabItem {Header = "Завтра" };
+            var list = new ListBox()
+            {
+                Items =
+                {
+                    new QueryControl() {IsVin = true, Text = "Привет, это тест!"},
+                    new QueryControl() {IsYear = true, Text = "Привет, это тест!"},
+                    new QueryControl() {IsVin = true, IsYear = true, Text = "Привет, это тест!"}
+                }
+            };
+            tab.Content = list;
+            tabs.Items.Add(tab);
             AppEventManager.Connection += (s, e) => { statusButton.Status = e.ConnectionStatus; };
 
             AppEventManager.TakeMessage += (s, e) =>
