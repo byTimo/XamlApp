@@ -36,6 +36,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Drawing" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -45,6 +48,9 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\packages\WebSocket4Net.0.12\lib\net45\WebSocket4Net.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -63,9 +69,18 @@
     </Compile>
     <Compile Include="Core\Dialogue.cs" />
     <Compile Include="Core\Message.cs" />
+    <Compile Include="Core\Socket\Requests\AuthorizationRequests.cs" />
+    <Compile Include="Core\Socket\Requests\HistoryRequest.cs" />
+    <Compile Include="Core\Socket\Requests\LightRequests.cs" />
+    <Compile Include="Core\Socket\Requests\ListQueryRequest.cs" />
+    <Compile Include="Core\Socket\Requests\Request.cs" />
+    <Compile Include="Core\Socket\Requests\RequestWithId.cs" />
+    <Compile Include="Core\Socket\Requests\RequestWithRoomId.cs" />
+    <Compile Include="Core\Support.cs" />
     <Compile Include="ServerEmulation.xaml.cs">
       <DependentUpon>ServerEmulation.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Core\Socket\ZappChatSocketEventManager.cs" />
     <Page Include="Controls\QueryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -185,6 +200,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -239,6 +255,7 @@
   <ItemGroup>
     <Resource Include="Images\arrow.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Expression\Blend\.NETFramework\v4.5\Microsoft.Expression.Blend.WPF.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
