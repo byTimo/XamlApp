@@ -26,96 +26,103 @@ namespace ZappChat
         public MainWindow()
         {
             InitializeComponent();
+
             AppEventManager.Connection += (s, e) => { statusButton.Status = e.ConnectionStatus; };
-
-            AppEventManager.TakeMessage += (s, e) =>
-            {
-                var message = e.Message;
-                message.Status = MessageStatus.Delivered;
-                //Реагирование на приход нового сообщения:
-                //Чата
-                if (e.DialogueId == chat.CurrentDialogue.Id)
-                {
-                    message.Status = MessageStatus.Read;
-                    chat.AddNewMessageToChat(e.DialogueId, message);
-                }
-                //Кнопки "Сообщения"
-                if (message.Status != MessageStatus.Read
-                    &&
-                    IsControlHaveUnreadMessageForTakeMessage(
-                        Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId)))
-                    messageButton.MessagesCount++;
-                //Списка диалогов
-                Dialogues.AddNewMessageToList(e.DialogueId,message);
-            };
-
-            AppEventManager.DeleteConfirmationDialogue += (s, e) =>
-            {
-                //Реагирование по запросу на удаление:
-                //Блокера:
-                ControlBlocker.Visibility = Visibility.Visible;
-                //Синего меню:
-                BlueMenu.DeleteDialgoueQery(e.DeletedDialogue);
-            };
-            AppEventManager.DeleteDialogue += (s, e) =>
-            {
-                //Реагирование по запросу на удаление:
-                if (e.IsConfirmed)
-                {
-                    //Кнопки сообщения:
-                    if (
-                        IsControlHaveUnreadMessage(
-                            Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
-                        messageButton.MessagesCount--;
-                    //Кнопка запросов:
-                    if (IsControlHaveUnreadMessage(
-                            Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
-                        myQuaryButton.MessagesCount--;
-                    //Чата
-                    if (chat.CurrentDialogue.Id == e.DeletedDialogue.Id)
-                    {
-                        chat.CloseDialogue();
-                        ShowDialogue(false);
-                    }
-                    //Списка диалогов
-                    Dialogues.RemoveDialogueFromLists(e.DeletedDialogue.Id);
-                }
-                //Блокера:
-                ControlBlocker.Visibility = Visibility.Collapsed;
-            };
-
-            AppEventManager.OpenDialogue += (s, e) =>
-            {
-                ShowDialogue(true);
-                //Реагирование на открытие диалога:
-                //Кнопки сообщения:
-                    if (
-                        IsControlHaveUnreadMessage(
-                            Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
-                        messageButton.MessagesCount--;
-                    //Кнопка запросов:
-                    if (IsControlHaveUnreadMessage(
-                            Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
-                        myQuaryButton.MessagesCount--;
-                //Список диалогов:
-                Dialogues.ChangeMessageStatus(e.OpenedDialogue);
-                //Чата
-                chat.OpenDialogue(e.OpenedDialogue);
-            };
+            AppEventManager.TakeMessage += TakeMessage;
+            AppEventManager.DeleteConfirmationDialogue += DeleteConfirmationDialogue;
+            AppEventManager.DeleteDialogue += DeleteDialogue;
+            AppEventManager.OpenDialogue += OpenDialogue;
             AppEventManager.CloseDialogue += () => ShowDialogue(false);
-            AppEventManager.TakeQuery += (s, e) =>
-            {
-                //Реагирование на получение запроса:
-                //Кнопки запросов
-                if(chat.CurrentDialogue.Id != e.DialogueId)
-                    myQuaryButton.MessagesCount++;
-                //Списка диалогов
-                Dialogues.TakeQuery(e.DialogueId, e.Interlocutor, e.Query, e.Time);
-                //Чата
-                if(chat.CurrentDialogue.Id == e.DialogueId)
-                    chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
-            };
+            AppEventManager.TakeQuery += TakeQuery;
             AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
+        }
+
+        private void TakeMessage(object sender, MessagingEventArgs e)
+        {
+            var message = e.Message;
+            message.Status = MessageStatus.Delivered;
+            //Реагирование на приход нового сообщения:
+            //Чата
+            if (e.DialogueId == chat.CurrentDialogue.Id)
+            {
+                message.Status = MessageStatus.Read;
+                chat.AddNewMessageToChat(e.DialogueId, message);
+            }
+            //Кнопки "Сообщения"
+            if (message.Status != MessageStatus.Read
+                &&
+                IsControlHaveUnreadMessageForTakeMessage(
+                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId)))
+                messageButton.MessagesCount++;
+            //Списка диалогов
+            Dialogues.AddNewMessageToList(e.DialogueId, message);
+        }
+        private void DeleteConfirmationDialogue(object sender, DeletingEventArgs e)
+        {
+            //Реагирование по запросу на удаление:
+            //Блокера:
+            ControlBlocker.Visibility = Visibility.Visible;
+            //Синего меню:
+            BlueMenu.DeleteDialgoueQery(e.DeletedDialogue);
+        }
+        private void DeleteDialogue(object sender, DeletingEventArgs e)
+        {
+            //Реагирование по запросу на удаление:
+            if (e.IsConfirmed)
+            {
+                //Кнопки сообщения:
+                if (
+                    IsControlHaveUnreadMessage(
+                        Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
+                    messageButton.MessagesCount--;
+                //Кнопка запросов:
+                if (IsControlHaveUnreadMessage(
+                        Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
+                    myQuaryButton.MessagesCount--;
+                //Чата
+                if (chat.CurrentDialogue.Id == e.DeletedDialogue.Id)
+                {
+                    chat.CloseDialogue();
+                    ShowDialogue(false);
+                }
+                //Списка диалогов
+                Dialogues.RemoveDialogueFromLists(e.DeletedDialogue.Id);
+            }
+            //Блокера:
+            ControlBlocker.Visibility = Visibility.Collapsed;
+        }
+        private void OpenDialogue(object sender, DialogueOpenEventArgs e)
+        {
+            ShowDialogue(true);
+            //Реагирование на открытие диалога:
+            //Кнопки сообщения:
+            if (
+                IsControlHaveUnreadMessage(
+                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
+                messageButton.MessagesCount--;
+            //Кнопка запросов:
+            if (IsControlHaveUnreadMessage(
+                    Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
+                myQuaryButton.MessagesCount--;
+            //Список диалогов:
+            Dialogues.ChangeMessageStatus(e.OpenedDialogue);
+            //Чата
+            chat.OpenDialogue(e.OpenedDialogue);
+
+        }
+
+        private void TakeQuery(object sender, TakeQueryEventArgs e)
+        {
+
+            //Реагирование на получение запроса:
+            //Кнопки запросов
+            if (chat.CurrentDialogue.Id != e.DialogueId)
+                myQuaryButton.MessagesCount++;
+            //Списка диалогов
+            Dialogues.TakeQuery(e.DialogueId, e.Interlocutor, e.Query, e.Time);
+            //Чата
+            if (chat.CurrentDialogue.Id == e.DialogueId)
+                chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
         }
 
         private bool IsControlHaveUnreadMessageForTakeMessage(MessageControl control)

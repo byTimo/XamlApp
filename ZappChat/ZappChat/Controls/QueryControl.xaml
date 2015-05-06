@@ -7,7 +7,27 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.QueryControl"
 	x:Name="quaryControl"
-	d:DesignWidth="640" d:DesignHeight="480" Height="100">
+	d:DesignWidth="640" d:DesignHeight="480" Height="100" Width="585" Cursor="Hand">
+	<UserControl.Resources>
+		<Storyboard x:Key="OnMouseEnter1">
+			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="LayoutRoot">
+				<EasingColorKeyFrame KeyTime="0" Value="#FFFEFFF2"/>
+			</ColorAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="OnMouseLeave1">
+			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="LayoutRoot">
+				<EasingColorKeyFrame KeyTime="0" Value="White"/>
+			</ColorAnimationUsingKeyFrames>
+		</Storyboard>
+	</UserControl.Resources>
+	<UserControl.Triggers>
+		<EventTrigger RoutedEvent="Mouse.MouseEnter">
+			<BeginStoryboard x:Name="OnMouseEnter1_BeginStoryboard" Storyboard="{StaticResource OnMouseEnter1}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="Mouse.MouseLeave">
+			<BeginStoryboard x:Name="OnMouseLeave1_BeginStoryboard" Storyboard="{StaticResource OnMouseLeave1}"/>
+		</EventTrigger>
+	</UserControl.Triggers>
 
 	<Grid x:Name="LayoutRoot" Background="White">
 		<Grid.ColumnDefinitions>
@@ -18,14 +38,14 @@
 			<ColumnDefinition Width="30"/>
 		</Grid.ColumnDefinitions>
 		<Rectangle Grid.Column="0" x:Name="Line" HorizontalAlignment="Right" Fill="#FFCDCBCB" Width="2" Margin="0,0,10,0" StrokeThickness="0"/>
-		<Ellipse x:Name="Elipce" Grid.Column="0" Fill="White" HorizontalAlignment="Right" StrokeThickness="2" VerticalAlignment="Top" Stroke="#FF1FB6E4" Margin="0,7,3,0" Width="16" Height="16"/>
-		<TextBlock Grid.Column="1" HorizontalAlignment="Left" Text="Поступил запрос:" VerticalAlignment="Top" Margin="10,7,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" Foreground="#FF747474"/>
-		<TextBlock x:Name="TextQuary" Grid.Column="1" Text="{Binding ElementName=quaryControl, Path=Text}" VerticalAlignment="Top" Margin="10,27,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" FontWeight="Bold"/>		
-		<Border Grid.Column="2" VerticalAlignment="Top" Margin="2,7,2,0" Padding="7,2" CornerRadius="10" BorderThickness="1" BorderBrush="#FFCDCBCB">
-			<TextBlock x:Name="VinText" Text="{Binding ElementName=quaryControl, Path=Vin}" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="10.667" Foreground="#FFA49C9C"/>
+		<Ellipse x:Name="Elipce" Grid.Column="0" Fill="White" HorizontalAlignment="Left" StrokeThickness="3" VerticalAlignment="Top" Stroke="#FF1FB6E4" Margin="10,20,0,0" Width="18" Height="18"/>
+		<TextBlock Grid.Column="1" HorizontalAlignment="Left" Text="Поступил запрос:" VerticalAlignment="Top" Margin="15,20,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="16" Foreground="#FF505050"/>
+		<TextBlock x:Name="TextQuary" Grid.Column="1" Text="{Binding ElementName=quaryControl, Path=Text}" VerticalAlignment="Top" Margin="15,43,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="16" FontWeight="Bold" Foreground="#FF505050"/>		
+		<Border x:Name="VinBorder" Grid.Column="2" VerticalAlignment="Top" Margin="2,15,2,0" Padding="7,2" CornerRadius="10" BorderThickness="1" BorderBrush="#FFD3DAE4" Width="0">
+			<TextBlock x:Name="VinText" Text="VIN" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="10.667" Foreground="#FFD3DAE4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Border>
-		<Border Grid.Column="3" VerticalAlignment="Top" Margin="2,7,2,0" Padding="7,2" CornerRadius="10" BorderThickness="1" BorderBrush="#FFCDCBCB">
-			<TextBlock x:Name="YearText" Text="{Binding ElementName=quaryControl, Path=Year}" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="10.667" Foreground="#FFA49C9C"/>
+		<Border x:Name="YearBorder" Grid.Column="3" VerticalAlignment="Top" Margin="2,15,2,0" Padding="7,2" CornerRadius="10" BorderThickness="1" BorderBrush="#FFD3DAE4" Width="0">
+			<TextBlock x:Name="YearText" Text="2010" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="10.667" Foreground="#FFD3DAE4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Border>
 	</Grid>
 </UserControl>

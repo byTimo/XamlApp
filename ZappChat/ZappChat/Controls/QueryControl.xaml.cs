@@ -25,20 +25,29 @@ namespace ZappChat.Controls
             set { SetValue(TextProperty, value); }
 	    }
 
-	    public static readonly DependencyProperty VinProperty = DependencyProperty.Register("Vin", typeof (string), typeof (QueryControl));
-	    public string Vin
+	    public static readonly DependencyProperty IsVinProperty = DependencyProperty.Register("IsVin", typeof (bool),
+	        typeof (QueryControl), new FrameworkPropertyMetadata(false));
+	    public bool IsVin
 	    {
-            get { return GetValue(VinProperty) as string; }
-            set { SetValue(VinProperty, value); }
+            get { return (bool)GetValue(IsVinProperty); }
+	        set
+	        {
+	            SetValue(IsVinProperty,value);
+	            VinBorder.Width = value ? 40 : 0;
+	        }
 	    }
 
-	    public static readonly DependencyProperty YearProperty = DependencyProperty.Register("Year", typeof (string),
-	        typeof (QueryControl));
+	    public static readonly DependencyProperty IsYearProperty = DependencyProperty.Register("IsYear", typeof (bool),
+	        typeof (QueryControl), new FrameworkPropertyMetadata(false));
 
-	    public string Year
+	    public bool IsYear
 	    {
-            get { return GetValue(YearProperty) as string; }
-            set { SetValue(YearProperty, value); }
+            get { return (bool)GetValue(IsYearProperty); }
+	        set
+	        {
+	            SetValue(IsYearProperty, value);
+	            YearBorder.Width = value ? 40 : 0;
+	        }
 	    }
         //TODO Время, прошедшее с момента прихода!
 		public QueryControl()
