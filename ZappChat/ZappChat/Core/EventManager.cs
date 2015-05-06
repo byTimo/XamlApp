@@ -10,6 +10,13 @@ namespace ZappChat.Core
             Connection(sender, new ConnectionEventArgs(status));
         }
 
+        public static event AuthorizationEventHandler Authorization;
+
+        public static void AuthorizationEvent(object sender, AuthorizationStatus status)
+        {
+            Authorization(sender, new AuthorizationEventArgs(status));
+        }
+
         public static event MessagingEventHandler TakeMessage;
 
         public static void TakeMessageEvent(object sender,int dialogueId, Message message)

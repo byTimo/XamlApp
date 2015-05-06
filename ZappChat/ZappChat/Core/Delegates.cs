@@ -2,6 +2,8 @@
 {
     public delegate void ConnectionEventHandler(object sender, ConnectionEventArgs e);
 
+    public delegate void AuthorizationEventHandler(object sender, AuthorizationEventArgs e);
+
     public delegate void MessagingEventHandler(object sender, MessagingEventArgs e);
 
     public delegate void TakeQueryEventHandler(object sender, TakeQueryEventArgs e);

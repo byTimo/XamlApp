@@ -13,8 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Newtonsoft.Json;
 using ZappChat.Controls;
+using ZappChat.Core;
 using ZappChat.Core.Socket;
+using ZappChat.Core.Socket.Requests;
 
 namespace ZappChat
 {
@@ -28,6 +31,23 @@ namespace ZappChat
         public LoginWindow()
         {
             InitializeComponent();
+            AppEventManager.Authorization += AuthorizationResult;
+        }
+
+        private void AuthorizationResult(object sender, AuthorizationEventArgs e)
+        {
+            switch (e.Status)
+            {
+                case AuthorizationStatus.Ok:
+                    //@TODO
+                    break;
+                case AuthorizationStatus.Fail:
+                    //@TODO
+                    break;
+                case AuthorizationStatus.Error:
+                    //@TODO
+                    break;
+            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -63,8 +83,18 @@ namespace ZappChat
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            test = !test;
-            (sender as LoginButton).SwapState(test);
+            var button = sender as LoginButton;
+            if(LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null) return;
+            if (button.LoginTry) return;
+            button.SwapState(true);
+            var request = new AuthorizationLoginAndPasswordRequest
+            {
+                email = LoginTextBox.Text,
+                password = Support.Base64FromString(
+                Support.XorEncoder(PasswordBox.GetPassword()))
+            };
+            var jsonString = JsonConvert.SerializeObject(request);
+            ZappChatSocketEventManager.SendObject(jsonString);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

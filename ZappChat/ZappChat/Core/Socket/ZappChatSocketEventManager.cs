@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 using SuperSocket.ClientEngine;
 using WebSocket4Net;
 
@@ -7,8 +8,6 @@ namespace ZappChat.Core.Socket
     static class ZappChatSocketEventManager
     {
         private static readonly WebSocket _webSocket;
-        private static string _email;
-        private static string _password;
 
 
         static ZappChatSocketEventManager()
@@ -22,12 +21,33 @@ namespace ZappChat.Core.Socket
         }
         private static void MessageReceivedEvent(object sender, MessageReceivedEventArgs e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                dynamic responseJson = JsonConvert.DeserializeObject(e.Message);
+                if(responseJson.action == null)
+                    throw new Exception("Неверно пришёл Json");
+                switch ((string)responseJson.action.Value)
+                {
+                    case "client/auth":
+                        var status = responseJson.status.Value == "ok"
+                            ?  AuthorizationStatus.Ok 
+                            : responseJson.status.Value == "fail"
+                                ? AuthorizationStatus.Fail
+                                : AuthorizationStatus.Error;
+                        AppEventManager.AuthorizationEvent(_webSocket, status);
+                        break;
+                        //@TODO
+                }
+            }
+            catch (Exception exception)
+            {
+                //@TODO
+            }
         }
 
         private static void SocketErrorEvent(object sender, ErrorEventArgs e)
         {
-            throw new Exception("Ошибка инициализации класса подкючения.");
+            throw e.Exception;
         }
 
         private static void ClosedConnection(object sender, EventArgs e)
@@ -48,6 +68,12 @@ namespace ZappChat.Core.Socket
             while (_webSocket.State == WebSocketState.Connecting)
             {
             }
+            return _webSocket.State == WebSocketState.Open;
+        }
+
+        public static bool SendObject(string jsonString)
+        {
+            _webSocket.Send(jsonString);
             return _webSocket.State == WebSocketState.Open;
         }
     }

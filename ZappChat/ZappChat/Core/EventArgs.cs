@@ -61,4 +61,14 @@ namespace ZappChat.Core
             OpenedDialogue = dialogue;
         }
     }
+
+    public class AuthorizationEventArgs : EventArgs
+    {
+        public readonly AuthorizationStatus Status;
+
+        public AuthorizationEventArgs(AuthorizationStatus status)
+        {
+            Status = status;
+        }
+    }
 }
