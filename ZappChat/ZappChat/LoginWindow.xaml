@@ -6,7 +6,7 @@
     mc:Ignorable="d" x:Class="ZappChat.LoginWindow"
         Title="MainWindow" WindowStyle="None"
 		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="687" Width="1024"
-		ResizeMode="CanResize" WindowStartupLocation="CenterScreen">
+		ResizeMode="CanResize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
     <Border CornerRadius="10" Background="White">
 		<Grid x:Name="MainGrid">
 			<Grid.RowDefinitions>
@@ -18,11 +18,11 @@
 			<Button x:Name="MinimazeButton" HorizontalAlignment="Right" Height="30" Style="{DynamicResource MinimazeButton}" VerticalAlignment="Top" Width="30" Margin="0,12.5,47.5,0" Click="MinimazeButton_Click"/>
 
 			<!--LOADING-->
-			<Border Visibility="Hidden" x:Name="Loading" Grid.Row="1" Background="#FF2FB6E5" CornerRadius="0,0,10,10">
+			<Border Visibility="Visible" x:Name="Loading" Grid.Row="1" Background="#FF2FB6E5" CornerRadius="0,0,10,10">
 				<TextBlock Text="ZAPPCHAT" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 			</Border>
 			<!--Authorization -->
-			<Border x:Name="Authorization" Background="#FF2FB6E5" CornerRadius="0,0,10,10" Margin="0" Grid.Row="1">
+			<Border Visibility="Hidden" x:Name="Authorization" Background="#FF2FB6E5" CornerRadius="0,0,10,10" Margin="0" Grid.Row="1">
 				<Grid >
 					<Grid.RowDefinitions>
 						<RowDefinition Height="150"/>

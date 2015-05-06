@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using ZappChat.Controls;
+using ZappChat.Core.Socket;
 
 namespace ZappChat
 {
@@ -64,5 +67,19 @@ namespace ZappChat
             (sender as LoginButton).SwapState(test);
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(new Action(ExecuteAfterWindowRender),
+                DispatcherPriority.ContextIdle, null);
+        }
+
+        private void ExecuteAfterWindowRender()
+        {
+            if (ZappChatSocketEventManager.OpenWebSocket())
+            {
+                Loading.Visibility = Visibility.Collapsed;
+                Authorization.Visibility = Visibility.Visible;
+            }
+        }
     }
 }
