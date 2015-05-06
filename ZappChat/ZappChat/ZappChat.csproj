@@ -76,7 +76,6 @@
     <Compile Include="Core\Socket\Requests\Request.cs" />
     <Compile Include="Core\Socket\Requests\RequestWithId.cs" />
     <Compile Include="Core\Socket\Requests\RequestWithRoomId.cs" />
-    <Compile Include="Core\Support.cs" />
     <Compile Include="ServerEmulation.xaml.cs">
       <DependentUpon>ServerEmulation.xaml</DependentUpon>
     </Compile>

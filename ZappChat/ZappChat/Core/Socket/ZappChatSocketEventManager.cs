@@ -36,7 +36,7 @@ namespace ZappChat.Core.Socket
 
         private void OpenedConnection(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

@@ -8,6 +8,6 @@ namespace ZappChat.Core.Socket.Requests
 {
     class ListQueryRequest : Request
     {
-        public int from_id { get; set; }
+        public uint from_id { get; set; }
     }
 }
