@@ -22,7 +22,7 @@
 				<TextBlock Text="ZAPPCHAT" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 			</Border>
 			<!--Authorization -->
-			<Border Visibility="Visible" x:Name="Authorization" Background="#FF2FB6E5" CornerRadius="0,0,10,10" Margin="0" Grid.Row="1">
+			<Border Visibility="Hidden" x:Name="Authorization" Background="#FF2FB6E5" CornerRadius="0,0,10,10" Margin="0" Grid.Row="1">
 				<Grid >
 					<Grid.RowDefinitions>
 						<RowDefinition Height="150"/>
@@ -38,7 +38,7 @@
 						<TextBox x:Name="LoginTextBox" Text="E-mail" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="18.667" Background="{x:Null}" BorderBrush="{x:Null}" Style="{DynamicResource TextBoxLoginWindow}" GotKeyboardFocus="TextBox_GotKeyboardFocus" LostKeyboardFocus="TextBox_LostKeyboardFocus" />
 					</Border>
 					<controls:PasswordControl Grid.Column="1" Grid.Row="1" x:Name="PasswordBox" VerticalAlignment="Top" Margin="60,70,60,0" Background="White" CornerRadius="10" Padding="15,15,10,15" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="18.667" Height="55"/>
-                    <controls:LoginButton Grid.Column="1" Grid.Row="1" CornerRadius="10" Text="Войти в панель управления" VerticalAlignment="Top" Margin="60,146,60,0" Padding="15,20,10,20" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="21.333" Foreground="White" Cursor="Hand" Click="LoginButton_Click">
+                    <controls:LoginButton x:Name="loginButton" Grid.Column="1" Grid.Row="1" CornerRadius="10" Text="Войти в панель управления" VerticalAlignment="Top" Margin="60,146,60,0" Padding="15,20,10,20" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="21.333" Foreground="White" Cursor="Hand" Click="LoginButton_Click">
                         <controls:LoginButton.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#FFAAE25A" Offset="0"/>

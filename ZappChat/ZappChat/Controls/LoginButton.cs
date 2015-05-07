@@ -38,14 +38,15 @@ namespace ZappChat.Controls
         }
 
         public static readonly DependencyProperty LoginTryProperty = DependencyProperty.Register("LoginTry",
-            typeof (bool), typeof (LoginButton),
+            typeof(bool), typeof(LoginButton),
             new FrameworkPropertyMetadata(false));
 
         public bool LoginTry
         {
-            get { return (bool) GetValue(LoginTryProperty); }
+            get { return (bool)GetValue(LoginTryProperty); }
             private set { SetValue(LoginTryProperty, value); }
         }
+
 
         static LoginButton()
         {

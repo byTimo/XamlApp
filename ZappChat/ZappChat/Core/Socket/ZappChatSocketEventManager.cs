@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Windows.Documents;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SuperSocket.ClientEngine;
 using WebSocket4Net;
 
@@ -8,6 +10,8 @@ namespace ZappChat.Core.Socket
     static class ZappChatSocketEventManager
     {
         private static readonly WebSocket _webSocket;
+        public static LoginWindow Login { get; set; }
+        public static MainWindow MainWindow { get; set; }
 
 
         static ZappChatSocketEventManager()
@@ -23,18 +27,13 @@ namespace ZappChat.Core.Socket
         {
             try
             {
-                dynamic responseJson = JsonConvert.DeserializeObject(e.Message);
-                if(responseJson.action == null)
+                var responseJson = (JObject)JsonConvert.DeserializeObject(e.Message);
+                if(responseJson["action"] == null)
                     throw new Exception("Неверно пришёл Json");
-                switch ((string)responseJson.action.Value)
+                switch ((string)responseJson["action"])
                 {
                     case "client/auth":
-                        var status = responseJson.status.Value == "ok"
-                            ?  AuthorizationStatus.Ok 
-                            : responseJson.status.Value == "fail"
-                                ? AuthorizationStatus.Fail
-                                : AuthorizationStatus.Error;
-                        AppEventManager.AuthorizationEvent(_webSocket, status);
+                        AuthorizationEvent(e.Message);
                         break;
                         //@TODO
                 }
@@ -42,6 +41,7 @@ namespace ZappChat.Core.Socket
             catch (Exception exception)
             {
                 //@TODO
+                throw exception;
             }
         }
 
@@ -75,6 +75,26 @@ namespace ZappChat.Core.Socket
         {
             _webSocket.Send(jsonString);
             return _webSocket.State == WebSocketState.Open;
+        }
+
+        private static void AuthorizationEvent(string json)
+        {
+            AuthorizationStatus status = AuthorizationStatus.Error;
+            var responceJson = (JObject) JsonConvert.DeserializeObject(json);
+
+            switch ((string)responceJson.GetValue("status"))
+            {
+                case "ok":
+                    status = AuthorizationStatus.Ok;
+                    break;
+                case "fail":
+                    status = AuthorizationStatus.Fail;
+                    break;
+                case "error":
+                    status = AuthorizationStatus.Error;
+                    break;
+            }
+            Login.AuthorizationResult(status);
         }
     }
 }

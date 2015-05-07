@@ -64,11 +64,22 @@ namespace ZappChat.Core
 
     public class AuthorizationEventArgs : EventArgs
     {
-        public readonly AuthorizationStatus Status;
+        public string JsonObject;
 
-        public AuthorizationEventArgs(AuthorizationStatus status)
+        public AuthorizationEventArgs(string jsonObject)
         {
-            Status = status;
+            JsonObject = jsonObject;
+
+        }
+    }
+
+    public class SwitchWindowEventArgs : EventArgs
+    {
+        public readonly string WindowName;
+
+        public SwitchWindowEventArgs(string windowName)
+        {
+            WindowName = windowName;
         }
     }
 }

@@ -2,7 +2,8 @@
 {
     public delegate void ConnectionEventHandler(object sender, ConnectionEventArgs e);
 
-    public delegate void AuthorizationEventHandler(object sender, AuthorizationEventArgs e);
+    //Переделал для теста
+    public delegate void AuthorizationEventHandler(object sender, string json);
 
     public delegate void MessagingEventHandler(object sender, MessagingEventArgs e);
 
@@ -13,4 +14,6 @@
     public delegate void OpenDialogueEventHandler(object sender, DialogueOpenEventArgs e);
 
     public delegate void CloseDialogueEventHandler();
+
+    public delegate void SwitchWindowEventHandler(object sender, SwitchWindowEventArgs e);
 }

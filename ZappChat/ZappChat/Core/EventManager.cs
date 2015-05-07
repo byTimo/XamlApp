@@ -12,9 +12,9 @@ namespace ZappChat.Core
 
         public static event AuthorizationEventHandler Authorization;
 
-        public static void AuthorizationEvent(object sender, AuthorizationStatus status)
+        public static void AuthorizationEvent(object sender, string json)
         {
-            Authorization(sender, new AuthorizationEventArgs(status));
+            Authorization(sender, json);
         }
 
         public static event MessagingEventHandler TakeMessage;
@@ -64,6 +64,13 @@ namespace ZappChat.Core
         public static void CloseDialogueEvent()
         {
             CloseDialogue();
+        }
+
+        public static event SwitchWindowEventHandler SwitchWindows;
+
+        public static void SwitchWindowEvent(object sender, string windwoName)
+        {
+            SwitchWindows(sender, new SwitchWindowEventArgs(windwoName));
         }
     }
 }

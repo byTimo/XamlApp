@@ -26,26 +26,26 @@ namespace ZappChat
     /// </summary>
     public partial class LoginWindow : Window
     {
-        private bool test = false;
         private bool loginEmpty = true;
         public LoginWindow()
         {
             InitializeComponent();
-            AppEventManager.Authorization += AuthorizationResult;
         }
 
-        private void AuthorizationResult(object sender, AuthorizationEventArgs e)
+        public void AuthorizationResult(AuthorizationStatus state)
         {
-            switch (e.Status)
+            if(loginButton.LoginTry) loginButton.SwapState(false);
+            switch (state)
             {
                 case AuthorizationStatus.Ok:
                     //@TODO
                     break;
                 case AuthorizationStatus.Fail:
-                    //@TODO
+                    
+                    //@TODO <- сигнал о том, что произошла ошибка в логине/пароле
                     break;
                 case AuthorizationStatus.Error:
-                    //@TODO
+                    //@TODO <- сигнал о том, что беда на сервере :(
                     break;
             }
         }
@@ -99,8 +99,9 @@ namespace ZappChat
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Dispatcher.BeginInvoke(new Action(ExecuteAfterWindowRender),
-                DispatcherPriority.ContextIdle, null);
+            //Dispatcher.BeginInvoke(new Action(ExecuteAfterWindowRender),
+            //    DispatcherPriority.ContextIdle, null);
+            ExecuteAfterWindowRender();
         }
 
         private void ExecuteAfterWindowRender()
