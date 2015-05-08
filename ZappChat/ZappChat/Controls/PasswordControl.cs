@@ -17,14 +17,16 @@ using System.Windows.Shapes;
 
 namespace ZappChat.Controls
 {
-    [TemplatePart(Name = "ShowPasswordButton", Type = typeof(ToggleButton)),
-     TemplatePart(Name = "Password", Type = typeof(PasswordBox)),
-     TemplatePart(Name = "Text", Type = typeof(TextBox))]
+    [TemplatePart(Name = "ShowPasswordButton", Type = typeof(ToggleButton))]
+    [TemplatePart(Name = "Password", Type = typeof(PasswordBox))]
+    [TemplatePart(Name = "Text", Type = typeof(TextBox))]
+    [TemplatePart(Name = "Label", Type = typeof(TextBox))]
     public class PasswordControl : Control
     {
         private PasswordBox _password;
         private TextBox _text;
         private ToggleButton _showButton;
+        private TextBox _label;
         public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register("CornerRadius",
             typeof (CornerRadius), typeof (PasswordControl));
 
@@ -63,55 +65,42 @@ namespace ZappChat.Controls
             _password = GetTemplateChild("Password") as PasswordBox;
             _showButton = GetTemplateChild("ShowPasswordButton") as ToggleButton;
             _text = GetTemplateChild("Text") as TextBox;
-            _text.GotKeyboardFocus += (sender, args) =>
+            _label = GetTemplateChild("Label") as TextBox;
+            _label.GotKeyboardFocus += (sender, args) =>
             {
                 if (!ViewPassword)
                 {
-                    _text.Visibility = Visibility.Collapsed;
-                    _password.Visibility = Visibility.Visible;
                     Keyboard.Focus(_password);
                 }
             };
+            _password.GotKeyboardFocus += (sender, args) => { _label.Visibility = Visibility.Collapsed; };
             _password.LostKeyboardFocus += (sender, args) =>
             {
                 if (_password.Password == string.Empty)
                 {
-                    _text.Visibility = Visibility.Visible;
-                    _password.Visibility = Visibility.Collapsed;
-                    _text.Text = "Пароль";
+                    _label.Visibility = Visibility.Visible;
                 }
             };
             _showButton.Checked += (sender, args) =>
             {
-                Secret = _password.Password;
-                ViewPassword = true;
+                _text.Text = _password.Password;
+                _password.Visibility =Visibility.Collapsed;
                 _text.Visibility = Visibility.Visible;
-                _password.Visibility = Visibility.Collapsed;
-                _text.Foreground = Brushes.Black;
-                _text.Text = Secret;
+                _label.Visibility = Visibility.Collapsed;
             };
             _showButton.Unchecked += (sender, args) =>
             {
-                Secret = _text.Text;
-                ViewPassword = false;
-                if (Secret == "")
-                {
-                    _text.Text = "Пароль";
-                }
-                else
-                {
-                    _text.Visibility = Visibility.Collapsed;
-                    _password.Visibility = Visibility.Visible;
-                }
-                _text.Foreground = new SolidColorBrush(Color.FromRgb(141, 141, 141));
-                _password.Password = Secret;
+                _password.Password = _text.Text;
+                _password.Visibility = Visibility.Visible;
+                _text.Visibility =Visibility.Collapsed;
+                if(_password.Password == string.Empty)
+                    _label.Visibility = Visibility.Visible;
             };
-            
         }
 
         public string GetPassword()
         {
-            return _text.Visibility == Visibility.Visible && _text.Text != "Пароль" ? _text.Text : _password.Password;
+            return ViewPassword ? _text.Text : _password.Password;
         }
     }
 }
