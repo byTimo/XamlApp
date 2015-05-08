@@ -3,7 +3,7 @@
     public delegate void ConnectionEventHandler(object sender, ConnectionEventArgs e);
 
     //Переделал для теста
-    public delegate void AuthorizationEventHandler(object sender, string json);
+    public delegate void AuthorizationEventHandler(object sender, WebSocketEventArgs e);
 
     public delegate void MessagingEventHandler(object sender, MessagingEventArgs e);
 

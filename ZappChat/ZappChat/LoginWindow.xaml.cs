@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -27,38 +28,43 @@ namespace ZappChat
     public partial class LoginWindow : Window
     {
         private bool loginEmpty = true;
+
         public LoginWindow()
         {
             InitializeComponent();
         }
 
-        public void AuthorizationResult(AuthorizationStatus state)
+        public void AuthorizationResult(string status)
         {
             if(loginButton.LoginTry) loginButton.SwapState(false);
-            switch (state)
+            switch (status)
             {
-                case AuthorizationStatus.Ok:
+                case "ok":
                     //@TODO
+                    AppEventManager.AuthorizationEvent(this, status);
                     break;
-                case AuthorizationStatus.Fail:
-                    
+                case "fail":
                     //@TODO <- сигнал о том, что произошла ошибка в логине/пароле
                     break;
-                case AuthorizationStatus.Error:
+                case "error":
                     //@TODO <- сигнал о том, что беда на сервере :(
                     break;
+                default:
+                    //@TODO сделать свой Exception
+                    throw new Exception("Неверный параметр поля JSon");
             }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            Application.Current.Shutdown();
         }
 
         private void MinimazeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
@@ -84,32 +90,36 @@ namespace ZappChat
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as LoginButton;
-            if(LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null) return;
+            if (LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null) return;
             if (button.LoginTry) return;
             button.SwapState(true);
             var request = new AuthorizationLoginAndPasswordRequest
             {
                 email = LoginTextBox.Text,
                 password = Support.Base64FromString(
-                Support.XorEncoder(PasswordBox.GetPassword()))
+                    Support.XorEncoder(PasswordBox.GetPassword()))
             };
             var jsonString = JsonConvert.SerializeObject(request);
-            ZappChatSocketEventManager.SendObject(jsonString);
+            AppSocketEventManager.SendObject(jsonString);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //Dispatcher.BeginInvoke(new Action(ExecuteAfterWindowRender),
-            //    DispatcherPriority.ContextIdle, null);
-            ExecuteAfterWindowRender();
+            var back = new BackgroundWorker();
+            back.DoWork += ExecuteAfterWindowRender;
+            back.RunWorkerAsync();
+
         }
 
-        private void ExecuteAfterWindowRender()
+        private void ExecuteAfterWindowRender(object sender, DoWorkEventArgs e)
         {
-            if (ZappChatSocketEventManager.OpenWebSocket())
+            if (AppSocketEventManager.OpenWebSocket())
             {
-                Loading.Visibility = Visibility.Collapsed;
-                Authorization.Visibility = Visibility.Visible;
+                Dispatcher.Invoke(() =>
+                {
+                    Loading.Visibility = Visibility.Collapsed;
+                    Authorization.Visibility = Visibility.Visible;
+                });
             }
         }
     }

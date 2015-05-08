@@ -14,7 +14,7 @@ namespace ZappChat.Core
 
         public static void AuthorizationEvent(object sender, string json)
         {
-            Authorization(sender, json);
+            Authorization(sender, new WebSocketEventArgs(json));
         }
 
         public static event MessagingEventHandler TakeMessage;

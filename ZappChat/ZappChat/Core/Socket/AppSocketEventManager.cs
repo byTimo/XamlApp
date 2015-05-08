@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SuperSocket.ClientEngine;
@@ -7,14 +10,16 @@ using WebSocket4Net;
 
 namespace ZappChat.Core.Socket
 {
-    static class ZappChatSocketEventManager
+    static class AppSocketEventManager
     {
         private static readonly WebSocket _webSocket;
         public static LoginWindow Login { get; set; }
         public static MainWindow MainWindow { get; set; }
 
+        public static bool IsChat { get; set; }
 
-        static ZappChatSocketEventManager()
+
+        static AppSocketEventManager()
         {
             _webSocket = new WebSocket("ws://zappchat.ru:7778");
             _webSocket.Opened += OpenedConnection;
@@ -29,11 +34,12 @@ namespace ZappChat.Core.Socket
             {
                 var responseJson = (JObject)JsonConvert.DeserializeObject(e.Message);
                 if(responseJson["action"] == null)
-                    throw new Exception("Неверно пришёл Json");
+                    throw new Exception("JSON object don't conaint action field!");
                 switch ((string)responseJson["action"])
                 {
                     case "client/auth":
-                        AuthorizationEvent(e.Message);
+                        CrossThreadOperationWithOneString(Login.Dispatcher, Login.AuthorizationResult,
+                            (string) responseJson["status"]);
                         break;
                         //@TODO
                 }
@@ -63,10 +69,12 @@ namespace ZappChat.Core.Socket
 
         public static bool OpenWebSocket()
         {
+            Thread.Sleep(2000);
             if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
                 _webSocket.Open();
             while (_webSocket.State == WebSocketState.Connecting)
             {
+                Thread.Sleep(500);
             }
             return _webSocket.State == WebSocketState.Open;
         }
@@ -77,24 +85,21 @@ namespace ZappChat.Core.Socket
             return _webSocket.State == WebSocketState.Open;
         }
 
-        private static void AuthorizationEvent(string json)
+        private static void CrossThreadOperationWithoutParams(Dispatcher dispatcher, Action action)
         {
-            AuthorizationStatus status = AuthorizationStatus.Error;
-            var responceJson = (JObject) JsonConvert.DeserializeObject(json);
-
-            switch ((string)responceJson.GetValue("status"))
-            {
-                case "ok":
-                    status = AuthorizationStatus.Ok;
-                    break;
-                case "fail":
-                    status = AuthorizationStatus.Fail;
-                    break;
-                case "error":
-                    status = AuthorizationStatus.Error;
-                    break;
-            }
-            Login.AuthorizationResult(status);
+            if (dispatcher.CheckAccess())
+                action();
+            else
+                dispatcher.Invoke(action);
         }
+
+        private static void CrossThreadOperationWithOneString(Dispatcher dispatcher, Action<string> action, string firstParam)
+        {
+            if (dispatcher.CheckAccess())
+                action(firstParam);
+            else
+                dispatcher.Invoke(action, firstParam);
+        }
+        
     }
 }

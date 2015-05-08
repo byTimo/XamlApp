@@ -22,15 +22,28 @@ namespace ZappChat
         {
             login = new LoginWindow();
             main = new MainWindow();
-            ZappChatSocketEventManager.MainWindow = main;
-            ZappChatSocketEventManager.Login = login;
+            AppEventManager.Authorization += SwitchWindow;
+            AppSocketEventManager.MainWindow = main;
+            AppSocketEventManager.Login = login;
 
             login.ShowDialog();
         }
 
-        private void SwitchWindow(object sender, SwitchWindowEventArgs e)
+        private void SwitchWindow(object sender, WebSocketEventArgs e)
         {
             //@TODO
+            if (!AppSocketEventManager.IsChat)
+            {
+                login.Close();
+                main.ShowDialog();
+                AppSocketEventManager.IsChat = false;
+            }
+            else
+            {
+                main.Close();
+                login.ShowDialog();
+                AppSocketEventManager.IsChat = false;
+            }
         }
     }
 }

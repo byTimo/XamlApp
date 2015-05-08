@@ -62,14 +62,13 @@ namespace ZappChat.Core
         }
     }
 
-    public class AuthorizationEventArgs : EventArgs
+    public class WebSocketEventArgs : EventArgs
     {
         public string JsonObject;
 
-        public AuthorizationEventArgs(string jsonObject)
+        public WebSocketEventArgs(string jsonObject)
         {
             JsonObject = jsonObject;
-
         }
     }
 

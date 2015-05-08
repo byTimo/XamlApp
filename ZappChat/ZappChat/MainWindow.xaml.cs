@@ -143,7 +143,7 @@ namespace ZappChat
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            Application.Current.Shutdown();
         }
 
         private void HideButton_Click_1(object sender, RoutedEventArgs e)
