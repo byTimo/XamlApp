@@ -100,7 +100,7 @@ namespace ZappChat
                     Support.XorEncoder(PasswordBox.GetPassword()))
             };
             var jsonString = JsonConvert.SerializeObject(request);
-            AppSocketEventManager.SendObject(jsonString);
+            AppWebSocketEventManager.SendObject(jsonString);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -113,7 +113,7 @@ namespace ZappChat
 
         private void ExecuteAfterWindowRender(object sender, DoWorkEventArgs e)
         {
-            if (AppSocketEventManager.OpenWebSocket())
+            if (AppWebSocketEventManager.OpenWebSocket())
             {
                 Dispatcher.Invoke(() =>
                 {

@@ -19,11 +19,11 @@ namespace ZappChat.Controls
     public class StatusButton : Button
     {
         public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof (AppStatus), typeof (StatusButton),
-            new FrameworkPropertyMetadata(AppStatus.Disconnect));
-        public AppStatus Status
+            DependencyProperty.Register("Status", typeof (ConnectionStatus), typeof (StatusButton),
+            new FrameworkPropertyMetadata(ConnectionStatus.Disconnect));
+        public ConnectionStatus Status
         {
-            get { return (AppStatus)GetValue(StatusProperty); }
+            get { return (ConnectionStatus)GetValue(StatusProperty); }
             set
             {
                 SetValue(StatusProperty, value);
@@ -55,21 +55,21 @@ namespace ZappChat.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            Status = AppStatus.Disconnect;
+            Status = ConnectionStatus.Disconnect;
         }
 
-        private void ChangeStatusOnButton(AppStatus nowStatus)
+        private void ChangeStatusOnButton(ConnectionStatus nowStatus)
         {
             switch (nowStatus)
             {
-                case AppStatus.Connect:
+                case ConnectionStatus.Connect:
                     IndicaterColor = new LinearGradientBrush(new GradientStopCollection{
                         new GradientStop(Color.FromArgb(255,173,228,95),0),
                         new GradientStop(Color.FromArgb(255,155,196,60),100.0)
                     });
                     StatusText = "В сети";
                     break;
-                case AppStatus.Disconnect:
+                case ConnectionStatus.Disconnect:
                     IndicaterColor = new LinearGradientBrush(new GradientStopCollection{
                         new GradientStop(Color.FromArgb(255,228,63,60),0),
                         new GradientStop(Color.FromArgb(255,225,95,95),1.0)

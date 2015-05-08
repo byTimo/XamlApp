@@ -6,10 +6,11 @@
         Fail,
         Error
     }
-    public enum AppStatus
+    public enum ConnectionStatus
     {
         Connect,
-        Disconnect
+        Disconnect,
+        Error
     }
 
     public enum MessageStatus

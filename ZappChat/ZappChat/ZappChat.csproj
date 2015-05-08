@@ -85,7 +85,7 @@
     <Compile Include="Core\Socket\Requests\Request.cs" />
     <Compile Include="Core\Socket\Requests\RequestWithId.cs" />
     <Compile Include="Core\Socket\Requests\RequestWithRoomId.cs" />
-    <Compile Include="Core\Socket\AppSocketEventManager.cs" />
+    <Compile Include="Core\Socket\AppWebSocketEventManager.cs" />
     <Compile Include="Core\Support.cs" />
     <Compile Include="LoginWindow.xaml.cs">
       <DependentUpon>LoginWindow.xaml</DependentUpon>

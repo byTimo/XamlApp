@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -10,16 +11,20 @@ using WebSocket4Net;
 
 namespace ZappChat.Core.Socket
 {
-    static class AppSocketEventManager
+    static class AppWebSocketEventManager
     {
+        private const int MaxConnectAttemptCount = 10;
+        private const int WaitTimeBetweenConnectAttemptInMillisecond = 500;
+
         private static readonly WebSocket _webSocket;
         public static LoginWindow Login { get; set; }
         public static MainWindow MainWindow { get; set; }
 
+        public static ConnectionStatus Connection { get; private set; }
         public static bool IsChat { get; set; }
 
 
-        static AppSocketEventManager()
+        static AppWebSocketEventManager()
         {
             _webSocket = new WebSocket("ws://zappchat.ru:7778");
             _webSocket.Opened += OpenedConnection;
@@ -27,6 +32,8 @@ namespace ZappChat.Core.Socket
             _webSocket.Error += SocketErrorEvent;
             _webSocket.MessageReceived += MessageReceivedEvent;
             _webSocket.AutoSendPingInterval = 120;
+
+            Connection = ConnectionStatus.Disconnect;
         }
         private static void MessageReceivedEvent(object sender, MessageReceivedEventArgs e)
         {
@@ -53,30 +60,42 @@ namespace ZappChat.Core.Socket
 
         private static void SocketErrorEvent(object sender, ErrorEventArgs e)
         {
-            throw e.Exception;
+        //    MessageBox.Show(e.Exception.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            Connection = ConnectionStatus.Error;
         }
 
         private static void ClosedConnection(object sender, EventArgs e)
         {
             _webSocket.Close();
-            AppEventManager.ConnectionEvent(_webSocket, AppStatus.Disconnect);
+            AppEventManager.ConnectionEvent(_webSocket, ConnectionStatus.Disconnect);
         }
 
         private static void OpenedConnection(object sender, EventArgs e)
         {
-            //AppEventManager.ConnectionEvent(_webSocket, AppStatus.Connect);
+            Connection = ConnectionStatus.Connect;
         }
 
         public static bool OpenWebSocket()
         {
-            Thread.Sleep(2000);
-            if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
-                _webSocket.Open();
-            while (_webSocket.State == WebSocketState.Connecting)
+            Connection = ConnectionStatus.Disconnect;
+            var connectAttemptConunt = 0;
+            try
             {
-                Thread.Sleep(500);
+               // Thread.Sleep(2000);
+                if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
+                    _webSocket.Open();
+                while (Connection == ConnectionStatus.Disconnect)
+                {
+                    Thread.Sleep(WaitTimeBetweenConnectAttemptInMillisecond);
+                    if(connectAttemptConunt++ >= MaxConnectAttemptCount)
+                        Connection = ConnectionStatus.Error;
+                }
+                return _webSocket.State == WebSocketState.Open;
             }
-            return _webSocket.State == WebSocketState.Open;
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public static bool SendObject(string jsonString)

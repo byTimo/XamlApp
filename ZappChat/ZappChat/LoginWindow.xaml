@@ -30,7 +30,7 @@
 
             </Border>
             <!--Authorization -->
-            <Border x:Name="Authorization" Background="#FF2FB6E5" CornerRadius="0,0,10,10" Margin="0" Grid.Row="1">
+            <Border x:Name="Authorization" Background="#FF2FB6E5" CornerRadius="0,0,10,10" Margin="0" Grid.Row="1" Visibility="Collapsed">
                 <Grid >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="140"/>

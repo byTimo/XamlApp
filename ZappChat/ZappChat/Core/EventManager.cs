@@ -5,7 +5,7 @@ namespace ZappChat.Core
     static class AppEventManager
     {
         public static event ConnectionEventHandler Connection;
-        public static void ConnectionEvent(object sender, AppStatus status)
+        public static void ConnectionEvent(object sender, ConnectionStatus status)
         {
             Connection(sender, new ConnectionEventArgs(status));
         }

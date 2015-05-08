@@ -4,9 +4,9 @@ namespace ZappChat.Core
 {
     public class ConnectionEventArgs : EventArgs
     {
-        public readonly AppStatus ConnectionStatus;
+        public readonly ConnectionStatus ConnectionStatus;
 
-        public ConnectionEventArgs(AppStatus connectionStatus)
+        public ConnectionEventArgs(ConnectionStatus connectionStatus)
         {
             ConnectionStatus = connectionStatus;
         }
