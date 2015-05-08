@@ -42,7 +42,7 @@ namespace ZappChat
             {
                 main.Close();
                 login.ShowDialog();
-                AppSocketEventManager.IsChat = false;
+                AppSocketEventManager.IsChat = true;
             }
         }
     }

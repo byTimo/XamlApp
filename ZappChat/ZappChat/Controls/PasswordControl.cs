@@ -106,6 +106,7 @@ namespace ZappChat.Controls
                 _text.Foreground = new SolidColorBrush(Color.FromRgb(141, 141, 141));
                 _password.Password = Secret;
             };
+            
         }
 
         public string GetPassword()

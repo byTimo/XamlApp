@@ -267,14 +267,10 @@
       <Numbers>True</Numbers>
       <Punctuation>True</Punctuation>
     </BlendEmbeddedFont>
-    <BlendEmbeddedFont Include="Fonts\phosphate.ttf">
+    <BlendEmbeddedFont Include="Fonts\Phosphate-Solid %281%29.ttf">
       <IsSystemFont>True</IsSystemFont>
       <All>True</All>
       <AutoFill>True</AutoFill>
-      <Uppercase>True</Uppercase>
-      <Lowercase>True</Lowercase>
-      <Numbers>True</Numbers>
-      <Punctuation>True</Punctuation>
     </BlendEmbeddedFont>
     <Resource Include="Images\Can%27tEnter.png" />
     <Resource Include="Images\Cross.png" />
