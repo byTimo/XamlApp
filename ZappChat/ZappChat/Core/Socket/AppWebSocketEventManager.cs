@@ -67,7 +67,7 @@ namespace ZappChat.Core.Socket
         private static void ClosedConnection(object sender, EventArgs e)
         {
             _webSocket.Close();
-            AppEventManager.ConnectionEvent(_webSocket, ConnectionStatus.Disconnect);
+            //AppEventManager.ConnectionEvent(_webSocket, ConnectionStatus.Disconnect);
         }
 
         private static void OpenedConnection(object sender, EventArgs e)
