@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SuperSocket.ClientEngine;
 using WebSocket4Net;
+using ZappChat.Core.Socket.Requests;
 
 namespace ZappChat.Core.Socket
 {
@@ -45,8 +46,10 @@ namespace ZappChat.Core.Socket
                 switch ((string)responseJson["action"])
                 {
                     case "client/auth":
-                        CrossThreadOperationWithOneString(Login.Dispatcher, Login.AuthorizationResult,
-                            (string) responseJson["status"]);
+                        HandlingAuthorizationResponce(responseJson);
+                        break;
+                    case "client/token":
+                        HandlingTokenResponce(responseJson);
                         break;
                         //@TODO
                 }
@@ -73,24 +76,30 @@ namespace ZappChat.Core.Socket
         private static void OpenedConnection(object sender, EventArgs e)
         {
             Connection = ConnectionStatus.Connect;
+            var token = FileDispetcher.GetSetting("token");
+            if(token == null) return;
+            var requestToken = new AuthorizationTokenRequest
+            {
+                token = token
+            };
+            var requestTokenToJson = JsonConvert.SerializeObject(requestToken);
+            SendObject(requestTokenToJson);
         }
 
-        public static bool OpenWebSocket()
+        public static void OpenWebSocket()
         {
             Connection = ConnectionStatus.Disconnect;
-            var connectAttemptConunt = 0;
+            //var connectAttemptConunt = 0;
             try
             {
-               // Thread.Sleep(2000);
                 if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
                     _webSocket.Open();
-                while (Connection == ConnectionStatus.Disconnect)
-                {
-                    Thread.Sleep(WaitTimeBetweenConnectAttemptInMillisecond);
-                    if(connectAttemptConunt++ >= MaxConnectAttemptCount)
-                        Connection = ConnectionStatus.Error;
-                }
-                return _webSocket.State == WebSocketState.Open;
+                //while (Connection == ConnectionStatus.Disconnect)
+                //{
+                //    Thread.Sleep(WaitTimeBetweenConnectAttemptInMillisecond);
+                //    if(connectAttemptConunt++ >= MaxConnectAttemptCount)
+                //        Connection = ConnectionStatus.Error;
+                //}
             }
             catch (Exception e)
             {
@@ -103,7 +112,33 @@ namespace ZappChat.Core.Socket
             _webSocket.Send(jsonString);
             return _webSocket.State == WebSocketState.Open;
         }
+        private static void HandlingAuthorizationResponce(JObject json)
+        {
+            CrossThreadOperationWithOneString(Login.Dispatcher, Login.AuthorizationResult,
+                (string) json["status"]);
+            if ((string) json["token"] != null) FileDispetcher.SaveSettings("token", (string) json["token"]);
+        }
 
+        private static void HandlingTokenResponce(JObject json)
+        {
+            switch ((string)json["status"])
+            {
+                case "ok":
+                    //@TODO Invoke authorization event in AppEventManager
+                    CrossThreadOperationWithEventArrgs(Login.Dispatcher, AppEventManager.AuthorizationEvent,Login,"ok");
+                    //AppEventManager.AuthorizationEvent(Login, "ok");
+                    break;
+                case "fail":
+                    FileDispetcher.DeleteSetting("token");
+                    break;
+                case "error":
+                    //@TODO what is it 0_o
+                    break;
+                default:
+                    //@TODO Will do owner exсaption
+                    throw new Exception("Ошибка на сервере!");
+            }
+        }
         private static void CrossThreadOperationWithoutParams(Dispatcher dispatcher, Action action)
         {
             if (dispatcher.CheckAccess())
@@ -118,6 +153,13 @@ namespace ZappChat.Core.Socket
                 action(firstParam);
             else
                 dispatcher.Invoke(action, firstParam);
+        }
+        private static void CrossThreadOperationWithEventArrgs(Dispatcher dispatcher, Action<object,string> action,object sender, string firstParam)
+        {
+            if (dispatcher.CheckAccess())
+                action(sender,firstParam);
+            else
+                dispatcher.Invoke(action, sender, firstParam);
         }
         
     }

@@ -29,6 +29,11 @@ namespace ZappChat.Core
             if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
         }
 
+        public static string FindFieldInfoLineInFile(string path, string field)
+        {
+            return GetAllLineInFile(path).FirstOrDefault(str => str.StartsWith(field));
+        }
+
         public static bool SaveSettings(string field, string setting)
         {
             return SaveInformationToFile(FullPathToSettingFile, field, setting);
@@ -39,30 +44,46 @@ namespace ZappChat.Core
             return GetFieldInfoInFile(FullPathToSettingFile, field);
         }
 
+        public static bool DeleteSetting(string field)
+        {
+
+            try
+            {
+                var allSettings = GetAllLineInFile(FullPathToSettingFile);
+                var currentLine = FindFieldInfoLineInFile(FullPathToSettingFile, field);
+                if (currentLine != null && allSettings.Contains(currentLine))
+                {
+                    allSettings.Remove(currentLine);
+                    RewriteFile(FullPathToSettingFile,allSettings);
+                }
+                else
+                    throw new Exception();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
         private static string GetFieldInfoInFile(string path, string field)
         {
-            var lineInfo = File.ReadAllText(path).Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
+            var lineInfo = GetAllLineInFile(path)
                 .FirstOrDefault(str => str.StartsWith(field));
             return lineInfo == null
                 ? null
                 : lineInfo.Split(':')[1];
         }
 
-        public static string FindFieldInfoLineInFile(string path, string field)
-        {
-            return File.ReadAllText(path).Split('\r','\n').First(str => str.StartsWith(field));
-        }
-
         private static bool SaveInformationToFile(string path, string field, string info)
         {
             try
             {
-                var allFileLine = File.ReadAllText(path).Split(new []{'\r','\n'},StringSplitOptions.RemoveEmptyEntries).ToList();
-                var currentLine = allFileLine.FirstOrDefault(str => str.StartsWith(field));
-                if(currentLine != null) allFileLine.Remove(currentLine);
-                allFileLine.Add(string.Concat(field, ":", info));
-                File.Delete(path);
-                File.WriteAllLines(path,allFileLine);
+                var allLineFile = GetAllLineInFile(FullPathToSettingFile);
+                var currentLine = allLineFile.FirstOrDefault(str => str.StartsWith(field));
+                if(currentLine != null) allLineFile.Remove(currentLine);
+                allLineFile.Add(string.Concat(field, ":", info));
+                RewriteFile(path, allLineFile);
                 return true;
             }
             catch (Exception e)
@@ -70,6 +91,19 @@ namespace ZappChat.Core
                 MessageBox.Show(e.Message, "Ошибка при сохранении настроек!", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        private static List<string> GetAllLineInFile(string path)
+        {
+            return File.ReadAllText(path).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
+
+        private static void RewriteFile(string path, IEnumerable<string> allLine)
+        {
+            if(!File.Exists(path)) throw new Exception("Невозможно перезаписать файл! Его не существует.");
+            File.Delete(path);
+            File.WriteAllLines(path, allLine);
+
         }
     }
 
@@ -140,6 +174,15 @@ namespace ZappChat.Core
 
             var gettdLine = FileDispetcher.GetSetting(testField);
             Assert.AreEqual(gettdLine, testInfo);
+        }
+
+        [Test]
+        public void DeleteSettingTest()
+        {
+            FileDispetcher.SaveSettings("test", "this must be deleted");
+            FileDispetcher.DeleteSetting("test");
+            var testLine = FileDispetcher.FindFieldInfoLineInFile(FileDispetcher.FullPathToSettingFile, "test");
+            Assert.AreEqual(testLine, null);
         }
     }
 }

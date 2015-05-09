@@ -108,19 +108,18 @@ namespace ZappChat
             var back = new BackgroundWorker();
             back.DoWork += ExecuteAfterWindowRender;
             back.RunWorkerAsync();
-
         }
 
         private void ExecuteAfterWindowRender(object sender, DoWorkEventArgs e)
         {
-            if (AppWebSocketEventManager.OpenWebSocket())
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    Loading.Visibility = Visibility.Collapsed;
-                    Authorization.Visibility = Visibility.Visible;
-                });
-            }
+            AppWebSocketEventManager.OpenWebSocket();
+           
+           Dispatcher.Invoke(() =>
+           {
+               Loading.Visibility = Visibility.Collapsed;
+               Authorization.Visibility = Visibility.Visible;
+           });
+           
         }
     }
 }
