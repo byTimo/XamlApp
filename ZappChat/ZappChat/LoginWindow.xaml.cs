@@ -112,6 +112,7 @@ namespace ZappChat
 
         private void ExecuteAfterWindowRender(object sender, DoWorkEventArgs e)
         {
+            //AppWebSocketEventManager.Dispatcher.Invoke(AppWebSocketEventManager.OpenWebSocket, DispatcherPriority.Render);
             AppWebSocketEventManager.OpenWebSocket();
            
            Dispatcher.Invoke(() =>

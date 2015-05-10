@@ -19,7 +19,6 @@ namespace ZappChat
     {
         private static MainWindow main;
         private static LoginWindow login;
-        private static DispatcherTimer pingRequestTime;
 
         public static bool PingRequestSuccses { get; set; }
         public static readonly TimeSpan PingInterval = new TimeSpan(0,0,0,5);
@@ -29,7 +28,6 @@ namespace ZappChat
         {
             login = new LoginWindow();
             main = new MainWindow();
-            pingRequestTime = new DispatcherTimer();
             AppEventManager.Authorization += SwitchWindow;
             AppWebSocketEventManager.MainWindow = main;
             AppWebSocketEventManager.Login = login;
@@ -54,23 +52,22 @@ namespace ZappChat
             }
         }
 
-        public static void StartTimerToPingRequest()
-        {
-            var time = new TimeSpan();
-            pingRequestTime.Interval = TimeSpan.FromMilliseconds(50);
-            pingRequestTime.Tick += (sender, args) =>
-            {
-                if (PingRequestSuccses)
-                {
-                    pingRequestTime.Stop();
-                    AppEventManager.ConnectionEvent(pingRequestTime, ConnectionStatus.Connect);
-                }
-                if(!PingRequestSuccses && time.Seconds == 2)
-                    AppEventManager.ConnectionEvent(pingRequestTime,ConnectionStatus.Disconnect);
-                time += PingInterval;
-            };
-            pingRequestTime.Start();
-
-        }
+        //public static void StartTimerToPingRequest()
+        //{
+        //    var time = new TimeSpan();
+        //    pingRequestTime.Interval = TimeSpan.FromMilliseconds(50);
+        //    pingRequestTime.Tick += (sender, args) =>
+        //    {
+        //        if (PingRequestSuccses)
+        //        {
+        //            pingRequestTime.Stop();
+        //            AppEventManager.ConnectionEvent(pingRequestTime, ConnectionStatus.Connect);
+        //        }
+        //        if(!PingRequestSuccses && time.Seconds == 2)
+        //            AppEventManager.ConnectionEvent(pingRequestTime,ConnectionStatus.Disconnect);
+        //        time += PingInterval;
+        //    };
+        //    pingRequestTime.Start();
+        //}
     }
 }

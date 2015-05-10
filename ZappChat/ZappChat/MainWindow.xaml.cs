@@ -29,8 +29,6 @@ namespace ZappChat
     /// </summary>
     public partial class MainWindow : Window
     {
-        private BackgroundWorker _Ping;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -42,20 +40,7 @@ namespace ZappChat
             AppEventManager.CloseDialogue += () => ShowDialogue(false);
             AppEventManager.TakeQuery += TakeQuery;
             AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
-            //@TODO разобраться с пингом
-            _Ping = new BackgroundWorker();
-            _Ping.DoWork += (o, args) =>
-            {
-                while (true)
-                {
-                    App.PingRequestSuccses = false;
-                    var pingRequest = new PingRequest();
-                    var pingRequestToJson = JsonConvert.SerializeObject(pingRequest);
-                    App.StartTimerToPingRequest();
-                    AppWebSocketEventManager.SendObject(pingRequestToJson);
-                    Thread.Sleep(App.PingInterval);
-                }
-            };
+            
         }
 
         private void TakeMessage(object sender, MessagingEventArgs e)
@@ -194,8 +179,20 @@ namespace ZappChat
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-             _Ping.RunWorkerAsync();
+            var onStatrtWorker = new BackgroundWorker();
+            onStatrtWorker.DoWork += SenPingRequest;
+
+            onStatrtWorker.RunWorkerAsync();
+            var pingRequest = new PingRequest();
+            var pingRequestToJson = JsonConvert.SerializeObject(pingRequest);
+            AppWebSocketEventManager.SendObject(pingRequestToJson);
         }
 
+        private void SenPingRequest(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            //var pingRequest = new PingRequest();
+            //var pingRequestToJson = JsonConvert.SerializeObject(pingRequest);
+            //SendJsonString(pingRequestToJson);
+        }
     }
 }

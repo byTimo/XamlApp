@@ -30,6 +30,7 @@ namespace ZappChat.Core.Socket
             _webSocket.Error += SocketErrorEvent;
             _webSocket.MessageReceived += MessageReceivedEvent;
             _webSocket.AutoSendPingInterval = 120;
+            _webSocket.EnableAutoSendPing = true;
 
             Connection = ConnectionStatus.Disconnect;
         }
@@ -135,8 +136,7 @@ namespace ZappChat.Core.Socket
 
         private static void HandlingPongResponce(JObject responseJson)
         {
-            if ((string) responseJson["status"] == "ok")
-                App.PingRequestSuccses = true;
+            CrossThreadOperationWithoutParams(MainWindow.Dispatcher,() => MainWindow.statusButton.Status = ConnectionStatus.Connect);
         }
 
         private static void CrossThreadOperationWithoutParams(Dispatcher dispatcher, Action action)
