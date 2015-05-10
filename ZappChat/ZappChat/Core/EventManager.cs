@@ -30,7 +30,7 @@ namespace ZappChat.Core
         {
             TakeQuery(sender, new TakeQueryEventArgs(dialogueId, interlocutor, query, time));
         }
-        //TODO SendMessageEvent and SendMessageEventHadler
+
         public static event MessagingEventHandler SendMessage;
 
         public static void SendMessageEvent(object sender, int dialogueId, Message message)

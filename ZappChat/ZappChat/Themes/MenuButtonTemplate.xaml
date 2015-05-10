@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<ControlTemplate x:Key="MenuButton" TargetType="{x:Type Button}">
 		<Grid x:Name="grid" Margin="0" Background="{x:Null}">
-			<VisualStateManager.VisualStateGroups>
+			<!--<VisualStateManager.VisualStateGroups>
 				<VisualStateGroup x:Name="CommonStates">
 					<VisualState x:Name="Normal"/>
 					<VisualState x:Name="MouseOver"/>
@@ -16,7 +16,7 @@
 					</VisualState>
 					<VisualState x:Name="Disabled"/>
 				</VisualStateGroup>
-			</VisualStateManager.VisualStateGroups>
+			</VisualStateManager.VisualStateGroups>-->
 			<Image x:Name="image" Margin="4" Source="/ZappChat;component/Images/FileButton.png" Stretch="Fill"/>
 		</Grid>
 	</ControlTemplate>

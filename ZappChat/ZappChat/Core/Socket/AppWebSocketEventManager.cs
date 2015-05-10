@@ -14,9 +14,6 @@ namespace ZappChat.Core.Socket
 {
     static class AppWebSocketEventManager
     {
-        private const int MaxConnectAttemptCount = 10;
-        private const int WaitTimeBetweenConnectAttemptInMillisecond = 500;
-
         private static readonly WebSocket _webSocket;
         public static LoginWindow Login { get; set; }
         public static MainWindow MainWindow { get; set; }
@@ -42,7 +39,7 @@ namespace ZappChat.Core.Socket
             {
                 var responseJson = (JObject)JsonConvert.DeserializeObject(e.Message);
                 if(responseJson["action"] == null)
-                    throw new Exception("JSON object don't conaint action field!");
+                    throw new Exception("JSON object don't containt action field!");
                 switch ((string)responseJson["action"])
                 {
                     case "client/auth":
@@ -50,6 +47,9 @@ namespace ZappChat.Core.Socket
                         break;
                     case "client/token":
                         HandlingTokenResponce(responseJson);
+                        break;
+                    case "client/pong":
+                        HandlingPongResponce(responseJson);
                         break;
                         //@TODO
                 }
@@ -63,14 +63,16 @@ namespace ZappChat.Core.Socket
 
         private static void SocketErrorEvent(object sender, ErrorEventArgs e)
         {
-        //    MessageBox.Show(e.Exception.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
             Connection = ConnectionStatus.Error;
         }
 
         private static void ClosedConnection(object sender, EventArgs e)
         {
-            _webSocket.Close();
-            //AppEventManager.ConnectionEvent(_webSocket, ConnectionStatus.Disconnect);
+            if(Connection == ConnectionStatus.Connect)
+                _webSocket.Close();
+            else 
+                //@TODO - normal reaction on disconnect
+                throw new Exception("Нет подключения!");
         }
 
         private static void OpenedConnection(object sender, EventArgs e)
@@ -89,17 +91,10 @@ namespace ZappChat.Core.Socket
         public static void OpenWebSocket()
         {
             Connection = ConnectionStatus.Disconnect;
-            //var connectAttemptConunt = 0;
             try
             {
                 if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
                     _webSocket.Open();
-                //while (Connection == ConnectionStatus.Disconnect)
-                //{
-                //    Thread.Sleep(WaitTimeBetweenConnectAttemptInMillisecond);
-                //    if(connectAttemptConunt++ >= MaxConnectAttemptCount)
-                //        Connection = ConnectionStatus.Error;
-                //}
             }
             catch (Exception e)
             {
@@ -107,11 +102,11 @@ namespace ZappChat.Core.Socket
             }
         }
 
-        public static bool SendObject(string jsonString)
+        public static void SendObject(string jsonString)
         {
             _webSocket.Send(jsonString);
-            return _webSocket.State == WebSocketState.Open;
         }
+
         private static void HandlingAuthorizationResponce(JObject json)
         {
             CrossThreadOperationWithOneString(Login.Dispatcher, Login.AuthorizationResult,
@@ -124,9 +119,7 @@ namespace ZappChat.Core.Socket
             switch ((string)json["status"])
             {
                 case "ok":
-                    //@TODO Invoke authorization event in AppEventManager
                     CrossThreadOperationWithEventArrgs(Login.Dispatcher, AppEventManager.AuthorizationEvent,Login,"ok");
-                    //AppEventManager.AuthorizationEvent(Login, "ok");
                     break;
                 case "fail":
                     FileDispetcher.DeleteSetting("token");
@@ -139,6 +132,13 @@ namespace ZappChat.Core.Socket
                     throw new Exception("Ошибка на сервере!");
             }
         }
+
+        private static void HandlingPongResponce(JObject responseJson)
+        {
+            if ((string) responseJson["status"] == "ok")
+                App.PingRequestSuccses = true;
+        }
+
         private static void CrossThreadOperationWithoutParams(Dispatcher dispatcher, Action action)
         {
             if (dispatcher.CheckAccess())

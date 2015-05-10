@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,8 +15,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using Newtonsoft.Json;
 using ZappChat.Controls;
 using ZappChat.Core;
+using ZappChat.Core.Socket;
+using ZappChat.Core.Socket.Requests;
 
 namespace ZappChat
 {
@@ -23,10 +29,11 @@ namespace ZappChat
     /// </summary>
     public partial class MainWindow : Window
     {
+        private BackgroundWorker _Ping;
+
         public MainWindow()
         {
             InitializeComponent();
-
             AppEventManager.Connection += (s, e) => { statusButton.Status = e.ConnectionStatus; };
             AppEventManager.TakeMessage += TakeMessage;
             AppEventManager.DeleteConfirmationDialogue += DeleteConfirmationDialogue;
@@ -35,6 +42,20 @@ namespace ZappChat
             AppEventManager.CloseDialogue += () => ShowDialogue(false);
             AppEventManager.TakeQuery += TakeQuery;
             AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
+            //@TODO разобраться с пингом
+            _Ping = new BackgroundWorker();
+            _Ping.DoWork += (o, args) =>
+            {
+                while (true)
+                {
+                    App.PingRequestSuccses = false;
+                    var pingRequest = new PingRequest();
+                    var pingRequestToJson = JsonConvert.SerializeObject(pingRequest);
+                    App.StartTimerToPingRequest();
+                    AppWebSocketEventManager.SendObject(pingRequestToJson);
+                    Thread.Sleep(App.PingInterval);
+                }
+            };
         }
 
         private void TakeMessage(object sender, MessagingEventArgs e)
@@ -169,6 +190,11 @@ namespace ZappChat
 
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+             _Ping.RunWorkerAsync();
         }
 
     }

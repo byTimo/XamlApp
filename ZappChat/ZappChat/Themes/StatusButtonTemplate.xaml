@@ -15,7 +15,7 @@
                 				<GradientStop Color="White" Offset="0.57"/>
                 			</LinearGradientBrush>
                 		</Border.Background>
-                		<VisualStateManager.VisualStateGroups>
+                		<!--<VisualStateManager.VisualStateGroups>
                 			<VisualStateGroup x:Name="CommonStates">
                 				<VisualState x:Name="Normal"/>
                 				<VisualState x:Name="MouseOver">
@@ -40,7 +40,7 @@
                 				</VisualState>
                 				<VisualState x:Name="Disabled"/>
                 			</VisualStateGroup>
-                		</VisualStateManager.VisualStateGroups>
+                		</VisualStateManager.VisualStateGroups>-->
                 		<Grid>
                 			<Grid.ColumnDefinitions>
                 				<ColumnDefinition Width="Auto"/>
