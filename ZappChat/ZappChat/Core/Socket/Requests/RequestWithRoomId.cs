@@ -13,18 +13,35 @@ namespace ZappChat.Core.Socket.Requests
 
     class ChatInfoRequest : RequestWithRoomId
     {
+        public ChatInfoRequest()
+        {
+            
+        }
     }
 
     class TypingRequest : RequestWithRoomId
     {
-        public string type { get; set; }
+        public string type { get; private set; }
+
+        public TypingRequest()
+        {
+            action = "chat/message";
+            type = "typing";
+        }
     }
 
     class SendMessageRequest : RequestWithRoomId
     {
-        public string type { get; set; }
+        public string type { get; private set; }
         public string hash { get; set; }
         public string text { get; set; }
-        public bool system { get; set; }
+        public bool system { get; private set; }
+
+        public SendMessageRequest()
+        {
+            action = "chat/message";
+            type = "send";
+            system = true;
+        }
     }
 }

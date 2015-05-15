@@ -13,5 +13,9 @@ namespace ZappChat.Core.Socket.Requests
         public string from { get; set; }
         public string to { get; set; }
 
+        public HistoryRequest()
+        {
+            action = "chat/history";
+        }
     }
 }

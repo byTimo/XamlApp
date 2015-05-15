@@ -32,7 +32,7 @@ namespace ZappChat
             AppWebSocketEventManager.MainWindow = main;
             AppWebSocketEventManager.Login = login;
 
-            login.ShowDialog();
+            login.Show();
         }
 
         private void SwitchWindow(object sender, WebSocketEventArgs e)
@@ -41,13 +41,13 @@ namespace ZappChat
             if (!AppWebSocketEventManager.IsChat)
             {
                 login.Close();
-                main.ShowDialog();
+                main.Show();
                 AppWebSocketEventManager.IsChat = false;
             }
             else
             {
                 main.Close();
-                login.ShowDialog();
+                login.Show();
                 AppWebSocketEventManager.IsChat = true;
             }
         }

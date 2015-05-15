@@ -144,6 +144,11 @@ namespace ZappChat.Controls
                 }
         }
 
+        public void TakeNewDialogue(Dialogue newDialogue)
+        {
+            DialogueWithQuery.Insert(0, new MessageControl(newDialogue));
+        }
+
         public void SelectWithoutQuery()
         {
             ItemsSource = DialogueWithoutQuery;

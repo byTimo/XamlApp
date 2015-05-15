@@ -32,7 +32,8 @@ namespace ZappChat
         public MainWindow()
         {
             InitializeComponent();
-            AppEventManager.Connection += (s, e) => { statusButton.Status = e.ConnectionStatus; };
+            AppEventManager.Connect += Connect;
+            AppEventManager.Disconnect += Disconnect;
             AppEventManager.TakeMessage += TakeMessage;
             AppEventManager.DeleteConfirmationDialogue += DeleteConfirmationDialogue;
             AppEventManager.DeleteDialogue += DeleteDialogue;
@@ -40,7 +41,39 @@ namespace ZappChat
             AppEventManager.CloseDialogue += () => ShowDialogue(false);
             AppEventManager.TakeQuery += TakeQuery;
             AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
-            
+            AppEventManager.TakeNewDialgoue += TakeDialogue;
+
+        }
+
+        private void TakeDialogue(object sender, TakeNewDialogueEventArgs e)
+        {
+            Dialogues.TakeNewDialogue(e.Dialogue);
+            myQuaryButton.MessagesCount++;
+        }
+
+        private void Connect(object sender, ConnectionEventArgs e)
+        {
+            statusButton.Status = e.ConnectionStatus;
+            AppInfo.Background = border.Background;
+            VersionText.Visibility = Visibility.Visible;
+            NoConnectionImage.Visibility = Visibility.Collapsed;
+            NoConnectionText.Visibility = Visibility.Collapsed;
+            //@TODO это будет переделано - но пока общие нюансы посмотреть
+            var listRequest = new ListQueryRequest
+            {
+                from_id = 0
+            };
+            var listRequestToJson = JsonConvert.SerializeObject(listRequest);
+            AppWebSocketEventManager.SendObject(listRequestToJson);
+        }
+
+        private void Disconnect(object sender, ConnectionEventArgs e)
+        {
+            statusButton.Status = e.ConnectionStatus;
+            AppInfo.Background = new SolidColorBrush(Color.FromRgb(72,73,73));
+            VersionText.Visibility = Visibility.Collapsed;
+            NoConnectionImage.Visibility = Visibility.Visible;
+            NoConnectionText.Visibility = Visibility.Visible;
         }
 
         private void TakeMessage(object sender, MessagingEventArgs e)
@@ -183,16 +216,13 @@ namespace ZappChat
             onStatrtWorker.DoWork += SenPingRequest;
 
             onStatrtWorker.RunWorkerAsync();
+            
+        }
+        private void SenPingRequest(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
             var pingRequest = new PingRequest();
             var pingRequestToJson = JsonConvert.SerializeObject(pingRequest);
             AppWebSocketEventManager.SendObject(pingRequestToJson);
-        }
-
-        private void SenPingRequest(object sender, DoWorkEventArgs doWorkEventArgs)
-        {
-            //var pingRequest = new PingRequest();
-            //var pingRequestToJson = JsonConvert.SerializeObject(pingRequest);
-            //SendJsonString(pingRequestToJson);
         }
     }
 }

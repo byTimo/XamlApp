@@ -81,4 +81,14 @@ namespace ZappChat.Core
             WindowName = windowName;
         }
     }
+
+    public class TakeNewDialogueEventArgs : EventArgs
+    {
+        public readonly Dialogue Dialogue;
+
+        public TakeNewDialogueEventArgs(Dialogue dialogue)
+        {
+            Dialogue = dialogue;
+        }
+    }
 }

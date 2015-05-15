@@ -29,6 +29,10 @@ namespace ZappChat.Core
             if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
         }
 
+        public static string GetToken()
+        {
+            return GetSetting("token");
+        }
         public static string FindFieldInfoLineInFile(string path, string field)
         {
             return GetAllLineInFile(path).FirstOrDefault(str => str.StartsWith(field));

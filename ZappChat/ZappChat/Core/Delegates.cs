@@ -16,4 +16,6 @@
     public delegate void CloseDialogueEventHandler();
 
     public delegate void SwitchWindowEventHandler(object sender, SwitchWindowEventArgs e);
+
+    public delegate void TakeNewDialogueEventHandler(object sender, TakeNewDialogueEventArgs e);
 }

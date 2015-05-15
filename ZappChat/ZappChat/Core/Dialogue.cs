@@ -50,6 +50,16 @@ namespace ZappChat.Core
             Messages = new List<Message>();
         }
 
+        public Dialogue(int id, string quary)
+        {
+            Id = id;
+            Interlocutor = "";
+            LastDateTime = DateTime.Now;
+            LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
+            Query = quary;
+            Messages = new List<Message>();
+        }
+
 
         public void AddMessage(Message newMessage)
         {
@@ -60,7 +70,8 @@ namespace ZappChat.Core
 
         public string GetTitleMessage()
         {
-            return ContainQuery ? Query : GetLastMessage().Text;
+            return Query;
+            //return ContainQuery ? Query : GetLastMessage().Text;
         }
 
         public Message GetLastMessage()

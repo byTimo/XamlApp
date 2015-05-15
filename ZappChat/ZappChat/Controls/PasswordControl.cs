@@ -73,7 +73,12 @@ namespace ZappChat.Controls
                     Keyboard.Focus(_password);
                 }
             };
-            _password.GotKeyboardFocus += (sender, args) => { _label.Visibility = Visibility.Collapsed; };
+            _password.GotKeyboardFocus += (sender, args) =>
+            {
+                _label.Text = "Пароль";
+                _label.Foreground = new SolidColorBrush(Color.FromRgb(141, 141, 141));
+                _label.Visibility = Visibility.Collapsed;
+            };
             _password.LostKeyboardFocus += (sender, args) =>
             {
                 if (_password.Password == string.Empty)
@@ -98,6 +103,17 @@ namespace ZappChat.Controls
             };
         }
 
+        public void AuthorizationFailReaction(string messageText, Brush messageBrush)
+        {
+            _text.Text = "";
+            _password.Password = "";
+            _label.Text = messageText;
+            _label.Foreground = messageBrush;
+            _password.Visibility = Visibility.Visible;
+            _label.Visibility = Visibility.Visible;
+            _text.Visibility = Visibility.Collapsed;
+            ViewPassword = false;
+        }
         public string GetPassword()
         {
             return ViewPassword ? _text.Text : _password.Password;

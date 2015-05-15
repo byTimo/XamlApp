@@ -277,6 +277,7 @@
     <Resource Include="Images\Cross.png" />
     <Resource Include="Images\Eye.png" />
     <Resource Include="Images\FileButton.png" />
+    <Resource Include="Images\not.png" />
     <Resource Include="Images\SettingsButton.png" />
     <Resource Include="Images\StartVideo.png" />
     <Resource Include="Images\TimerImage.png" />

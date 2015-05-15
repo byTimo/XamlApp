@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,7 +30,7 @@ namespace ZappChat.Core.Socket
             _webSocket.Closed += ClosedConnection;
             _webSocket.Error += SocketErrorEvent;
             _webSocket.MessageReceived += MessageReceivedEvent;
-            _webSocket.AutoSendPingInterval = 120;
+            _webSocket.AutoSendPingInterval = 10;
             _webSocket.EnableAutoSendPing = true;
 
             Connection = ConnectionStatus.Disconnect;
@@ -52,6 +53,9 @@ namespace ZappChat.Core.Socket
                     case "client/pong":
                         HandlingPongResponce(responseJson);
                         break;
+                    case "request/list":
+                        HandlingListResponce(responseJson);
+                        break;
                         //@TODO
                 }
             }
@@ -65,21 +69,30 @@ namespace ZappChat.Core.Socket
         private static void SocketErrorEvent(object sender, ErrorEventArgs e)
         {
             Connection = ConnectionStatus.Error;
+            CrossThreadOperationWithoutParams(Application.Current.Dispatcher, () => AppEventManager.DisconnectionEvent(_webSocket));
         }
 
         private static void ClosedConnection(object sender, EventArgs e)
         {
-            if(Connection == ConnectionStatus.Connect)
+            if (Connection == ConnectionStatus.Connect)
+            {
                 _webSocket.Close();
-            else 
-                //@TODO - normal reaction on disconnect
-                throw new Exception("Нет подключения!");
+                CrossThreadOperationWithoutParams(Application.Current.Dispatcher,() => AppEventManager.DisconnectionEvent(_webSocket));
+            }
         }
 
         private static void OpenedConnection(object sender, EventArgs e)
         {
             Connection = ConnectionStatus.Connect;
-            var token = FileDispetcher.GetSetting("token");
+            string token;
+            try
+            {
+                token = FileDispetcher.GetToken();
+            }
+            catch
+            {
+                token = null;
+            }
             if(token == null) return;
             var requestToken = new AuthorizationTokenRequest
             {
@@ -120,7 +133,7 @@ namespace ZappChat.Core.Socket
             switch ((string)json["status"])
             {
                 case "ok":
-                    CrossThreadOperationWithEventArrgs(Login.Dispatcher, AppEventManager.AuthorizationEvent,Login,"ok");
+                    CrossThreadOperationWithEventArrgs(Application.Current.Dispatcher, AppEventManager.AuthorizationEvent,Login,"ok");
                     break;
                 case "fail":
                     FileDispetcher.DeleteSetting("token");
@@ -136,7 +149,22 @@ namespace ZappChat.Core.Socket
 
         private static void HandlingPongResponce(JObject responseJson)
         {
-            CrossThreadOperationWithoutParams(MainWindow.Dispatcher,() => MainWindow.statusButton.Status = ConnectionStatus.Connect);
+            CrossThreadOperationWithoutParams(Application.Current.Dispatcher,
+                () => AppEventManager.ConnectionEvent(_webSocket));
+        }
+
+        private static void HandlingListResponce(JObject responseJson)
+        {
+            if((string)responseJson["status"] != "ok") throw new Exception((string)responseJson["reason"]);
+            foreach (var dialogue in responseJson["list"])
+            {
+                var id = int.Parse((string)dialogue["id"]);
+                var query = (string)dialogue["query"];
+                var newDialog = new Dialogue(id, query);
+                var action = new Action<object, Dialogue>(AppEventManager.TakeNewDialogueEvent);
+                MainWindow.Dispatcher.Invoke(action, _webSocket, newDialog);
+            }
+
         }
 
         private static void CrossThreadOperationWithoutParams(Dispatcher dispatcher, Action action)

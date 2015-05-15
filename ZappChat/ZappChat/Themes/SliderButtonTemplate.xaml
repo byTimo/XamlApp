@@ -19,8 +19,14 @@
 								<VisualState x:Name="Normal"/>
 								<VisualState x:Name="MouseOver">
 									<Storyboard>
-										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="border">
-											<EasingColorKeyFrame KeyTime="0" Value="#FF64CEEE"/>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[1].(GradientStop.Color)" Storyboard.TargetName="borderUp">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF62C8EB"/>
+										</ColorAnimationUsingKeyFrames>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[2].(GradientStop.Color)" Storyboard.TargetName="borderUp">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF62C8EB"/>
+										</ColorAnimationUsingKeyFrames>
+										<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="borderUp">
+											<EasingColorKeyFrame KeyTime="0" Value="#FF62C8EB"/>
 										</ColorAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -87,6 +93,16 @@
 									<GradientStop Color="#FF1FB6E4" Offset="0"/>
 									<GradientStop Color="#FF1FB6E4" Offset="1"/>
 									<GradientStop Color="#FF1FB6E4" Offset="0.5"/>
+								</LinearGradientBrush>
+							</Border.Background>
+						</Border>
+						<Border x:Name="borderUp" BorderBrush="#FF64CEEE" BorderThickness="2" HorizontalAlignment="Stretch" Height="Auto" VerticalAlignment="Stretch" Width="Auto" CornerRadius="15" Grid.ColumnSpan="2"
+						Padding="{TemplateBinding Padding}">
+							<Border.Background>
+								<LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+									<GradientStop Color="#0062C8EB" Offset="0"/>
+									<GradientStop Color="#0062C8EB" Offset="1"/>
+									<GradientStop Color="#0062C8EB" Offset="0.5"/>
 								</LinearGradientBrush>
 							</Border.Background>
 						</Border>

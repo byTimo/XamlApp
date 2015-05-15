@@ -27,11 +27,23 @@ namespace ZappChat
     /// </summary>
     public partial class LoginWindow : Window
     {
-        private bool loginEmpty = true;
-
         public LoginWindow()
         {
             InitializeComponent();
+            AppEventManager.Connect += Connection;
+            AppEventManager.Disconnect += Disconnection;
+            LoginLabel.GotKeyboardFocus += (sender, args) =>  Keyboard.Focus(LoginTextBox);
+
+        }
+
+        private void Connection(object sender, ConnectionEventArgs e)
+        {
+            ConnectionView.Height = 0;
+        }
+
+        private void Disconnection(object sender, ConnectionEventArgs e)
+        {
+            ConnectionView.Height = 55;
         }
 
         public void AuthorizationResult(string status)
@@ -44,7 +56,7 @@ namespace ZappChat
                     AppEventManager.AuthorizationEvent(this, status);
                     break;
                 case "fail":
-                    //@TODO <- сигнал о том, что произошла ошибка в логине/пароле
+                    AuthrizationFail();
                     break;
                 case "error":
                     //@TODO <- сигнал о том, что беда на сервере :(
@@ -53,6 +65,15 @@ namespace ZappChat
                     //@TODO сделать свой Exception
                     throw new Exception("Неверный параметр поля JSon");
             }
+        }
+
+        private void AuthrizationFail()
+        {
+            LoginTextBox.Text = "";
+            LoginLabel.Text = "Логин неверный";
+            LoginLabel.Foreground = new SolidColorBrush(Color.FromRgb(239, 46, 46));
+            LoginLabel.Visibility = Visibility.Visible;
+            PasswordBox.AuthorizationFailReaction("Логин неверный", new SolidColorBrush(Color.FromRgb(239, 46, 46)));
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -71,26 +92,27 @@ namespace ZappChat
             DragMove();
         }
 
-        private void TextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void LoginTextBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (!loginEmpty) return;
-            (sender as TextBox).Text = "";
-            loginEmpty = false;
+            LoginLabel.Text = "E-mail";
+            LoginLabel.Foreground = Brushes.Black;
+            LoginLabel.Visibility = Visibility.Collapsed;
         }
 
-        private void TextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void LoginTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if ((sender as TextBox).Text == "")
-            {
-                (sender as TextBox).Text = "E-mail";
-                loginEmpty = true;
-            }
+            if (LoginTextBox.Text == String.Empty)
+                LoginLabel.Visibility = Visibility.Visible;
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as LoginButton;
-            if (LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null) return;
+            if (LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null)
+            {
+                AuthrizationFail();
+                return;
+            }
             if (button.LoginTry) return;
             button.SwapState(true);
             var request = new AuthorizationLoginAndPasswordRequest
@@ -112,8 +134,7 @@ namespace ZappChat
 
         private void ExecuteAfterWindowRender(object sender, DoWorkEventArgs e)
         {
-            //AppWebSocketEventManager.Dispatcher.Invoke(AppWebSocketEventManager.OpenWebSocket, DispatcherPriority.Render);
-            AppWebSocketEventManager.OpenWebSocket();
+           AppWebSocketEventManager.OpenWebSocket();
            
            Dispatcher.Invoke(() =>
            {
