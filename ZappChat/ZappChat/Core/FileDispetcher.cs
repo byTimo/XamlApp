@@ -5,27 +5,28 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using NUnit.Framework;
+using ZappChat.Properties;
 
 namespace ZappChat.Core
 {
     static class FileDispetcher
     {
-        private static readonly string appDataDirectory;
-        private static readonly string rootDirectory;
-        private const string zappChatDirectoryName = "ZappChat";
-        private const string settingFile = "ZappSetting";
+        private static string appDataDirectory;
+        private static string rootDirectory;
+        private const string ZappChatDirectoryName = "ZappChat";
+        private const string SettingFile = "ZappSetting";
 
         public static string FullPathToSettingFile { get; private set; }
 
-        static FileDispetcher()
+        public static void InitializeFileDispetcher()
         {
             appDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             if (appDataDirectory == null) throw new Exception("Не возможно определить расположение ApplicationsData");
 
-            rootDirectory = Path.Combine(appDataDirectory, zappChatDirectoryName);
+            rootDirectory = Path.Combine(appDataDirectory, ZappChatDirectoryName);
             if (!Directory.Exists(rootDirectory)) Directory.CreateDirectory(rootDirectory);
 
-            FullPathToSettingFile = Path.Combine(rootDirectory,settingFile);
+            FullPathToSettingFile = Path.Combine(rootDirectory,SettingFile);
             if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
         }
 
@@ -48,7 +49,7 @@ namespace ZappChat.Core
             return GetFieldInfoInFile(FullPathToSettingFile, field);
         }
 
-        public static bool DeleteSetting(string field)
+        public static void DeleteSetting(string field)
         {
 
             try
@@ -62,13 +63,11 @@ namespace ZappChat.Core
                 }
                 else
                     throw new Exception();
-                return true;
             }
             catch
             {
-                return false;
+                // ignored
             }
-
         }
         private static string GetFieldInfoInFile(string path, string field)
         {
@@ -115,13 +114,13 @@ namespace ZappChat.Core
     [TestFixture]
     class FileReadWriteTester
     {
-        private List<string> settingInformation = new List<string>();
+        private List<string> _settingInformation = new List<string>();
 
         [SetUp]
         public void SaveSettingWithoutFile()
         {
             Thread.Sleep(1000);
-            settingInformation = File.ReadAllText(FileDispetcher.FullPathToSettingFile)
+            _settingInformation = File.ReadAllText(FileDispetcher.FullPathToSettingFile)
                 .Split(new []{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
         }
@@ -129,10 +128,10 @@ namespace ZappChat.Core
         [TearDown]
         public void LoadSettingToFile()
         {
-            Console.WriteLine("Setting file conteinted:\n");
+            Console.WriteLine(Resources.FileReadWriteTester_SaveSettingWithoutFile_Setting_file_conteinted_);
             Console.WriteLine(File.ReadAllText(FileDispetcher.FullPathToSettingFile));
             File.Delete(FileDispetcher.FullPathToSettingFile);
-            File.WriteAllLines(FileDispetcher.FullPathToSettingFile, settingInformation);
+            File.WriteAllLines(FileDispetcher.FullPathToSettingFile, _settingInformation);
         }
 
         [Test]

@@ -105,14 +105,21 @@ namespace ZappChat.Controls
 
         public void AuthorizationFailReaction(string messageText, Brush messageBrush)
         {
-            _text.Text = "";
-            _password.Password = "";
+            ResetValues();
             _label.Text = messageText;
             _label.Foreground = messageBrush;
+        }
+
+        public void ResetValues()
+        {
             _password.Visibility = Visibility.Visible;
             _label.Visibility = Visibility.Visible;
             _text.Visibility = Visibility.Collapsed;
             ViewPassword = false;
+            _text.Text = "";
+            _password.Password = "";
+            _label.Text = "Пароль";
+            _label.Foreground = new SolidColorBrush(Color.FromRgb(141, 141, 141));
         }
         public string GetPassword()
         {

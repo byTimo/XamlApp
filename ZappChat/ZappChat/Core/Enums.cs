@@ -1,10 +1,9 @@
 ﻿namespace ZappChat.Core
 {
-    public enum AuthorizationStatus
+    public enum AuthorizationType
     {
-        Ok,
-        Fail,
-        Error
+        Token,
+        Login
     }
     public enum ConnectionStatus
     {

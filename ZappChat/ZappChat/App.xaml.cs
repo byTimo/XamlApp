@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Threading;
 using ZappChat.Core;
@@ -17,47 +12,83 @@ namespace ZappChat
     /// </summary>
     public partial class App : Application
     {
-
+        public static ConnectionStatus ConnectionStatus { get; set; }
+        
         private static MainWindow main;
         private static LoginWindow login;
         private const double IntervalBetweenConnection = 1.5;
         private static DispatcherTimer reconnectionTimer;
+        private static OpenedWindow currentWindow;
+
+        enum OpenedWindow
+        {
+            Login,
+            Chat
+        }
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            FileDispetcher.InitializeFileDispetcher();
             login = new LoginWindow();
             main = new MainWindow();
-            AppEventManager.Connect += (o, args) => reconnectionTimer.Stop();
-            AppEventManager.Authorization += SwitchWindow;
-            AppEventManager.Disconnect += (o, args) => reconnectionTimer.Start();
-            AppEventManager.Reauthorization += SwitchWindow;
+            AppEventManager.Connect += o =>
+            {
+                ConnectionStatus = ConnectionStatus.Connect;
+                reconnectionTimer.Stop();
+            };
+            AppEventManager.Disconnect += o =>
+            {
+                ConnectionStatus = ConnectionStatus.Disconnect;
+                reconnectionTimer.Start();
+            };
+            AppEventManager.AuthorizationSuccess += AuthorizationSuccess;
+            AppEventManager.AuthorizationFail += AuthorizationFail;
 
             AppWebSocketEventManager.MainWindow = main;
             AppWebSocketEventManager.Login = login;
+
             reconnectionTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(IntervalBetweenConnection)
             };
             reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
-            reconnectionTimer.Start();
+            reconnectionTimer.Stop();
 
+            var socketOpener = new BackgroundWorker();
+            socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             login.Show();
+            currentWindow = OpenedWindow.Login;
+            socketOpener.RunWorkerAsync();
         }
-        private void SwitchWindow(object sender, WebSocketEventArgs e)
-        {
-            //@TODO
-            if (!AppWebSocketEventManager.IsChat)
-            {
-                login.Visibility = Visibility.Collapsed;
-                main.Show();
-                AppWebSocketEventManager.IsChat = true;
-            }
-            else
-            {
-                main.Visibility = Visibility.Collapsed;
 
-                login.Show();
-                AppWebSocketEventManager.IsChat = false;
+        private void AuthorizationSuccess(object sender, AuthorizationType type)
+        {
+            if(currentWindow == OpenedWindow.Login)
+                SwitchWindow(OpenedWindow.Chat);
+        }
+
+        private void AuthorizationFail(object sender, AuthorizationType type)
+        {
+            if(currentWindow == OpenedWindow.Chat)
+                SwitchWindow(OpenedWindow.Login);
+        }
+
+        private void SwitchWindow(OpenedWindow window)
+        {
+            if(currentWindow == window) return;
+            switch (window)
+            {
+                case OpenedWindow.Login:
+                    main.Hide();
+                    login.Show();
+                    currentWindow = OpenedWindow.Login;
+                    break;
+                case OpenedWindow.Chat:
+                    login.Hide();
+                    main.Show();
+                    currentWindow = OpenedWindow.Chat;
+                    break;
+
             }
         }
 

@@ -4,31 +4,31 @@ namespace ZappChat.Core
 {
     static class AppEventManager
     {
-        public static event ConnectionEventHandler Connect;
-        public static void ConnectionEvent(object sender)
+        public static event Action<object> Connect;
+
+        public static void Connection(object sender)
         {
-            Connect(sender, new ConnectionEventArgs(ConnectionStatus.Connect));
+            Connect.Invoke(sender);
         }
 
-        public static event ConnectionEventHandler Disconnect;
+        public static event Action<object> Disconnect;
 
-        public static void DisconnectionEvent(object sender)
+        public static void Disconnection(object sender)
         {
-            Disconnect(sender,new ConnectionEventArgs(ConnectionStatus.Disconnect));
+            Disconnect.Invoke(sender);
         }
 
-        public static event AuthorizationEventHandler Authorization;
+        public static event AuthorizationEventHandler AuthorizationSuccess;
 
-        public static void AuthorizationEvent(object sender, string json)
+        public static void AuthorizationSuccessEvent(object sender, AuthorizationType type)
         {
-            Authorization(sender, new WebSocketEventArgs(json));
+            AuthorizationSuccess.Invoke(sender, type);
         }
+        public static event AuthorizationEventHandler AuthorizationFail;
 
-        public static event AuthorizationEventHandler Reauthorization;
-
-        public static void ReauthorizationEvent(object sender)
+        public static void AuthorizationFailEvent(object sender, AuthorizationType type)
         {
-            Reauthorization(sender, new WebSocketEventArgs(string.Empty));
+            AuthorizationFail.Invoke(sender, type);
         }
 
         public static event TakeNewDialogueEventHandler TakeNewDialgoue;

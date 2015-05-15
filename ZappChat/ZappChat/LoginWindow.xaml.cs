@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Newtonsoft.Json;
 using ZappChat.Controls;
 using ZappChat.Core;
@@ -30,50 +18,56 @@ namespace ZappChat
         public LoginWindow()
         {
             InitializeComponent();
-            AppEventManager.Connect += Connection;
-            AppEventManager.Disconnect += Disconnection;
+            AppEventManager.Connect += Connection; //Активация элементов управления или событий внутри окна
+            AppEventManager.Disconnect += Disconnection; //Деактивация элементов управления
+            AppEventManager.AuthorizationSuccess += ReactionOnAuthorization;
+            AppEventManager.AuthorizationFail += ReactionOnFailAuthorization;
             LoginLabel.GotKeyboardFocus += (sender, args) =>  Keyboard.Focus(LoginTextBox);
 
         }
 
-        private void Connection(object sender, ConnectionEventArgs e)
+        public void ChangeState(bool isLoading)
+        {
+            Authorization.Visibility = !isLoading ? Visibility.Visible : Visibility.Hidden;
+            Loading.Visibility = isLoading ? Visibility.Hidden : Visibility.Visible;
+        }
+
+        private void Connection(object sender)
         {
             ConnectionView.Height = 0;
         }
 
-        private void Disconnection(object sender, ConnectionEventArgs e)
+        private void Disconnection(object sender)
         {
             ConnectionView.Height = 55;
+            ChangeState(false);
         }
 
-        public void AuthorizationResult(string status)
+        private void ReactionOnAuthorization(object sender, AuthorizationType type)
         {
-            if(loginButton.LoginTry) loginButton.SwapState(false);
-            switch (status)
-            {
-                case "ok":
-                    //@TODO
-                    AppEventManager.AuthorizationEvent(this, status);
-                    break;
-                case "fail":
-                    AuthrizationFail();
-                    break;
-                case "error":
-                    //@TODO <- сигнал о том, что беда на сервере :(
-                    break;
-                default:
-                    //@TODO сделать свой Exception
-                    throw new Exception("Неверный параметр поля JSon");
-            }
+            LoginTextBox.Text = "";
+            LoginLabel.Text = "E-mail";
+            LoginLabel.Visibility = Visibility.Visible;
+            PasswordBox.ResetValues();
+            loginButton.SwapState(false);
         }
 
-        private void AuthrizationFail()
+        private void ReactionOnFailAuthorization(object sender, AuthorizationType type)
+        {
+            if (type == AuthorizationType.Login)
+                AuthorizationFail();
+            if(type == AuthorizationType.Token)
+                ChangeState(false);
+        }
+
+        private void AuthorizationFail()
         {
             LoginTextBox.Text = "";
             LoginLabel.Text = "Логин неверный";
             LoginLabel.Foreground = new SolidColorBrush(Color.FromRgb(239, 46, 46));
             LoginLabel.Visibility = Visibility.Visible;
             PasswordBox.AuthorizationFailReaction("Логин неверный", new SolidColorBrush(Color.FromRgb(239, 46, 46)));
+            if(loginButton.LoginTry) loginButton.SwapState(false);
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -110,7 +104,7 @@ namespace ZappChat
             var button = sender as LoginButton;
             if (LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null)
             {
-                AuthrizationFail();
+                AuthorizationFail();
                 return;
             }
             if (button.LoginTry) return;
@@ -123,25 +117,6 @@ namespace ZappChat
             };
             var jsonString = JsonConvert.SerializeObject(request);
             AppWebSocketEventManager.SendObject(jsonString);
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            var back = new BackgroundWorker();
-            back.DoWork += ExecuteAfterWindowRender;
-            back.RunWorkerAsync();
-        }
-
-        private void ExecuteAfterWindowRender(object sender, DoWorkEventArgs e)
-        {
-           AppWebSocketEventManager.OpenWebSocket();
-           
-           Dispatcher.Invoke(() =>
-           {
-               Loading.Visibility = Visibility.Collapsed;
-               Authorization.Visibility = Visibility.Visible;
-           });
-           
         }
     }
 }

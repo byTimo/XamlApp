@@ -19,9 +19,10 @@ namespace ZappChat.Core.Socket
         public static LoginWindow Login { get; set; }
         public static MainWindow MainWindow { get; set; }
 
-        //public static ConnectionStatus Connection { get; private set; }
-        public static bool IsChat { get; set; }
-
+        /// <summary>
+        /// Переменная, которая не даёт закрывать уже закрытый сокет, который пытается открыться.
+        /// </summary>
+        private static bool socketAlreadyClosed;
 
         static AppWebSocketEventManager()
         {
@@ -31,6 +32,48 @@ namespace ZappChat.Core.Socket
             _webSocket.Error += SocketErrorEvent;
             _webSocket.MessageReceived += MessageReceivedEvent;
         }
+
+        private static void OpenedConnection(object sender, EventArgs e)
+        {
+            socketAlreadyClosed = false;
+            App.ConnectionStatus = ConnectionStatus.Connect;
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.Connection(_webSocket));
+            string token;
+            try
+            {
+                token = Application.Current.Dispatcher.Invoke<string>(FileDispetcher.GetToken);
+            }
+            catch
+            {
+                token = null;
+            }
+            if (token == null)
+            {
+                Application.Current.Dispatcher.Invoke(() => AppEventManager.AuthorizationFailEvent(_webSocket, AuthorizationType.Token));
+                return;
+            }
+            var requestToken = new AuthorizationTokenRequest
+            {
+                token = token
+            };
+            var requestTokenToJson = JsonConvert.SerializeObject(requestToken);
+            SendObject(requestTokenToJson);
+        }
+
+        private static void ClosedConnection(object sender, EventArgs e)
+        {
+            socketAlreadyClosed = true;
+            App.ConnectionStatus = ConnectionStatus.Disconnect;
+            CrossThreadOperationWithoutParams(Application.Current.Dispatcher,
+                () => AppEventManager.Disconnection(_webSocket));
+
+        }
+
+        public static void SendObject(string jsonString)
+        {
+            _webSocket.Send(jsonString);
+        }
+
         private static void MessageReceivedEvent(object sender, MessageReceivedEventArgs e)
         {
             try
@@ -64,41 +107,8 @@ namespace ZappChat.Core.Socket
 
         private static void SocketErrorEvent(object sender, ErrorEventArgs e)
         {
-            //CrossThreadOperationWithoutParams(Application.Current.Dispatcher, () => AppEventManager.DisconnectionEvent(_webSocket));
-            if(_webSocket.State != WebSocketState.Closed)
+            if(!socketAlreadyClosed)
                 _webSocket.Close();
-        }
-
-        private static void ClosedConnection(object sender, EventArgs e)
-        {
-            CrossThreadOperationWithoutParams(Application.Current.Dispatcher,
-                () => AppEventManager.DisconnectionEvent(_webSocket));
-
-        }
-
-        private static void OpenedConnection(object sender, EventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.ConnectionEvent(_webSocket));
-            string token;
-            try
-            {
-                token = FileDispetcher.GetToken();
-            }
-            catch
-            {
-                token = null;
-            }
-            if (token == null)
-            {
-                ReactionOnTokenAuthorizationFail();
-                return;
-            }
-            var requestToken = new AuthorizationTokenRequest
-            {
-                token = token
-            };
-            var requestTokenToJson = JsonConvert.SerializeObject(requestToken);
-            SendObject(requestTokenToJson);
         }
 
         public static void OpenWebSocket()
@@ -107,7 +117,6 @@ namespace ZappChat.Core.Socket
             {
                 if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
                     _webSocket.Open();
-                Thread.Sleep(1000);
             }
             catch (Exception e)
             {
@@ -115,56 +124,52 @@ namespace ZappChat.Core.Socket
             }
         }
 
-        public static void SendObject(string jsonString)
-        {
-            _webSocket.Send(jsonString);
-        }
-
-        private static void HandlingAuthorizationResponce(JObject json)
-        {
-            CrossThreadOperationWithOneString(Login.Dispatcher, Login.AuthorizationResult,
-                (string) json["status"]);
-            if ((string) json["token"] != null) FileDispetcher.SaveSettings("token", (string) json["token"]);
-        }
-
         private static void HandlingTokenResponce(JObject json)
         {
             switch ((string)json["status"])
             {
                 case "ok":
-                    CrossThreadOperationWithEventArrgs(Application.Current.Dispatcher, AppEventManager.AuthorizationEvent,Login,"ok");
+                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationSuccessEvent), _webSocket, AuthorizationType.Token);
                     break;
                 case "fail":
                     try
                     {
-                        FileDispetcher.DeleteSetting("token");
+                        Application.Current.Dispatcher.Invoke(new Action<string>(FileDispetcher.DeleteSetting), "token");
                     }
-                    catch
+                    finally 
                     {
-                        ReactionOnTokenAuthorizationFail();
+                        Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationFailEvent), _webSocket, AuthorizationType.Token);
                     }
                     break;
                 case "error":
-                    //@TODO what is it 0_o
                     break;
                 default:
-                    //@TODO Will do owner exсaption
-                    throw new Exception("Ошибка на сервере!");
+                    throw new Exception("Ошибка на сервере! Обратитесь в службу поддержки.");
             }
         }
 
-        private static void ReactionOnTokenAuthorizationFail()
+        private static void HandlingAuthorizationResponce(JObject json)
         {
-            if (IsChat)
+            switch ((string)json["status"])
             {
-                Application.Current.Dispatcher.Invoke(() => AppEventManager.ReauthorizationEvent(_webSocket));
+                case "ok":
+                    if ((string)json["token"] != null)
+                        Application.Current.Dispatcher.Invoke(() => FileDispetcher.SaveSettings("token", (string)json["token"]));
+                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationSuccessEvent), _webSocket, AuthorizationType.Login);
+                    break;
+                case "fail":
+                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationFailEvent), _webSocket, AuthorizationType.Login);
+                    break;
+                case "error":
+                    break;
+                default:
+                    throw new Exception("Ошибка на сервере! Обратитесь в службу поддержки.");
             }
         }
 
         private static void HandlingPongResponce(JObject responseJson)
         {
-            CrossThreadOperationWithoutParams(Application.Current.Dispatcher,
-                () => AppEventManager.ConnectionEvent(_webSocket));
+            throw new NotImplementedException();
         }
 
         private static void HandlingListResponce(JObject responseJson)

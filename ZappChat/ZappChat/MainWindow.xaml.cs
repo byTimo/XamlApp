@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Newtonsoft.Json;
 using ZappChat.Controls;
 using ZappChat.Core;
@@ -32,8 +20,10 @@ namespace ZappChat
         public MainWindow()
         {
             InitializeComponent();
-            AppEventManager.Connect += Connect;
-            AppEventManager.Disconnect += Disconnect;
+            AppEventManager.Connect += Connection; //Активация элементов управления
+            AppEventManager.Disconnect += Disconnect; //Деактивация элементов управления
+            AppEventManager.AuthorizationSuccess += AuthorizationSucces;
+
             AppEventManager.TakeMessage += TakeMessage;
             AppEventManager.DeleteConfirmationDialogue += DeleteConfirmationDialogue;
             AppEventManager.DeleteDialogue += DeleteDialogue;
@@ -51,29 +41,34 @@ namespace ZappChat
             myQuaryButton.MessagesCount++;
         }
 
-        private void Connect(object sender, ConnectionEventArgs e)
+        private void Connection(object sender)
         {
-            statusButton.Status = e.ConnectionStatus;
+            statusButton.ChangeStatusOnButton(App.ConnectionStatus);
             AppInfo.Background = border.Background;
             VersionText.Visibility = Visibility.Visible;
             NoConnectionImage.Visibility = Visibility.Collapsed;
             NoConnectionText.Visibility = Visibility.Collapsed;
-            //@TODO это будет переделано - но пока общие нюансы посмотреть
-            var listRequest = new ListQueryRequest
+        }
+
+        private void Disconnect(object sender)
+        {
+            statusButton.ChangeStatusOnButton(App.ConnectionStatus);
+            AppInfo.Background = new SolidColorBrush(Color.FromRgb(72,73,73));
+            VersionText.Visibility = Visibility.Collapsed;
+            NoConnectionImage.Visibility = Visibility.Visible;
+            NoConnectionText.Visibility = Visibility.Visible;
+        }
+
+        private void AuthorizationSucces(object sender, AuthorizationType type)
+        {
+            Dialogues.DialogueWithQuery = new ObservableCollection<MessageControl>();
+            Dialogues.DialogueWithoutQuery = new ObservableCollection<MessageControl>();
+            var listRequest = new ListQueryRequest()
             {
                 from_id = 0
             };
             var listRequestToJson = JsonConvert.SerializeObject(listRequest);
             AppWebSocketEventManager.SendObject(listRequestToJson);
-        }
-
-        private void Disconnect(object sender, ConnectionEventArgs e)
-        {
-            statusButton.Status = e.ConnectionStatus;
-            AppInfo.Background = new SolidColorBrush(Color.FromRgb(72,73,73));
-            VersionText.Visibility = Visibility.Collapsed;
-            NoConnectionImage.Visibility = Visibility.Visible;
-            NoConnectionText.Visibility = Visibility.Visible;
         }
 
         private void TakeMessage(object sender, MessagingEventArgs e)
@@ -210,19 +205,5 @@ namespace ZappChat
         {
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            var onStatrtWorker = new BackgroundWorker();
-            onStatrtWorker.DoWork += SenPingRequest;
-
-            onStatrtWorker.RunWorkerAsync();
-            
-        }
-        private void SenPingRequest(object sender, DoWorkEventArgs doWorkEventArgs)
-        {
-            var pingRequest = new PingRequest();
-            var pingRequestToJson = JsonConvert.SerializeObject(pingRequest);
-            AppWebSocketEventManager.SendObject(pingRequestToJson);
-        }
     }
 }

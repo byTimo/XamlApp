@@ -24,11 +24,7 @@ namespace ZappChat.Controls
         public ConnectionStatus Status
         {
             get { return (ConnectionStatus)GetValue(StatusProperty); }
-            set
-            {
-                SetValue(StatusProperty, value);
-                ChangeStatusOnButton(Status);
-            }
+            private set{ SetValue(StatusProperty, value); }
         }
         public static readonly DependencyProperty IndicaterColorProperty =
             DependencyProperty.Register("IndicaterColor", typeof(LinearGradientBrush), typeof(StatusButton));
@@ -58,7 +54,7 @@ namespace ZappChat.Controls
             Status = ConnectionStatus.Disconnect;
         }
 
-        private void ChangeStatusOnButton(ConnectionStatus nowStatus)
+        public void ChangeStatusOnButton(ConnectionStatus nowStatus)
         {
             switch (nowStatus)
             {
@@ -68,6 +64,7 @@ namespace ZappChat.Controls
                         new GradientStop(Color.FromArgb(255,155,196,60),100.0)
                     });
                     StatusText = "В сети";
+                    Status = ConnectionStatus.Connect;
                     break;
                 case ConnectionStatus.Disconnect:
                     IndicaterColor = new LinearGradientBrush(new GradientStopCollection{
@@ -75,6 +72,7 @@ namespace ZappChat.Controls
                         new GradientStop(Color.FromArgb(255,225,95,95),1.0)
                     });
                     StatusText = "Не в сети";
+                    Status = ConnectionStatus.Disconnect;
                     break;
             }
         }
