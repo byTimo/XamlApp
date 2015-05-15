@@ -24,6 +24,13 @@ namespace ZappChat.Core
             Authorization(sender, new WebSocketEventArgs(json));
         }
 
+        public static event AuthorizationEventHandler Reauthorization;
+
+        public static void ReauthorizationEvent(object sender)
+        {
+            Reauthorization(sender, new WebSocketEventArgs(string.Empty));
+        }
+
         public static event TakeNewDialogueEventHandler TakeNewDialgoue;
 
         public static void TakeNewDialogueEvent(object sender, Dialogue dialogue)

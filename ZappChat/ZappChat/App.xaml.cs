@@ -17,38 +17,47 @@ namespace ZappChat
     /// </summary>
     public partial class App : Application
     {
+
         private static MainWindow main;
         private static LoginWindow login;
-
-        public static bool PingRequestSuccses { get; set; }
-        public static readonly TimeSpan PingInterval = new TimeSpan(0,0,0,5);
-
+        private const double IntervalBetweenConnection = 1.5;
+        private static DispatcherTimer reconnectionTimer;
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
             login = new LoginWindow();
             main = new MainWindow();
+            AppEventManager.Connect += (o, args) => reconnectionTimer.Stop();
             AppEventManager.Authorization += SwitchWindow;
+            AppEventManager.Disconnect += (o, args) => reconnectionTimer.Start();
+            AppEventManager.Reauthorization += SwitchWindow;
+
             AppWebSocketEventManager.MainWindow = main;
             AppWebSocketEventManager.Login = login;
+            reconnectionTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(IntervalBetweenConnection)
+            };
+            reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
+            reconnectionTimer.Start();
 
             login.Show();
         }
-
         private void SwitchWindow(object sender, WebSocketEventArgs e)
         {
             //@TODO
             if (!AppWebSocketEventManager.IsChat)
             {
-                login.Close();
+                login.Visibility = Visibility.Collapsed;
                 main.Show();
-                AppWebSocketEventManager.IsChat = false;
+                AppWebSocketEventManager.IsChat = true;
             }
             else
             {
-                main.Close();
+                main.Visibility = Visibility.Collapsed;
+
                 login.Show();
-                AppWebSocketEventManager.IsChat = true;
+                AppWebSocketEventManager.IsChat = false;
             }
         }
 

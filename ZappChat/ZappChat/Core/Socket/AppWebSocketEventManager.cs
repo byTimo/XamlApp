@@ -19,7 +19,7 @@ namespace ZappChat.Core.Socket
         public static LoginWindow Login { get; set; }
         public static MainWindow MainWindow { get; set; }
 
-        public static ConnectionStatus Connection { get; private set; }
+        //public static ConnectionStatus Connection { get; private set; }
         public static bool IsChat { get; set; }
 
 
@@ -30,10 +30,6 @@ namespace ZappChat.Core.Socket
             _webSocket.Closed += ClosedConnection;
             _webSocket.Error += SocketErrorEvent;
             _webSocket.MessageReceived += MessageReceivedEvent;
-            _webSocket.AutoSendPingInterval = 10;
-            _webSocket.EnableAutoSendPing = true;
-
-            Connection = ConnectionStatus.Disconnect;
         }
         private static void MessageReceivedEvent(object sender, MessageReceivedEventArgs e)
         {
@@ -68,22 +64,21 @@ namespace ZappChat.Core.Socket
 
         private static void SocketErrorEvent(object sender, ErrorEventArgs e)
         {
-            Connection = ConnectionStatus.Error;
-            CrossThreadOperationWithoutParams(Application.Current.Dispatcher, () => AppEventManager.DisconnectionEvent(_webSocket));
+            //CrossThreadOperationWithoutParams(Application.Current.Dispatcher, () => AppEventManager.DisconnectionEvent(_webSocket));
+            if(_webSocket.State != WebSocketState.Closed)
+                _webSocket.Close();
         }
 
         private static void ClosedConnection(object sender, EventArgs e)
         {
-            if (Connection == ConnectionStatus.Connect)
-            {
-                _webSocket.Close();
-                CrossThreadOperationWithoutParams(Application.Current.Dispatcher,() => AppEventManager.DisconnectionEvent(_webSocket));
-            }
+            CrossThreadOperationWithoutParams(Application.Current.Dispatcher,
+                () => AppEventManager.DisconnectionEvent(_webSocket));
+
         }
 
         private static void OpenedConnection(object sender, EventArgs e)
         {
-            Connection = ConnectionStatus.Connect;
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.ConnectionEvent(_webSocket));
             string token;
             try
             {
@@ -93,7 +88,11 @@ namespace ZappChat.Core.Socket
             {
                 token = null;
             }
-            if(token == null) return;
+            if (token == null)
+            {
+                ReactionOnTokenAuthorizationFail();
+                return;
+            }
             var requestToken = new AuthorizationTokenRequest
             {
                 token = token
@@ -104,11 +103,11 @@ namespace ZappChat.Core.Socket
 
         public static void OpenWebSocket()
         {
-            Connection = ConnectionStatus.Disconnect;
             try
             {
                 if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
                     _webSocket.Open();
+                Thread.Sleep(1000);
             }
             catch (Exception e)
             {
@@ -136,7 +135,14 @@ namespace ZappChat.Core.Socket
                     CrossThreadOperationWithEventArrgs(Application.Current.Dispatcher, AppEventManager.AuthorizationEvent,Login,"ok");
                     break;
                 case "fail":
-                    FileDispetcher.DeleteSetting("token");
+                    try
+                    {
+                        FileDispetcher.DeleteSetting("token");
+                    }
+                    catch
+                    {
+                        ReactionOnTokenAuthorizationFail();
+                    }
                     break;
                 case "error":
                     //@TODO what is it 0_o
@@ -144,6 +150,14 @@ namespace ZappChat.Core.Socket
                 default:
                     //@TODO Will do owner exсaption
                     throw new Exception("Ошибка на сервере!");
+            }
+        }
+
+        private static void ReactionOnTokenAuthorizationFail()
+        {
+            if (IsChat)
+            {
+                Application.Current.Dispatcher.Invoke(() => AppEventManager.ReauthorizationEvent(_webSocket));
             }
         }
 
