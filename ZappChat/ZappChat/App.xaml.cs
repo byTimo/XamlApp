@@ -10,15 +10,20 @@ namespace ZappChat
     /// <summary>
     /// Логика взаимодействия для App.xaml
     /// </summary>
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class App : Application
     {
+        private const double IntervalBetweenConnectionInSeconds = 1.5;
+        private const double CheckingFilesIntervalInSeconds = 2.0;
+
         public static ConnectionStatus ConnectionStatus { get; set; }
         
         private static MainWindow main;
         private static LoginWindow login;
-        private const double IntervalBetweenConnection = 1.5;
-        private static DispatcherTimer reconnectionTimer;
         private static OpenedWindow currentWindow;
+
+        private static DispatcherTimer reconnectionTimer;
+        private static DispatcherTimer fileMonitore;
 
         enum OpenedWindow
         {
@@ -47,12 +52,13 @@ namespace ZappChat
             AppWebSocketEventManager.MainWindow = main;
             AppWebSocketEventManager.Login = login;
 
-            reconnectionTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(IntervalBetweenConnection)
-            };
+            reconnectionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(IntervalBetweenConnectionInSeconds) };
             reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             reconnectionTimer.Stop();
+
+            fileMonitore = new DispatcherTimer { Interval = TimeSpan.FromSeconds(CheckingFilesIntervalInSeconds) };
+            fileMonitore.Tick += (o, args) => Dispatcher.Invoke(FileDispetcher.CheckExistsFiles);
+            fileMonitore.Start();
 
             var socketOpener = new BackgroundWorker();
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();

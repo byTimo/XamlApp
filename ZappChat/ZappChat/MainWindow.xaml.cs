@@ -63,6 +63,8 @@ namespace ZappChat
         {
             Dialogues.DialogueWithQuery = new ObservableCollection<MessageControl>();
             Dialogues.DialogueWithoutQuery = new ObservableCollection<MessageControl>();
+            messageButton.MessagesCount = 0;
+            myQuaryButton.MessagesCount = 0;
             var listRequest = new ListQueryRequest()
             {
                 from_id = 0

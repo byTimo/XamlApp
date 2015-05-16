@@ -117,6 +117,7 @@ namespace ZappChat.Core.Socket
             {
                 if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
                     _webSocket.Open();
+                Thread.Sleep(1000);
             }
             catch (Exception e)
             {

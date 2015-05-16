@@ -24,18 +24,24 @@ namespace ZappChat.Core
             if (appDataDirectory == null) throw new Exception("Не возможно определить расположение ApplicationsData");
 
             rootDirectory = Path.Combine(appDataDirectory, ZappChatDirectoryName);
-            if (!Directory.Exists(rootDirectory)) Directory.CreateDirectory(rootDirectory);
-
             FullPathToSettingFile = Path.Combine(rootDirectory,SettingFile);
-            if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
+
+            CheckExistsFiles();
+
         }
 
+        public static void CheckExistsFiles()
+        {
+            if (!Directory.Exists(rootDirectory)) Directory.CreateDirectory(rootDirectory);
+            if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
+        }
         public static string GetToken()
         {
             return GetSetting("token");
         }
         public static string FindFieldInfoLineInFile(string path, string field)
         {
+            if (!File.Exists(path)) File.Create(path);
             return GetAllLineInFile(path).FirstOrDefault(str => str.StartsWith(field));
         }
 
@@ -98,13 +104,14 @@ namespace ZappChat.Core
 
         private static List<string> GetAllLineInFile(string path)
         {
+            if (!File.Exists(path)) File.Create(path);
+            Thread.Sleep(1000);
             return File.ReadAllText(path).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         private static void RewriteFile(string path, IEnumerable<string> allLine)
         {
-            if(!File.Exists(path)) throw new Exception("Невозможно перезаписать файл! Его не существует.");
-            File.Delete(path);
+            if(File.Exists(path)) File.Delete(path);
             File.WriteAllLines(path, allLine);
 
         }
@@ -119,7 +126,7 @@ namespace ZappChat.Core
         [SetUp]
         public void SaveSettingWithoutFile()
         {
-            Thread.Sleep(1000);
+            FileDispetcher.InitializeFileDispetcher();
             _settingInformation = File.ReadAllText(FileDispetcher.FullPathToSettingFile)
                 .Split(new []{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
