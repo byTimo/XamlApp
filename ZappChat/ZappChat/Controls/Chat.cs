@@ -78,16 +78,16 @@ namespace ZappChat.Controls
             }
 
             ChatMessages = new ObservableCollection<ChatMessage>();
-            foreach (var message in CurrentDialogue)
+            foreach (var message in CurrentDialogue.Messages)
             {
-                ChatMessages.Add(new ChatMessage(message as Message));
+                ChatMessages.Add(new ChatMessage(message));
             }
 
         }
 
-        public void AddNewMessageToChat(int dialogueId, Message message)
+        public void AddNewMessageToChat(Dialogue dialogue)
         {
-            ChatMessages.Add(new ChatMessage(message));
+            ChatMessages.Add(new ChatMessage(dialogue.Messages[0]));
             DialogueTitle = CurrentDialogue.GetTitleMessage();
         }
         public override void OnApplyTemplate()
@@ -107,9 +107,9 @@ namespace ZappChat.Controls
                 var userInput = GetTemplateChild("UserInput") as TextBox;
                 if (userInput != null && userInput.Text != "")
                 {
-                    //TODO когда нибудь сюда нужно добавить поддержку логина а не просто пустой автор 
-                    AppEventManager.SendMessageEvent(this, CurrentDialogue.Id,
-                        new Message(CurrentDialogue.Id, "", userInput.Text, MessageStatus.Read));
+//@TODO  здесь вызов события отправления сообщения          --- нужно ли оно ибо можно просто в сокет добавить :-)
+                    //AppEventManager.SendMessageEvent(this, CurrentDialogue.RoomId,
+                    //    new Message(CurrentDialogue.RoomId, "", userInput.Text, MessageStatus.Read));
                     userInput.Text = "";
                 }
             };

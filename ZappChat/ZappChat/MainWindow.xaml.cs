@@ -24,21 +24,13 @@ namespace ZappChat
             AppEventManager.Disconnect += Disconnect; //Деактивация элементов управления
             AppEventManager.AuthorizationSuccess += AuthorizationSucces;
 
-            AppEventManager.TakeMessage += TakeMessage;
             AppEventManager.DeleteConfirmationDialogue += DeleteConfirmationDialogue;
             AppEventManager.DeleteDialogue += DeleteDialogue;
             AppEventManager.OpenDialogue += OpenDialogue;
             AppEventManager.CloseDialogue += () => ShowDialogue(false);
-            AppEventManager.TakeQuery += TakeQuery;
-            AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
-            AppEventManager.TakeNewDialgoue += TakeDialogue;
-
-        }
-
-        private void TakeDialogue(object sender, TakeNewDialogueEventArgs e)
-        {
-            Dialogues.TakeNewDialogue(e.Dialogue);
-            myQuaryButton.MessagesCount++;
+            AppEventManager.ReceiveMessage += ReceivingMessage;
+            AppEventManager.ReceiveQuery += ReceivingQuery;
+            //AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
         }
 
         private void Connection(object sender)
@@ -61,37 +53,33 @@ namespace ZappChat
 
         private void AuthorizationSucces(object sender, AuthorizationType type)
         {
-            Dialogues.DialogueWithQuery = new ObservableCollection<MessageControl>();
-            Dialogues.DialogueWithoutQuery = new ObservableCollection<MessageControl>();
-            messageButton.MessagesCount = 0;
-            myQuaryButton.MessagesCount = 0;
-            var listRequest = new ListQueryRequest()
+            var auditRequest = new AuditRequest
             {
-                from_id = 0
+                log_id = App.LastLogId
             };
-            var listRequestToJson = JsonConvert.SerializeObject(listRequest);
-            AppWebSocketEventManager.SendObject(listRequestToJson);
+            var auditRequestToJson = JsonConvert.SerializeObject(auditRequest);
+            AppWebSocketEventManager.SendObject(auditRequestToJson);
         }
 
-        private void TakeMessage(object sender, MessagingEventArgs e)
+        private void ReceivingMessage(object sender, Dialogue dialogue)
         {
-            var message = e.Message;
+            var message = dialogue.Messages[0];
             message.Status = MessageStatus.Delivered;
             //Реагирование на приход нового сообщения:
             //Чата
-            if (e.DialogueId == chat.CurrentDialogue.Id)
+            if (dialogue.RoomId == chat.CurrentDialogue.RoomId)
             {
                 message.Status = MessageStatus.Read;
-                chat.AddNewMessageToChat(e.DialogueId, message);
+                chat.AddNewMessageToChat(dialogue);
             }
             //Кнопки "Сообщения"
             if (message.Status != MessageStatus.Read
                 &&
                 IsControlHaveUnreadMessageForTakeMessage(
-                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DialogueId)))
+                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue))))
                 messageButton.MessagesCount++;
             //Списка диалогов
-            Dialogues.AddNewMessageToList(e.DialogueId, message);
+            Dialogues.AddNewMessageToList(dialogue);
         }
         private void DeleteConfirmationDialogue(object sender, DeletingEventArgs e)
         {
@@ -109,24 +97,25 @@ namespace ZappChat
                 //Кнопки сообщения:
                 if (
                     IsControlHaveUnreadMessage(
-                        Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
+                        Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue))))
                     messageButton.MessagesCount--;
                 //Кнопка запросов:
                 if (IsControlHaveUnreadMessage(
-                        Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.DeletedDialogue.Id)))
+                        Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue))))
                     myQuaryButton.MessagesCount--;
                 //Чата
-                if (chat.CurrentDialogue.Id == e.DeletedDialogue.Id)
+                if (chat.CurrentDialogue.RoomId == e.DeletedDialogue.RoomId)
                 {
                     chat.CloseDialogue();
                     ShowDialogue(false);
                 }
                 //Списка диалогов
-                Dialogues.RemoveDialogueFromLists(e.DeletedDialogue.Id);
+                Dialogues.RemoveDialogueFromLists(e.DeletedDialogue.RoomId);
             }
             //Блокера:
             ControlBlocker.Visibility = Visibility.Collapsed;
         }
+//@TODO ------------------- Переделать условие, которое проверяет нужно ли уменьшать цифру на счётчике! --------------------------
         private void OpenDialogue(object sender, DialogueOpenEventArgs e)
         {
             ShowDialogue(true);
@@ -134,11 +123,11 @@ namespace ZappChat
             //Кнопки сообщения:
             if (
                 IsControlHaveUnreadMessage(
-                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
+                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue))))
                 messageButton.MessagesCount--;
             //Кнопка запросов:
             if (IsControlHaveUnreadMessage(
-                    Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.Id == e.OpenedDialogue.Id)))
+                    Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue))))
                 myQuaryButton.MessagesCount--;
             //Список диалогов:
             Dialogues.ChangeMessageStatus(e.OpenedDialogue);
@@ -147,17 +136,17 @@ namespace ZappChat
 
         }
 
-        private void TakeQuery(object sender, TakeQueryEventArgs e)
+        private void ReceivingQuery(object sender, Dialogue dialogue)
         {
 
             //Реагирование на получение запроса:
             //Кнопки запросов
-            if (chat.CurrentDialogue.Id != e.DialogueId)
+            if (!Equals(chat.CurrentDialogue, dialogue))
                 myQuaryButton.MessagesCount++;
             //Списка диалогов
-            Dialogues.TakeQuery(e.DialogueId, e.Interlocutor, e.Query, e.Time);
+            Dialogues.TakeQuery(dialogue);
             //Чата
-            if (chat.CurrentDialogue.Id == e.DialogueId)
+            if (Equals(chat.CurrentDialogue, dialogue))
                 chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
         }
 
@@ -169,6 +158,7 @@ namespace ZappChat
         private bool IsControlHaveUnreadMessage(MessageControl control)
         {
             if (control == null) return false;
+            if (control.Dialogue.Messages.Count == 0) return true;
             return control.Dialogue.Messages.Any(mes => mes.Status != MessageStatus.Read);
         }
 

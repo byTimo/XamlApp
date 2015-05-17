@@ -9,58 +9,35 @@ using System.Threading.Tasks;
 
 namespace ZappChat.Core
 {
-    public class Dialogue : IEnumerable
+    public class Dialogue
     {
-        public int Id { get; private set; }
-        public bool ContainQuery { get; private set; }
+        public uint RoomId { get; private set; }
 
-        private string quary;
-        public string Query
-        {
-            get { return quary; }
-            set
-            {
-                quary = value;
-                ContainQuery = true;
-            }
-        }
+        public string Query { get; set; }
         public DateTime LastDateTime { get; private set; }
         public string LastMessageDate { get; private set; }
         public List<Message> Messages { get; private set; }
-        public string Interlocutor { get; private set; }
+        public uint QueryId { get; private set; }
 
         public Dialogue() { }
-        private Dialogue(int id, string interlocutor, DateTime messageDate)
+        public Dialogue(uint roomId, string quary, uint queryId, string lastUpdate)
         {
-            Id = id;
-            Interlocutor = interlocutor;
-            LastDateTime = messageDate;
-            LastMessageDate = messageDate.ToString("M", new CultureInfo("ru-RU"));
-        }
-
-        public Dialogue(int id, string interlocutor, List<Message> messages)
-            : this(id, interlocutor, messages[messages.Count - 1].DateTime)
-        {
-            Messages = messages;
-        }
-        public Dialogue(int id, string interlocutor, string quary, DateTime time)
-            : this(id, interlocutor, time)
-        {
-            Query = quary;
-            Messages = new List<Message>();
-        }
-
-        public Dialogue(int id, string quary)
-        {
-            Id = id;
-            Interlocutor = "";
-            LastDateTime = DateTime.Now;
+            RoomId = roomId;
+            QueryId = queryId;
+            LastDateTime = DateTime.ParseExact(lastUpdate, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture);
             LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
             Query = quary;
             Messages = new List<Message>();
         }
 
+        public Dialogue(uint roomId, Message message)
+        {
+            RoomId = roomId;
+            LastDateTime = message.DateTime;
+            LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
+            Messages = new List<Message> {message};
 
+        }
         public void AddMessage(Message newMessage)
         {
             LastDateTime = newMessage.DateTime;
@@ -68,19 +45,25 @@ namespace ZappChat.Core
             Messages.Add(newMessage);
         }
 
+        public void AddQuery(uint queryId,string query, string lastUpdate)
+        {
+            QueryId = queryId;
+            Query = query;
+            LastDateTime = DateTime.Parse(lastUpdate);
+            LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
+        }
         public string GetTitleMessage()
         {
-            return Query;
-            //return ContainQuery ? Query : GetLastMessage().Text;
+            return Query ?? GetLastMessage().Text;
         }
 
         public Message GetLastMessage()
         {
             return Messages.Last(x => x.Author != "");
         }
-        public IEnumerator GetEnumerator()
+        protected bool Equals(Dialogue other)
         {
-            return Messages.GetEnumerator();
+            return RoomId == other.RoomId;
         }
 
         public override bool Equals(object obj)
@@ -91,16 +74,9 @@ namespace ZappChat.Core
             return Equals((Dialogue) obj);
         }
 
-        protected bool Equals(Dialogue other)
-        {
-            return Equals(Messages, other.Messages) && string.Equals(Interlocutor, other.Interlocutor);
-        }
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((Messages != null ? Messages.GetHashCode() : 0) * 397) ^ (Interlocutor != null ? Interlocutor.GetHashCode() : 0);
-            }
+            return (int) RoomId;
         }
     }
 }

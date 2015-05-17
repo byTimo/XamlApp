@@ -31,33 +31,26 @@ namespace ZappChat.Core
             AuthorizationFail.Invoke(sender, type);
         }
 
-        public static event TakeNewDialogueEventHandler TakeNewDialgoue;
+        public static event ReceivingDataEventHandler ReceiveMessage;
 
-        public static void TakeNewDialogueEvent(object sender, Dialogue dialogue)
+        public static void ReceiveMessageEvent(object sender, Dialogue dialogue)
         {
-            TakeNewDialgoue.Invoke(sender,new TakeNewDialogueEventArgs(dialogue));
+            ReceiveMessage.Invoke(sender, dialogue);
         }
 
-        public static event MessagingEventHandler TakeMessage;
+        public static event ReceivingDataEventHandler ReceiveQuery;
 
-        public static void TakeMessageEvent(object sender,int dialogueId, Message message)
+        public static void ReceiveQueryEvent(object sender, Dialogue dialogue)
         {
-            TakeMessage(sender, new MessagingEventArgs(dialogueId, message));
+            ReceiveQuery.Invoke(sender, dialogue);
         }
 
-        public static event TakeQueryEventHandler TakeQuery;
+        //public static event MessagingEventHandler SendMessage;
 
-        public static void TakeQueryEvent(object sender, int dialogueId, string interlocutor, string query, DateTime time)
-        {
-            TakeQuery(sender, new TakeQueryEventArgs(dialogueId, interlocutor, query, time));
-        }
-
-        public static event MessagingEventHandler SendMessage;
-
-        public static void SendMessageEvent(object sender, int dialogueId, Message message)
-        {
-            SendMessage(sender, new MessagingEventArgs(dialogueId, message));
-        }
+        //public static void SendMessageEvent(object sender, int dialogueId, Message message)
+        //{
+        //    SendMessage(sender, new MessagingEventArgs(dialogueId, message));
+        //}
 
         public static event DeletingDialogueEventHandler DeleteConfirmationDialogue;
 
@@ -87,11 +80,5 @@ namespace ZappChat.Core
             CloseDialogue();
         }
 
-        public static event SwitchWindowEventHandler SwitchWindows;
-
-        public static void SwitchWindowEvent(object sender, string windwoName)
-        {
-            SwitchWindows(sender, new SwitchWindowEventArgs(windwoName));
-        }
     }
 }

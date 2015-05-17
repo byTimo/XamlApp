@@ -9,17 +9,16 @@ namespace ZappChat.Core
 {
     public class Message
     {
-        public int Id { get; private set; }
+        public uint Id { get; private set; }
         public MessageStatus Status { get; set; }
         public string Author { get; private set; }
-
         public DateTime DateTime { get; private set; }
-
-        //TODO Использовать, как строковое представление даты, когда появиться реализация сообщений
         public string Date { get; private set; }
         public string Text { get; private set; }
+        public MessageType Type { get; private set; }
+        public string Hash { get; private set; }
 
-        public Message(int id, string author, string text, DateTime date, MessageStatus messageStatus)
+        public Message(uint id, string author, string text, DateTime date, MessageStatus messageStatus)
         {
             Id = id;
             Author = author;
@@ -28,7 +27,23 @@ namespace ZappChat.Core
             Date = date.ToString("M", new CultureInfo("ru-RU"));
             Status = messageStatus;
         }
-        public Message(int id, string author, string text, MessageStatus messageStatus) : this(id, author, text, DateTime.Now, messageStatus) { }
+        public Message(uint id, string author, string text, MessageStatus messageStatus) : this(id, author, text, DateTime.Now, messageStatus) { }
+
+        public Message(uint id, string message, string type, string hash, string date, string userName)
+        {
+            Id = id;
+            Text = message;
+            Type = type == "incomming" ? MessageType.Incoming : MessageType.Outgoing;
+            Hash = hash;
+            Author = userName;
+            DateTime = DateTime.ParseExact(date, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture);
+            Date = DateTime.ToString("M", new CultureInfo("ru-RU"));
+        }
+
+        protected bool Equals(Message other)
+        {
+            return Id == other.Id && string.Equals(Hash, other.Hash);
+        }
 
         public override bool Equals(object obj)
         {
@@ -37,18 +52,12 @@ namespace ZappChat.Core
             if (obj.GetType() != this.GetType()) return false;
             return Equals((Message) obj);
         }
-        protected bool Equals(Message other)
-        {
-            return string.Equals(Author, other.Author) && string.Equals(Date, other.Date) && string.Equals(Text, other.Text);
-        }
+
         public override int GetHashCode()
         {
             unchecked
             {
-                int hashCode = (Author != null ? Author.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Date != null ? Date.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Text != null ? Text.GetHashCode() : 0);
-                return hashCode;
+                return ((int) Id*397) ^ Hash.GetHashCode();
             }
         }
     }

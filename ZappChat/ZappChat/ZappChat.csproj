@@ -79,6 +79,7 @@
     <Compile Include="Core\Dialogue.cs" />
     <Compile Include="Core\Message.cs" />
     <Compile Include="Core\FileDispetcher.cs" />
+    <Compile Include="Core\Socket\Requests\AuditRequest.cs" />
     <Compile Include="Core\Socket\Requests\AuthorizationRequests.cs" />
     <Compile Include="Core\Socket\Requests\HistoryRequest.cs" />
     <Compile Include="Core\Socket\Requests\LightRequests.cs" />

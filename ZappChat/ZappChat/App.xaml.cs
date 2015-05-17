@@ -17,6 +17,7 @@ namespace ZappChat
         private const double CheckingFilesIntervalInSeconds = 2.0;
 
         public static ConnectionStatus ConnectionStatus { get; set; }
+        public static uint LastLogId { get; set; }
         
         private static MainWindow main;
         private static LoginWindow login;
@@ -33,6 +34,7 @@ namespace ZappChat
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            LastLogId = 0;
             FileDispetcher.InitializeFileDispetcher();
             login = new LoginWindow();
             main = new MainWindow();

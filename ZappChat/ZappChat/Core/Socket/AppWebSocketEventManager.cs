@@ -95,6 +95,15 @@ namespace ZappChat.Core.Socket
                     case "request/list":
                         HandlingListResponce(responseJson);
                         break;
+                    case "client/audit":
+                        HndlingAuditResponce(responseJson);
+                        break;
+                    case "chat/message":
+                        HandlingChatMessage(responseJson);
+                        break;
+                    case "request/new":
+                        HandlingNewRequest(responseJson);
+                        break;
                         //@TODO
                 }
             }
@@ -168,22 +177,56 @@ namespace ZappChat.Core.Socket
             }
         }
 
+        private static void HandlingNewRequest(JObject responseJson)
+        {
+            var request = responseJson["request"];
+            var roomId = uint.Parse((string)request["chat_room_id"]);
+            var lastupdata = (string)request["updated_at"];
+            var queryId = uint.Parse((string)request["id"]);
+            var query = (string)request["query"];
+            var dialogue = new Dialogue(roomId, query, queryId, lastupdata);
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveQueryEvent(_webSocket, dialogue));
+        }
+
         private static void HandlingPongResponce(JObject responseJson)
         {
             throw new NotImplementedException();
         }
 
+        private static void HndlingAuditResponce(JObject responseJson)
+        {
+            if ((string) responseJson["status"] == "ok")
+                App.LastLogId = uint.Parse((string) responseJson["log_id"]);
+        }
+
+        private static void HandlingChatMessage(JObject responseJson)
+        {
+            var roomId = uint.Parse((string) responseJson["room_id"]);
+            var mes = responseJson["message"];
+            var mesId = uint.Parse((string) mes["id"]);
+            var hash = (string) mes["hash"];
+            var type = (string) mes["type"];
+            var text = (string) mes["message"];
+            var author = (string) mes["user_name"];
+            var lastUpdata = (string) mes["created_at"];
+            var message = new Message(mesId, text, type, hash, lastUpdata, author);
+            var dialogue = new Dialogue(roomId, message);
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveMessageEvent(_webSocket, dialogue));
+        }
+
         private static void HandlingListResponce(JObject responseJson)
         {
-            if((string)responseJson["status"] != "ok") throw new Exception((string)responseJson["reason"]);
-            foreach (var dialogue in responseJson["list"])
-            {
-                var id = int.Parse((string)dialogue["id"]);
-                var query = (string)dialogue["query"];
-                var newDialog = new Dialogue(id, query);
-                var action = new Action<object, Dialogue>(AppEventManager.TakeNewDialogueEvent);
-                MainWindow.Dispatcher.Invoke(action, _webSocket, newDialog);
-            }
+            //@TODO - как сервер заработает - переделать!
+
+            //if((string)responseJson["status"] != "ok") throw new Exception((string)responseJson["reason"]);
+            //foreach (var dialogue in responseJson["list"])
+            //{
+            //    var id = int.Parse((string)dialogue["id"]);
+            //    var query = (string)dialogue["query"];
+            //    var newDialog = new Dialogue(id, query);
+            //    var action = new Action<object, Dialogue>(AppEventManager.TakeNewDialogueEvent);
+            //    MainWindow.Dispatcher.Invoke(action, _webSocket, newDialog);
+            //}
 
         }
 

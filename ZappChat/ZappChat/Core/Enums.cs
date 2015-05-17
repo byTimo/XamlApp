@@ -22,8 +22,8 @@
 
     public enum MessageType
     {
-        User,
-        Interlocutor,
+        Outgoing,
+        Incoming,
         System
     }
 }

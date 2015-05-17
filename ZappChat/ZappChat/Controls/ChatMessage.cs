@@ -19,7 +19,7 @@ namespace ZappChat.Controls
     public class ChatMessage : Control
     {
         public static readonly DependencyProperty TypeProperty = DependencyProperty.Register("Type",
-            typeof (MessageType), typeof (ChatMessage), new FrameworkPropertyMetadata(MessageType.User));
+            typeof (MessageType), typeof (ChatMessage), new FrameworkPropertyMetadata(MessageType.Outgoing));
 
         public MessageType Type
         {
@@ -73,17 +73,16 @@ namespace ZappChat.Controls
         public ChatMessage() { }
         public ChatMessage(Message mes)
         {
-            Type = mes.Author == "" ? MessageType.User : MessageType.Interlocutor;
-            switch (Type)
+            switch (mes.Type)
             {
-                case MessageType.User:
+                case MessageType.Outgoing:
                     TextMessage = mes.Text;
                     TextAlignment = TextAlignment.Right;
                     HorizontalContentAlignment = HorizontalAlignment.Right;
                     AuthorMargin = new Thickness(100, 5, 0, 10);
                     TextMargin = new Thickness(100, 0, 0, 5);
                     break;
-                case MessageType.Interlocutor:
+                case MessageType.Incoming:
                     AuthorMessage = mes.Author;
                     TextMessage = mes.Text;
                     HorizontalContentAlignment = HorizontalAlignment.Left;
