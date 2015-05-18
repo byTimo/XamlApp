@@ -67,7 +67,7 @@ namespace ZappChat.Controls
             }
         }
 
-        public void RemoveDialogueFromLists(uint dialogueId)
+        public void RemoveDialogueFromLists(ulong dialogueId)
         {
             var delDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.RoomId == dialogueId);
             if (delDialogue != null)

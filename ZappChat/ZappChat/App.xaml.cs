@@ -15,6 +15,7 @@ namespace ZappChat
     {
         private const double IntervalBetweenConnectionInSeconds = 1.5;
         private const double CheckingFilesIntervalInSeconds = 2.0;
+        private const double UpdateControlTimeIntervalInMinutes = 2.0;
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
@@ -63,7 +64,7 @@ namespace ZappChat
             fileMonitore.Tick += (o, args) => Dispatcher.Invoke(FileDispetcher.CheckExistsFiles);
             fileMonitore.Start();
 
-            updateCountersDispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMinutes(2)};
+            updateCountersDispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMinutes(UpdateControlTimeIntervalInMinutes)};
             updateCountersDispatcherTimer.Tick += (o, args) => AppEventManager.UpdateCounterEvent();
             updateCountersDispatcherTimer.Start();
 

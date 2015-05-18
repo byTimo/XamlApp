@@ -8,7 +8,7 @@ namespace ZappChat.Core.Socket.Requests
 {
     abstract class RequestWithId : Request
     {
-        public uint id { get; set; }
+        public ulong id { get; set; }
     }
 
     class QueryInfoRequest : RequestWithId

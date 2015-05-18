@@ -178,10 +178,12 @@ namespace ZappChat.Core.Socket
 
         private static void HandlingNewRequest(JObject responseJson)
         {
+            if ((string) responseJson["log_id"] != null)
+                App.LastLogId = ulong.Parse((string) responseJson["log_id"]);
             var request = responseJson["request"];
-            var roomId = uint.Parse((string)request["chat_room_id"]);
+            var roomId = ulong.Parse((string)request["chat_room_id"]);
             var lastupdata = (string)request["updated_at"];
-            var queryId = uint.Parse((string)request["id"]);
+            var queryId = ulong.Parse((string)request["id"]);
             var query = (string)request["query"];
             var dialogue = new Dialogue(roomId, query, queryId, lastupdata);
             Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveQueryEvent(_webSocket, dialogue));
@@ -200,12 +202,12 @@ namespace ZappChat.Core.Socket
 
         private static void HandlingChatMessage(JObject responseJson)
         {
-            var roomId = uint.Parse((string) responseJson["room_id"]);
+            var roomId = ulong.Parse((string) responseJson["room_id"]);
             var logId = (string) responseJson["log_id"];
             if (logId != null)
                 App.LastLogId = ulong.Parse(logId);
             var mes = responseJson["message"];
-            var mesId = uint.Parse((string) mes["id"]);
+            var mesId = ulong.Parse((string) mes["id"]);
             var hash = (string) mes["hash"];
             var type = (string) mes["type"];
             var text = (string) mes["message"];

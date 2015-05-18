@@ -9,7 +9,7 @@ namespace ZappChat.Core
 {
     public class Message
     {
-        public uint Id { get; private set; }
+        public ulong Id { get; private set; }
         public MessageStatus Status { get; set; }
         public string Author { get; private set; }
         public DateTime DateTime { get; private set; }
@@ -18,7 +18,7 @@ namespace ZappChat.Core
         public MessageType Type { get; private set; }
         public string Hash { get; private set; }
 
-        public Message(uint id, string author, string text, DateTime date, MessageStatus messageStatus)
+        public Message(ulong id, string author, string text, DateTime date, MessageStatus messageStatus)
         {
             Id = id;
             Author = author;
@@ -27,9 +27,9 @@ namespace ZappChat.Core
             Date = date.ToString("M", new CultureInfo("ru-RU"));
             Status = messageStatus;
         }
-        public Message(uint id, string author, string text, MessageStatus messageStatus) : this(id, author, text, DateTime.Now, messageStatus) { }
+        public Message(ulong id, string author, string text, MessageStatus messageStatus) : this(id, author, text, DateTime.Now, messageStatus) { }
 
-        public Message(uint id, string message, string type, string hash, string date, string userName)
+        public Message(ulong id, string message, string type, string hash, string date, string userName)
         {
             Id = id;
             Text = message;

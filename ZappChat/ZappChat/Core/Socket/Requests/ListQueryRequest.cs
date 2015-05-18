@@ -8,7 +8,7 @@ namespace ZappChat.Core.Socket.Requests
 {
     class ListQueryRequest : Request
     {
-        public uint from_id { get; set; }
+        public ulong from_id { get; set; }
 
         public ListQueryRequest()
         {
