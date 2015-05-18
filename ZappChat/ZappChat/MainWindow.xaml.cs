@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Newtonsoft.Json;
@@ -148,6 +149,8 @@ namespace ZappChat
             //Реагирование на получение запроса:
             //Списка диалогов
             Dialogues.TakeQuery(dialogue);
+            //TabControl
+            TabNow.Items.Insert(0,new QueryControl(dialogue));
             //Чата
             if (Equals(chat.CurrentDialogue, dialogue))
                 chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();

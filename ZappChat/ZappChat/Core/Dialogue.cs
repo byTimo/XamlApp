@@ -24,7 +24,8 @@ namespace ZappChat.Core
         {
             RoomId = roomId;
             QueryId = queryId;
-            LastDateTime = DateTime.ParseExact(lastUpdate, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture);
+            LastDateTime = DateTime.ParseExact(lastUpdate, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture).AddHours(-1);
+            
             LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
             Query = quary;
             Messages = new List<Message>();

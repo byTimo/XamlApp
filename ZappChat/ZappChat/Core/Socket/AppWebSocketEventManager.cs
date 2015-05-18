@@ -64,8 +64,7 @@ namespace ZappChat.Core.Socket
         {
             socketAlreadyClosed = true;
             App.ConnectionStatus = ConnectionStatus.Disconnect;
-            CrossThreadOperationWithoutParams(Application.Current.Dispatcher,
-                () => AppEventManager.Disconnection(_webSocket));
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.Disconnection(_webSocket));
 
         }
 
@@ -196,12 +195,15 @@ namespace ZappChat.Core.Socket
         private static void HndlingAuditResponce(JObject responseJson)
         {
             if ((string) responseJson["status"] == "ok")
-                App.LastLogId = uint.Parse((string) responseJson["log_id"]);
+                App.LastLogId = ulong.Parse((string) responseJson["log_id"]);
         }
 
         private static void HandlingChatMessage(JObject responseJson)
         {
             var roomId = uint.Parse((string) responseJson["room_id"]);
+            var logId = (string) responseJson["log_id"];
+            if (logId != null)
+                App.LastLogId = ulong.Parse(logId);
             var mes = responseJson["message"];
             var mesId = uint.Parse((string) mes["id"]);
             var hash = (string) mes["hash"];
@@ -216,7 +218,7 @@ namespace ZappChat.Core.Socket
 
         private static void HandlingListResponce(JObject responseJson)
         {
-            //@TODO - как сервер заработает - переделать!
+            //@TODO - В этом нет необходимости, возмжно, пока
 
             //if((string)responseJson["status"] != "ok") throw new Exception((string)responseJson["reason"]);
             //foreach (var dialogue in responseJson["list"])
@@ -228,30 +230,6 @@ namespace ZappChat.Core.Socket
             //    MainWindow.Dispatcher.Invoke(action, _webSocket, newDialog);
             //}
 
-        }
-
-        private static void CrossThreadOperationWithoutParams(Dispatcher dispatcher, Action action)
-        {
-            if (dispatcher.CheckAccess())
-                action();
-            else
-                dispatcher.Invoke(action);
-        }
-
-        private static void CrossThreadOperationWithOneString(Dispatcher dispatcher, Action<string> action, string firstParam)
-        {
-            if (dispatcher.CheckAccess())
-                action(firstParam);
-            else
-                dispatcher.Invoke(action, firstParam);
-        }
-        private static void CrossThreadOperationWithEventArrgs(Dispatcher dispatcher, Action<object,string> action,object sender, string firstParam)
-        {
-            if (dispatcher.CheckAccess())
-                action(sender,firstParam);
-            else
-                dispatcher.Invoke(action, sender, firstParam);
-        }
-        
+        }        
     }
 }

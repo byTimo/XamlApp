@@ -7,7 +7,7 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.QueryControl"
 	x:Name="quaryControl"
-	d:DesignWidth="640" d:DesignHeight="480" Height="100" Width="585" Cursor="Hand">
+	d:DesignWidth="640" d:DesignHeight="480" Height="100" Width="565" Cursor="Hand">
 	<UserControl.Resources>
 		<Storyboard x:Key="OnMouseEnter1">
 			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="LayoutRoot">
@@ -47,5 +47,7 @@
 		<Border x:Name="YearBorder" Grid.Column="3" VerticalAlignment="Top" Margin="2,15,2,0" Padding="7,2" CornerRadius="10" BorderThickness="1" BorderBrush="#FFD3DAE4" Width="0">
 			<TextBlock x:Name="YearText" Text="2010" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="10.667" Foreground="#FFD3DAE4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Border>
+		<Image Grid.Column="1" Margin="15,70,0,14" Source="/ZappChat;component/Images/Tick.png" Stretch="Fill" Width="13" Height="13" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+		<TextBlock x:Name="Date" Grid.Column="1" Margin="33,70,0,14" FontFamily="/ZappChat;component/Fonts/#PT Sans" Text="{Binding ElementName=quaryControl, Path=PastTime}" Foreground="#FFD5DADC" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 	</Grid>
 </UserControl>

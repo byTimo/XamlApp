@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -47,10 +48,20 @@ namespace ZappChat.Controls
 	        DialogueOpened = false;
 	        ContaintUnreadMessages = false;
             UpdateControl();
+	        AppEventManager.UpdateCounter += UpdateControl;
+	    }
+
+	    private double OpacityChange(DateTime time)
+	    {
+            var dTime = DateTime.Now.Subtract(time);
+            if (dTime.Days > 0) return 0.5;
+            return dTime.Hours * 0.0208 + dTime.Minutes * 0.0003;
+
 	    }
 
 	    public void UpdateControl()
 	    {
+            Timer.Opacity = 1.0 - OpacityChange(Dialogue.LastDateTime);
 	        MessageText = Dialogue.GetTitleMessage();
 	        MessageDate = Dialogue.LastMessageDate;
 	    }

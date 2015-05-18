@@ -14,13 +14,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Newtonsoft.Json;
 using ZappChat.Core;
+using ZappChat.Core.Socket;
+using ZappChat.Core.Socket.Requests;
 
 namespace ZappChat.Controls
 {
-    [TemplatePart(Name = "Back", Type = typeof(CornerRadiusButton)),
-     TemplatePart(Name = "Send", Type = typeof(CornerRadiusButton)),
-     TemplatePart(Name = "UserInput", Type = typeof(TextBox))]
+    [TemplatePart(Name = "Back", Type = typeof(CornerRadiusButton))]
+    [TemplatePart(Name = "Send", Type = typeof(CornerRadiusButton))]
+    [TemplatePart(Name = "UserInput", Type = typeof(TextBox))]
+    [TemplatePart(Name = "MessageChat", Type = typeof(ListBox))]
     public class Chat : Control
     {
         public Dialogue CurrentDialogue { get; set; }
@@ -69,6 +73,10 @@ namespace ZappChat.Controls
 
         public void OpenDialogue(Dialogue opendedDialogue)
         {
+            var userInput = GetTemplateChild("UserInput") as TextBox;
+            if (userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
+            if (!Equals(CurrentDialogue, opendedDialogue))
+                userInput.Text = "";
             CurrentDialogue = opendedDialogue;
             DialogueTitle = CurrentDialogue.GetTitleMessage();
 
@@ -82,13 +90,19 @@ namespace ZappChat.Controls
             {
                 ChatMessages.Add(new ChatMessage(message));
             }
-
+            var chat = GetTemplateChild("MessageChat") as ListBox;
+            if(chat == null) throw new NullReferenceException("Не определил ListBox в чате");
+            if(chat.Items.Count != 0)
+                chat.ScrollIntoView(chat.Items[chat.Items.Count-1]);
         }
 
         public void AddNewMessageToChat(Dialogue dialogue)
         {
             ChatMessages.Add(new ChatMessage(dialogue.Messages[0]));
             DialogueTitle = CurrentDialogue.GetTitleMessage();
+            var chat = GetTemplateChild("MessageChat") as ListBox;
+            if (chat == null) throw new NullReferenceException("Не определил ListBox в чате");
+            chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
         }
         public override void OnApplyTemplate()
         {
@@ -102,19 +116,37 @@ namespace ZappChat.Controls
                 AppEventManager.CloseDialogueEvent();
             };
             var sendButton = GetTemplateChild("Send") as CornerRadiusButton;
-            sendButton.Click += (s, e) =>
-            {
-                var userInput = GetTemplateChild("UserInput") as TextBox;
-                if (userInput != null && userInput.Text != "")
-                {
-//@TODO  здесь вызов события отправления сообщения          --- нужно ли оно ибо можно просто в сокет добавить :-)
-                    //AppEventManager.SendMessageEvent(this, CurrentDialogue.RoomId,
-                    //    new Message(CurrentDialogue.RoomId, "", userInput.Text, MessageStatus.Read));
-                    userInput.Text = "";
-                }
-            };
+            sendButton.Click += SendUserMessage;
+//            {
+//                var userInput = GetTemplateChild("UserInput") as TextBox;
+//                if (userInput != null && userInput.Text != "")
+//                {
+//                    //AppEventManager.SendMessageEvent(this, CurrentDialogue.RoomId,
+//                    //    new Message(CurrentDialogue.RoomId, "", userInput.Text, MessageStatus.Read));
+//                    userInput.Text = "";
+//                }
+//            };
         }
 
+        private void SendUserMessage(object sender, RoutedEventArgs e)
+        {
+            var userInput = GetTemplateChild("UserInput") as TextBox;
+            if(userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
+            var userMessage = userInput.Text.Trim();
+            if(userMessage == "") return;
+            var sendMessageRequest = new SendMessageRequest
+            {
+                room_id = CurrentDialogue.RoomId,
+                text = userMessage,
+                hash = Guid.NewGuid().ToString(),
+                system = false
+            };
+            var sendMessageRequestToJson = JsonConvert.SerializeObject(sendMessageRequest);
+//@TODO------------- После реализации получения ответа ----------------------
+            //AppWebSocketEventManager.SendObject(sendMessageRequestToJson);
+
+
+        }
         public void CloseDialogue()
         {
             CurrentDialogue = new Dialogue();

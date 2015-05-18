@@ -17,7 +17,7 @@ namespace ZappChat
         private const double CheckingFilesIntervalInSeconds = 2.0;
 
         public static ConnectionStatus ConnectionStatus { get; set; }
-        public static uint LastLogId { get; set; }
+        public static ulong LastLogId { get; set; }
         
         private static MainWindow main;
         private static LoginWindow login;
@@ -25,6 +25,7 @@ namespace ZappChat
 
         private static DispatcherTimer reconnectionTimer;
         private static DispatcherTimer fileMonitore;
+        private static DispatcherTimer updateCountersDispatcherTimer;
 
         enum OpenedWindow
         {
@@ -61,6 +62,10 @@ namespace ZappChat
             fileMonitore = new DispatcherTimer { Interval = TimeSpan.FromSeconds(CheckingFilesIntervalInSeconds) };
             fileMonitore.Tick += (o, args) => Dispatcher.Invoke(FileDispetcher.CheckExistsFiles);
             fileMonitore.Start();
+
+            updateCountersDispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMinutes(2)};
+            updateCountersDispatcherTimer.Tick += (o, args) => AppEventManager.UpdateCounterEvent();
+            updateCountersDispatcherTimer.Start();
 
             var socketOpener = new BackgroundWorker();
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();

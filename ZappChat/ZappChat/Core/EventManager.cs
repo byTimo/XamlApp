@@ -45,13 +45,6 @@ namespace ZappChat.Core
             ReceiveQuery.Invoke(sender, dialogue);
         }
 
-        //public static event MessagingEventHandler SendMessage;
-
-        //public static void SendMessageEvent(object sender, int dialogueId, Message message)
-        //{
-        //    SendMessage(sender, new MessagingEventArgs(dialogueId, message));
-        //}
-
         public static event DeletingDialogueEventHandler DeleteConfirmationDialogue;
 
         public static void DeleteConfirmationDialogueEvent(object sender, Dialogue dialogue, bool isConfirmed)
@@ -66,6 +59,13 @@ namespace ZappChat.Core
             DeleteDialogue(sender, new DeletingEventArgs(dialogue, isConfirmed));
         }
 
+        public static event Action UpdateCounter;
+
+        public static void UpdateCounterEvent()
+        {
+            if(UpdateCounter != null)
+                UpdateCounter.Invoke();
+        }
         public static event OpenDialogueEventHandler OpenDialogue;
 
         public static void OpenDialogueEvent(object sender, Dialogue dialogue)

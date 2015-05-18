@@ -75,14 +75,14 @@ namespace ZappChat.Controls
         {
             switch (mes.Type)
             {
-                case MessageType.Outgoing:
+                case MessageType.Incoming:
                     TextMessage = mes.Text;
                     TextAlignment = TextAlignment.Right;
                     HorizontalContentAlignment = HorizontalAlignment.Right;
                     AuthorMargin = new Thickness(100, 5, 0, 10);
                     TextMargin = new Thickness(100, 0, 0, 5);
                     break;
-                case MessageType.Incoming:
+                case MessageType.Outgoing:
                     AuthorMessage = mes.Author;
                     TextMessage = mes.Text;
                     HorizontalContentAlignment = HorizontalAlignment.Left;

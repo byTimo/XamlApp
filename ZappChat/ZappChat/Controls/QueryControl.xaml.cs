@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ZappChat.Core;
 
 namespace ZappChat.Controls
 {
@@ -18,6 +20,7 @@ namespace ZappChat.Controls
 	/// </summary>
 	public partial class QueryControl : UserControl
 	{
+        public Dialogue Dialogue { get; private set; }
 	    public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof (string), typeof (QueryControl));
 	    public string Text
 	    {
@@ -49,10 +52,51 @@ namespace ZappChat.Controls
 	            YearBorder.Width = value ? 40 : 0;
 	        }
 	    }
-        //TODO Время, прошедшее с момента прихода!
+
+	    public static readonly DependencyProperty PastTimeProperty = DependencyProperty.Register("PastTime",
+	        typeof (string), typeof (QueryControl));
+
+	    public string PastTime
+	    {
+            get { return GetValue(PastTimeProperty) as string; }
+            set { SetValue(PastTimeProperty, value); }
+	    }
+
+	    public string PastTimeCalculate(DateTime time)
+	    {
+            if (DateTime.Now.Year - time.Year != 0)
+                return time.Year + " год";
+            if (DateTime.Now.DayOfYear - time.DayOfYear != 0)
+                return time.ToString("M", new CultureInfo("Ru-ru"));
+
+            var deltaTime = DateTime.Now.Subtract(time);
+            if (deltaTime.Hours != 0)
+            {
+                var number = deltaTime.Hours;
+                var end = number % 20 == 1 ? " час" : number % 20 != 0 && number % 20 < 5 ? " часа" : " часов";
+                return number + end + " назад";
+            }
+            if (deltaTime.Minutes != 0)
+            {
+                var number = deltaTime.Minutes;
+                var end = (number == 1 || number > 11) && number%20 == 1
+                    ? " минуту"
+                    : number > 20 && number%20 != 0 && number%20 < 5 ? " минуты" : " минут";
+                return number + end + " назад";
+            }
+            return "0 минут назад";
+	    }
 		public QueryControl()
 		{
 			InitializeComponent();
 		}
+
+	    public QueryControl(Dialogue dialogue) : this()
+	    {
+	        Dialogue = dialogue;
+	        Text = dialogue.Query;
+	        PastTime = PastTimeCalculate(dialogue.LastDateTime);
+	        AppEventManager.UpdateCounter += () => PastTime = PastTimeCalculate(dialogue.LastDateTime);
+	    }
 	}
 }

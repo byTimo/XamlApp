@@ -35,13 +35,12 @@ namespace ZappChat.Core.Socket.Requests
         public string type { get; private set; }
         public string hash { get; set; }
         public string text { get; set; }
-        public bool system { get; private set; }
+        public bool system { get; set; }
 
         public SendMessageRequest()
         {
             action = "chat/message";
             type = "send";
-            system = true;
         }
     }
 }
