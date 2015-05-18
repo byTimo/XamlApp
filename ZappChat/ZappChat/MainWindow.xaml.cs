@@ -67,19 +67,22 @@ namespace ZappChat
             message.Status = MessageStatus.Delivered;
             //Реагирование на приход нового сообщения:
             //Чата
-            if (dialogue.RoomId == chat.CurrentDialogue.RoomId)
+            if (Equals(dialogue, chat.CurrentDialogue))
             {
                 message.Status = MessageStatus.Read;
                 chat.AddNewMessageToChat(dialogue);
             }
-            //Кнопки "Сообщения"
-            if (message.Status != MessageStatus.Read
-                &&
-                IsControlHaveUnreadMessageForTakeMessage(
-                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue))))
-                messageButton.MessagesCount++;
             //Списка диалогов
             Dialogues.AddNewMessageToList(dialogue);
+            //Кнопки "Сообщения"
+            var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
+            if (control != null && !Equals(chat.CurrentDialogue, dialogue)
+                && !control.ContaintUnreadMessages)
+            {
+                messageButton.MessagesCount++;
+                control.ContaintUnreadMessages = true;
+            }
+
         }
         private void DeleteConfirmationDialogue(object sender, DeletingEventArgs e)
         {
@@ -94,72 +97,67 @@ namespace ZappChat
             //Реагирование по запросу на удаление:
             if (e.IsConfirmed)
             {
-                //Кнопки сообщения:
-                if (
-                    IsControlHaveUnreadMessage(
-                        Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue))))
-                    messageButton.MessagesCount--;
-                //Кнопка запросов:
-                if (IsControlHaveUnreadMessage(
-                        Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue))))
-                    myQuaryButton.MessagesCount--;
                 //Чата
-                if (chat.CurrentDialogue.RoomId == e.DeletedDialogue.RoomId)
+                if (Equals(chat.CurrentDialogue, e.DeletedDialogue))
                 {
                     chat.CloseDialogue();
                     ShowDialogue(false);
                 }
+                //Кнопки сообщения:
+                var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue));
+                if (control != null && control.ContaintUnreadMessages)
+                    messageButton.MessagesCount--;
+                //Кнопка запросов:
+                control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue));
+                if (control != null && !control.DialogueOpened)
+                    myQuaryButton.MessagesCount--;
                 //Списка диалогов
                 Dialogues.RemoveDialogueFromLists(e.DeletedDialogue.RoomId);
+                
             }
             //Блокера:
             ControlBlocker.Visibility = Visibility.Collapsed;
         }
-//@TODO ------------------- Переделать условие, которое проверяет нужно ли уменьшать цифру на счётчике! --------------------------
         private void OpenDialogue(object sender, DialogueOpenEventArgs e)
         {
             ShowDialogue(true);
-            //Реагирование на открытие диалога:
-            //Кнопки сообщения:
-            if (
-                IsControlHaveUnreadMessage(
-                    Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue))))
-                messageButton.MessagesCount--;
-            //Кнопка запросов:
-            if (IsControlHaveUnreadMessage(
-                    Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue))))
-                myQuaryButton.MessagesCount--;
+            //Реагирование на открытие диалога:            
             //Список диалогов:
             Dialogues.ChangeMessageStatus(e.OpenedDialogue);
             //Чата
             chat.OpenDialogue(e.OpenedDialogue);
-
+            //Кнопки сообщения:
+            var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue));
+            if (control != null && control.ContaintUnreadMessages)
+            {
+                messageButton.MessagesCount--;
+                control.ContaintUnreadMessages = false;
+            }
+            //Кнопка запросов:
+            control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue));
+            if (control != null && !control.DialogueOpened)
+            {
+                myQuaryButton.MessagesCount--;
+                control.DialogueOpened = true;
+            }
         }
 
         private void ReceivingQuery(object sender, Dialogue dialogue)
         {
 
             //Реагирование на получение запроса:
-            //Кнопки запросов
-            if (!Equals(chat.CurrentDialogue, dialogue))
-                myQuaryButton.MessagesCount++;
             //Списка диалогов
             Dialogues.TakeQuery(dialogue);
             //Чата
             if (Equals(chat.CurrentDialogue, dialogue))
                 chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
-        }
-
-        private bool IsControlHaveUnreadMessageForTakeMessage(MessageControl control)
-        {
-            if (control == null) return true;
-            return control.Dialogue.Messages.All(mes => mes.Status == MessageStatus.Read);
-        }
-        private bool IsControlHaveUnreadMessage(MessageControl control)
-        {
-            if (control == null) return false;
-            if (control.Dialogue.Messages.Count == 0) return true;
-            return control.Dialogue.Messages.Any(mes => mes.Status != MessageStatus.Read);
+            //Кнопки запросов
+            if (!Equals(chat.CurrentDialogue, dialogue))
+            {
+                myQuaryButton.MessagesCount++;
+                var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
+                if (control != null) control.DialogueOpened = false;
+            }
         }
 
         private void ShowDialogue(bool solution)

@@ -12,6 +12,8 @@ namespace ZappChat.Controls
 	public partial class MessageControl : UserControl
 	{
         public Dialogue Dialogue { get; set; }
+        public bool DialogueOpened { get; set; }
+        public bool ContaintUnreadMessages { get; set; }
 
 	    public static readonly DependencyProperty MessageTextProperty =
 	        DependencyProperty.Register("MessageText", typeof (string), typeof (MessageControl));
@@ -34,12 +36,16 @@ namespace ZappChat.Controls
 		public MessageControl()
 		{
 			InitializeComponent();
+		    DialogueOpened = false;
+		    ContaintUnreadMessages = false;
             Trashcan.Click += Trashcan_Click;
 		}
 
 	    public MessageControl(Dialogue dialogue) : this()
 	    {
 	        Dialogue = dialogue;
+	        DialogueOpened = false;
+	        ContaintUnreadMessages = false;
             UpdateControl();
 	    }
 
