@@ -26,4 +26,11 @@
         Incoming,
         System
     }
+
+    public enum DialogueStatus
+    {
+        Deleting,
+        Unreading,
+        Reading
+    }
 }

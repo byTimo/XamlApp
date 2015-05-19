@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using NUnit.Framework;
@@ -9,7 +10,7 @@ using ZappChat.Properties;
 
 namespace ZappChat.Core
 {
-    static class FileDispetcher
+    internal static class FileDispetcher
     {
         private static string appDataDirectory;
         private static string rootDirectory;
@@ -26,12 +27,9 @@ namespace ZappChat.Core
             if (appDataDirectory == null) throw new Exception("Не возможно определить расположение ApplicationsData");
 
             rootDirectory = Path.Combine(appDataDirectory, ZappChatDirectoryName);
-            FullPathToSettingFile = Path.Combine(rootDirectory,SettingFile);
+            FullPathToSettingFile = Path.Combine(rootDirectory, SettingFile);
             FullPasthToDialogueInformation = Path.Combine(rootDirectory, DialoguesInformationFile);
-
-
             CheckExistsFiles();
-
         }
 
         public static void CheckExistsFiles()
@@ -40,10 +38,12 @@ namespace ZappChat.Core
             if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
             if (!File.Exists(FullPasthToDialogueInformation)) File.Create(FullPasthToDialogueInformation);
         }
+
         public static string GetToken()
         {
             return GetSetting("token");
         }
+
         public static string FindFieldInfoLineInFile(string path, string field)
         {
             if (!File.Exists(path)) File.Create(path);
@@ -70,7 +70,7 @@ namespace ZappChat.Core
                 if (currentLine != null && allSettings.Contains(currentLine))
                 {
                     allSettings.Remove(currentLine);
-                    RewriteFile(FullPathToSettingFile,allSettings);
+                    RewriteFile(FullPathToSettingFile, allSettings);
                 }
                 else
                     throw new Exception();
@@ -80,6 +80,7 @@ namespace ZappChat.Core
                 // ignored
             }
         }
+
         private static string GetFieldInfoInFile(string path, string field)
         {
             var lineInfo = GetAllLineInFile(path)
@@ -95,7 +96,7 @@ namespace ZappChat.Core
             {
                 var allLineFile = GetAllLineInFile(FullPathToSettingFile);
                 var currentLine = allLineFile.FirstOrDefault(str => str.StartsWith(field));
-                if(currentLine != null) allLineFile.Remove(currentLine);
+                if (currentLine != null) allLineFile.Remove(currentLine);
                 allLineFile.Add(string.Concat(field, ":", info));
                 RewriteFile(path, allLineFile);
                 return true;
@@ -111,20 +112,62 @@ namespace ZappChat.Core
         {
             if (!File.Exists(path)) File.Create(path);
             Thread.Sleep(1000);
-            return File.ReadAllText(path).Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return File.ReadAllText(path).Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         private static void RewriteFile(string path, IEnumerable<string> allLine)
         {
-            if(File.Exists(path)) File.Delete(path);
+            if (File.Exists(path)) File.Delete(path);
             File.WriteAllLines(path, allLine);
 
+        }
+
+        public static void WriteAllCollection(string path, Dictionary<ulong, DialogueStatus> statuses)
+        {
+            var fileDataBuilder = new StringBuilder();
+            foreach (var statuse in statuses)
+            {
+                var line = string.Concat(statuse.Key, ":", (int) statuse.Value, ";");
+                fileDataBuilder.Append(line);
+            }
+            File.WriteAllText(path, fileDataBuilder.ToString());
+        }
+
+        public static Dictionary<ulong, DialogueStatus> ReadAllCollection(string path)
+        {
+            return File.ReadAllText(path)
+                .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
+                .ToDictionary(x => ulong.Parse(x.Split(':')[0]), x => (DialogueStatus) int.Parse(x.Split(':')[1]));
+        }
+
+        public static void RewriteFileCollection(string path, Dictionary<ulong, DialogueStatus> statuses)
+        {
+            if (File.Exists(path)) File.Delete(path);
+            WriteAllCollection(path, statuses);
+        }
+
+        public static void SynchronizeDialogueStatuses(Dictionary<ulong, DialogueStatus> statuses)
+        {
+            var dictionaryInFile = ReadAllCollection(FullPasthToDialogueInformation);
+            var currentDifferents = statuses.Except(dictionaryInFile);
+            foreach (var status in currentDifferents)
+            {
+                if (dictionaryInFile.ContainsKey(status.Key))
+                    dictionaryInFile[status.Key] = status.Value;
+                else
+                    dictionaryInFile.Add(status.Key, status.Value);
+
+            }
+            var fileDifferents = dictionaryInFile.Except(statuses);
+            for (var i = 0; i < fileDifferents.Count(); i++)
+                dictionaryInFile.Remove(fileDifferents.ToList()[i].Key);
+            RewriteFileCollection(FullPasthToDialogueInformation, dictionaryInFile);
         }
     }
 
 
     [TestFixture]
-    class FileReadWriteTester
+    internal class FileReadWriteTester
     {
         private List<string> _settingInformation = new List<string>();
 
@@ -133,7 +176,7 @@ namespace ZappChat.Core
         {
             FileDispetcher.InitializeFileDispetcher();
             _settingInformation = File.ReadAllText(FileDispetcher.FullPathToSettingFile)
-                .Split(new []{'\r','\n'}, StringSplitOptions.RemoveEmptyEntries)
+                .Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
         }
 
@@ -155,7 +198,7 @@ namespace ZappChat.Core
             var testLineInFile = FileDispetcher.FindFieldInfoLineInFile(FileDispetcher.FullPathToSettingFile, testField);
             Console.WriteLine(testLineInFile);
 
-            Assert.AreEqual(testLineInFile,string.Concat(testField, ":", testInfo));
+            Assert.AreEqual(testLineInFile, string.Concat(testField, ":", testInfo));
         }
 
         [Test]
@@ -198,6 +241,133 @@ namespace ZappChat.Core
             FileDispetcher.DeleteSetting("test");
             var testLine = FileDispetcher.FindFieldInfoLineInFile(FileDispetcher.FullPathToSettingFile, "test");
             Assert.AreEqual(testLine, null);
+        }
+    }
+
+    [TestFixture]
+    internal class TestCollectionClass
+    {
+        private Dictionary<ulong, DialogueStatus> _collectionInformation;
+
+        [SetUp]
+        public void SaveSetting()
+        {
+            FileDispetcher.InitializeFileDispetcher();
+            _collectionInformation = FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation);
+//            if(File.Exists(FileDispetcher.FullPasthToDialogueInformation)) File.Delete(FileDispetcher.FullPasthToDialogueInformation);
+//            File.Create(FileDispetcher.FullPasthToDialogueInformation);
+        }
+
+        [TearDown]
+        public void LoadSetting()
+        {
+            FileDispetcher.RewriteFileCollection(FileDispetcher.FullPasthToDialogueInformation,_collectionInformation);
+        }
+
+
+        [Test]
+        public void WriteDialogueStatuses()
+        {
+            var dic = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {2, DialogueStatus.Deleting},
+                {3, DialogueStatus.Reading},
+                {4, DialogueStatus.Unreading}
+            };
+            var testSuccess = "1:0;2:0;3:2;4:1;";
+
+            FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, dic);
+
+            Assert.AreEqual(File.ReadAllText(FileDispetcher.FullPasthToDialogueInformation), testSuccess);
+        }
+
+        [Test]
+        public void ReadDialogueStatuses()
+        {
+            var dicSuccess = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {2, DialogueStatus.Deleting},
+                {3, DialogueStatus.Reading},
+                {4, DialogueStatus.Unreading}
+            };
+            FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, dicSuccess);
+
+            var dic = FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation);
+
+            Assert.AreEqual(dic[1], dicSuccess[1]);
+        }
+
+        [Test]
+        public void SyncAddTest()
+        {
+            var startDic = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {2, DialogueStatus.Deleting},
+                {3, DialogueStatus.Reading},
+                {4, DialogueStatus.Unreading}
+            };
+            FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation,startDic);
+            var endDic = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {2, DialogueStatus.Deleting},
+                {3, DialogueStatus.Reading},
+                {4, DialogueStatus.Unreading},
+                {5, DialogueStatus.Deleting}
+            };
+
+            FileDispetcher.SynchronizeDialogueStatuses(endDic);
+
+            Assert.AreEqual(FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation)[5], endDic[5]);
+
+        }
+        [Test]
+        public void SyncChangeTest()
+        {
+            var startDic = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {2, DialogueStatus.Deleting},
+                {3, DialogueStatus.Reading},
+                {4, DialogueStatus.Unreading}
+            };
+            FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, startDic);
+            var endDic = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {2, DialogueStatus.Deleting},
+                {3, DialogueStatus.Unreading},
+                {4, DialogueStatus.Unreading}
+            };
+
+            FileDispetcher.SynchronizeDialogueStatuses(endDic);
+
+            Assert.AreEqual(FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation)[3], endDic[3]);
+        }
+        [Test]
+        public void SyncDeleteTest()
+        {
+            var startDic = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {2, DialogueStatus.Deleting},
+                {3, DialogueStatus.Reading},
+                {4, DialogueStatus.Unreading}
+            };
+            FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, startDic);
+            var endDic = new Dictionary<ulong, DialogueStatus>
+            {
+                {1, DialogueStatus.Deleting},
+                {3, DialogueStatus.Reading},
+                {4, DialogueStatus.Unreading}
+            };
+
+            FileDispetcher.SynchronizeDialogueStatuses(endDic);
+
+            Assert.AreEqual(FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation).Count, endDic.Count);
         }
     }
 }
