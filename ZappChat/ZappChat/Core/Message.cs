@@ -9,7 +9,7 @@ namespace ZappChat.Core
 {
     public class Message
     {
-        public ulong Id { get; private set; }
+        public ulong Id { get; set; }
         public MessageStatus Status { get; set; }
         public string Author { get; private set; }
         public DateTime DateTime { get; private set; }
@@ -17,17 +17,7 @@ namespace ZappChat.Core
         public string Text { get; private set; }
         public MessageType Type { get; private set; }
         public string Hash { get; private set; }
-
-        public Message(ulong id, string author, string text, DateTime date, MessageStatus messageStatus)
-        {
-            Id = id;
-            Author = author;
-            Text = text;
-            DateTime = date;
-            Date = date.ToString("M", new CultureInfo("ru-RU"));
-            Status = messageStatus;
-        }
-        public Message(ulong id, string author, string text, MessageStatus messageStatus) : this(id, author, text, DateTime.Now, messageStatus) { }
+        public bool IsSuccessfully { get; set; }
 
         public Message(ulong id, string message, string type, string hash, string date, string userName)
         {
@@ -38,11 +28,12 @@ namespace ZappChat.Core
             Author = userName;
             DateTime = DateTime.ParseExact(date, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture).AddHours(-1);
             Date = DateTime.ToString("M", new CultureInfo("ru-RU"));
+            IsSuccessfully = true;
         }
 
         protected bool Equals(Message other)
         {
-            return Id == other.Id && string.Equals(Hash, other.Hash);
+            return string.Equals(Hash, other.Hash);
         }
 
         public override bool Equals(object obj)
@@ -55,10 +46,7 @@ namespace ZappChat.Core
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return ((int) Id*397) ^ Hash.GetHashCode();
-            }
+            return (Hash != null ? Hash.GetHashCode() : 0);
         }
     }
 }

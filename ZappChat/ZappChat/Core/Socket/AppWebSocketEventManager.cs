@@ -203,36 +203,52 @@ namespace ZappChat.Core.Socket
 
         private static void HandlingChatMessage(JObject responseJson)
         {
-            var roomId = ulong.Parse((string) responseJson["room_id"]);
-            var logId = (string) responseJson["log_id"];
-            if (logId != null)
-                App.LastLogId = ulong.Parse(logId);
-            var mes = responseJson["message"];
-            var mesId = ulong.Parse((string) mes["id"]);
-            var hash = (string) mes["hash"];
-            var type = (string) mes["type"];
-            var text = (string) mes["message"];
-            var author = (string) mes["user_name"];
-            var lastUpdata = (string) mes["created_at"];
-            var message = new Message(mesId, text, type, hash, lastUpdata, author);
-            var dialogue = new Dialogue(roomId, message);
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveMessageEvent(_webSocket, dialogue));
+            var responceType = (string) responseJson["type"];
+            switch (responceType)
+            {
+                case "receive":
+                    var roomId = ulong.Parse((string) responseJson["room_id"]);
+                    var logId = (string) responseJson["log_id"];
+                    if (logId != null)
+                        App.LastLogId = ulong.Parse(logId);
+                    var mes = responseJson["message"];
+                    var mesId = ulong.Parse((string) mes["id"]);
+                    var hash = (string) mes["hash"];
+                    var type = (string) mes["type"];
+                    var text = (string) mes["message"];
+                    var author = (string) mes["user_name"];
+                    var lastUpdata = (string) mes["created_at"];
+                    var message = new Message(mesId, text, type, hash, lastUpdata, author);
+                    var dialogue = new Dialogue(roomId, message);
+                    Application.Current.Dispatcher.Invoke(
+                        () => AppEventManager.ReceiveMessageEvent(_webSocket, dialogue));
+                    break;
+                case "send":
+                    var roomIdSend = ulong.Parse((string) responseJson["room_id"]);
+                    var hashSend = (string) responseJson["hash"];
+                    var mesIdSend = ulong.Parse((string) responseJson["id"]);
+                    Application.Current.Dispatcher.Invoke(
+                        () => AppEventManager.SendMessageSuccessEvent(roomIdSend, mesIdSend, hashSend));
+                    break;
+            }
         }
 
         private static void HandlingChatHistory(JObject responseJson)
         {
-            if(responseJson["messages"] == null) return;
-            var roomId = ulong.Parse((string)responseJson["room_id"]);
+            if (responseJson["messages"] == null) return;
+            var roomIdReceive = ulong.Parse((string) responseJson["room_id"]);
             var messages = (from message in responseJson["messages"]
                 let mesId = ulong.Parse((string) message["id"])
                 let text = (string) message["message"]
-                let hash = (string) message["hash"]
+                let hashReceive = (string) message["hash"]
                 let createTime = (string) message["created_at"]
-                let author = (string)message["user_name"]
+                let author = (string) message["user_name"]
                 let type = (string) message["type"]
-                select new Message(mesId, text, type, hash, createTime, author) {Status = MessageStatus.Read}).ToList();
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.OpenDialogueEvent(roomId, messages));
+                select new Message(mesId, text, type, hashReceive, createTime, author) {Status = MessageStatus.Read})
+                .ToList();
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.OpenDialogueEvent(roomIdReceive, messages));
         }
+
         private static void HandlingListResponce(JObject responseJson)
         {
             //@TODO - В этом нет необходимости, возмжно, пока

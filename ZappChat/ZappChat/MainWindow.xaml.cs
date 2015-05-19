@@ -32,7 +32,7 @@ namespace ZappChat
             AppEventManager.CloseDialogue += () => ShowDialogue(false);
             AppEventManager.ReceiveMessage += ReceivingMessage;
             AppEventManager.ReceiveQuery += ReceivingQuery;
-            //AppEventManager.SendMessage += (s, e) => chat.SendMessage(e.Message);
+            AppEventManager.SendMessageSuccess += chat.SendMessageSuccess;
         }
 
         private void Connection(object sender)
@@ -68,14 +68,14 @@ namespace ZappChat
             var message = dialogue.Messages[0];
             message.Status = MessageStatus.Delivered;
             //Реагирование на приход нового сообщения:
+            //Списка диалогов
+            Dialogues.AddNewMessageToList(dialogue);
             //Чата
             if (Equals(dialogue, chat.CurrentDialogue))
             {
                 message.Status = MessageStatus.Read;
                 chat.AddNewMessageToChat(dialogue);
             }
-            //Списка диалогов
-            Dialogues.AddNewMessageToList(dialogue);
             //Кнопки "Сообщения"
             var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
             if (control != null && !Equals(chat.CurrentDialogue, dialogue)

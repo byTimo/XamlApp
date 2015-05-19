@@ -18,6 +18,8 @@ namespace ZappChat.Controls
 {
     public class ChatMessage : Control
     {
+        public Message Message { get; set; }
+
         public static readonly DependencyProperty TypeProperty = DependencyProperty.Register("Type",
             typeof (MessageType), typeof (ChatMessage), new FrameworkPropertyMetadata(MessageType.Outgoing));
 
@@ -73,6 +75,8 @@ namespace ZappChat.Controls
         public ChatMessage() { }
         public ChatMessage(Message mes)
         {
+            Message = mes;
+            Opacity = OpacityValueFromSuccessfullyMessage(Message);
             switch (mes.Type)
             {
                 case MessageType.Outgoing:
@@ -90,6 +94,17 @@ namespace ZappChat.Controls
                     TextMargin = new Thickness(0, 0, 100, 5);
                     break;
             }
+        }
+
+        public void SetMessageId(ulong messageId)
+        {
+            Message.Id = messageId;
+            Message.IsSuccessfully = true;
+            Opacity = OpacityValueFromSuccessfullyMessage(Message);
+        }
+        private static double OpacityValueFromSuccessfullyMessage(Message message)
+        {
+            return message.IsSuccessfully ? 1.0 : 0.7;
         }
     }
 }

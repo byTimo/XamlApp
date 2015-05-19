@@ -60,7 +60,7 @@ namespace ZappChat.Core
 
         public Message GetLastMessage()
         {
-            return Messages.Last(x => x.Author != "");
+            return Messages.Last(x => x.Type == MessageType.Incoming);
         }
         protected bool Equals(Dialogue other)
         {

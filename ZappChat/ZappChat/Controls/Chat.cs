@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mime;
 using System.Text;
@@ -80,11 +81,6 @@ namespace ZappChat.Controls
             CurrentDialogue = opendedDialogue;
             DialogueTitle = CurrentDialogue.GetTitleMessage();
 
-//            foreach (var message in CurrentDialogue.Messages)
-//            {
-//                message.Status = MessageStatus.Read;
-//            }
-
             ChatMessages = new ObservableCollection<ChatMessage>();
             foreach (var message in CurrentDialogue.Messages)
             {
@@ -102,7 +98,8 @@ namespace ZappChat.Controls
             DialogueTitle = CurrentDialogue.GetTitleMessage();
             var chat = GetTemplateChild("MessageChat") as ListBox;
             if (chat == null) throw new NullReferenceException("Не определил ListBox в чате");
-            chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
+            if (chat.Items.Count != 0)
+                chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
         }
         public override void OnApplyTemplate()
         {
@@ -117,15 +114,6 @@ namespace ZappChat.Controls
             };
             var sendButton = GetTemplateChild("Send") as CornerRadiusButton;
             sendButton.Click += SendUserMessage;
-//            {
-//                var userInput = GetTemplateChild("UserInput") as TextBox;
-//                if (userInput != null && userInput.Text != "")
-//                {
-//                    //AppEventManager.SendMessageEvent(this, CurrentDialogue.RoomId,
-//                    //    new Message(CurrentDialogue.RoomId, "", userInput.Text, MessageStatus.Read));
-//                    userInput.Text = "";
-//                }
-//            };
         }
 
         private void SendUserMessage(object sender, RoutedEventArgs e)
@@ -134,18 +122,34 @@ namespace ZappChat.Controls
             if(userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
             var userMessage = userInput.Text.Trim();
             if(userMessage == "") return;
+            userInput.Text = "";
+            var newMessage = new Message(0, userMessage, "outgoing", Guid.NewGuid().ToString(),
+                DateTime.Now.ToString(CultureInfo.InvariantCulture), "") {IsSuccessfully = false};
             var sendMessageRequest = new SendMessageRequest
             {
                 room_id = CurrentDialogue.RoomId,
-                text = userMessage,
-                hash = Guid.NewGuid().ToString(),
+                message = newMessage.Text,
+                hash = newMessage.Hash,
                 system = false
             };
             var sendMessageRequestToJson = JsonConvert.SerializeObject(sendMessageRequest);
-//@TODO------------- После реализации получения ответа ----------------------
-            //AppWebSocketEventManager.SendObject(sendMessageRequestToJson);
 
+            ChatMessages.Add(new ChatMessage(newMessage));
+            AppWebSocketEventManager.SendObject(sendMessageRequestToJson);
 
+            var chat = GetTemplateChild("MessageChat") as ListBox;
+            if (chat == null) throw new NullReferenceException("Не определил ListBox в чате");
+            if (chat.Items.Count != 0)
+                chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
+
+        }
+
+        public void SendMessageSuccess(ulong roomId, ulong messageId, string hash)
+        {
+            if(CurrentDialogue.RoomId != roomId) return;
+            var control = ChatMessages.FirstOrDefault(c => c.Message.Hash == hash);
+            if(control == null) return;
+            control.SetMessageId(messageId);
         }
         public void CloseDialogue()
         {

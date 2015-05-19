@@ -9,55 +9,65 @@ namespace ZappChat.Core
 
         public static void Connection(object sender)
         {
-            Connect.Invoke(sender);
+            if (Connect != null) Connect.Invoke(sender);
         }
 
         public static event Action<object> Disconnect;
 
         public static void Disconnection(object sender)
         {
-            Disconnect.Invoke(sender);
+            if (Disconnect != null) Disconnect.Invoke(sender);
         }
 
         public static event AuthorizationEventHandler AuthorizationSuccess;
 
         public static void AuthorizationSuccessEvent(object sender, AuthorizationType type)
         {
-            AuthorizationSuccess.Invoke(sender, type);
+            if (AuthorizationSuccess != null) AuthorizationSuccess.Invoke(sender, type);
         }
+
         public static event AuthorizationEventHandler AuthorizationFail;
 
         public static void AuthorizationFailEvent(object sender, AuthorizationType type)
         {
-            AuthorizationFail.Invoke(sender, type);
+            if (AuthorizationFail != null) AuthorizationFail.Invoke(sender, type);
         }
 
         public static event ReceivingDataEventHandler ReceiveMessage;
 
         public static void ReceiveMessageEvent(object sender, Dialogue dialogue)
         {
-            ReceiveMessage.Invoke(sender, dialogue);
+            if (ReceiveMessage != null) ReceiveMessage.Invoke(sender, dialogue);
         }
 
         public static event ReceivingDataEventHandler ReceiveQuery;
 
         public static void ReceiveQueryEvent(object sender, Dialogue dialogue)
         {
-            ReceiveQuery.Invoke(sender, dialogue);
+            if (ReceiveQuery != null) ReceiveQuery.Invoke(sender, dialogue);
+        }
+
+        public static event Action<ulong, ulong, string> SendMessageSuccess;
+
+        public static void SendMessageSuccessEvent(ulong roomId, ulong id, string hash)
+        {
+            if (SendMessageSuccess != null)
+                SendMessageSuccess.Invoke(roomId, id, hash);
         }
 
         public static event DeletingDialogueEventHandler DeleteConfirmationDialogue;
 
         public static void DeleteConfirmationDialogueEvent(object sender, Dialogue dialogue, bool isConfirmed)
         {
-            DeleteConfirmationDialogue(sender, new DeletingEventArgs(dialogue, isConfirmed));
+            if (DeleteConfirmationDialogue != null)
+                DeleteConfirmationDialogue(sender, new DeletingEventArgs(dialogue, isConfirmed));
         }
 
         public static event DeletingDialogueEventHandler DeleteDialogue;
 
         public static void DeleteDialogueEvent(object sender, Dialogue dialogue, bool isConfirmed)
         {
-            DeleteDialogue(sender, new DeletingEventArgs(dialogue, isConfirmed));
+            if (DeleteDialogue != null) DeleteDialogue(sender, new DeletingEventArgs(dialogue, isConfirmed));
         }
 
         public static event Action UpdateCounter;
@@ -67,12 +77,7 @@ namespace ZappChat.Core
             if(UpdateCounter != null)
                 UpdateCounter.Invoke();
         }
-//        public static event OpenDialogueEventHandler OpenDialogue;
-//
-//        public static void OpenDialogueEvent(object sender, Dialogue dialogue)
-//        {
-//            OpenDialogue(sender, new DialogueOpenEventArgs(dialogue));
-//        }
+
         public static event Action<ulong, List<Message>> OpenDialogue;
 
         public static void OpenDialogueEvent(ulong roomId, List<Message> messages)
@@ -85,8 +90,7 @@ namespace ZappChat.Core
 
         public static void CloseDialogueEvent()
         {
-            CloseDialogue();
+            if (CloseDialogue != null) CloseDialogue();
         }
-
     }
 }
