@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ZappChat.Core
 {
@@ -66,11 +67,18 @@ namespace ZappChat.Core
             if(UpdateCounter != null)
                 UpdateCounter.Invoke();
         }
-        public static event OpenDialogueEventHandler OpenDialogue;
+//        public static event OpenDialogueEventHandler OpenDialogue;
+//
+//        public static void OpenDialogueEvent(object sender, Dialogue dialogue)
+//        {
+//            OpenDialogue(sender, new DialogueOpenEventArgs(dialogue));
+//        }
+        public static event Action<ulong, List<Message>> OpenDialogue;
 
-        public static void OpenDialogueEvent(object sender, Dialogue dialogue)
+        public static void OpenDialogueEvent(ulong roomId, List<Message> messages)
         {
-            OpenDialogue(sender, new DialogueOpenEventArgs(dialogue));
+            if (OpenDialogue != null)
+                OpenDialogue.Invoke(roomId, messages);
         }
 
         public static event CloseDialogueEventHandler CloseDialogue;

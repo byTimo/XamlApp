@@ -1,10 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Media;
-using System.Windows.Navigation;
-using System.Windows.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SuperSocket.ClientEngine;
@@ -103,6 +101,9 @@ namespace ZappChat.Core.Socket
                     case "request/new":
                         HandlingNewRequest(responseJson);
                         break;
+                    case "chat/history":
+                        HandlingChatHistory(responseJson);
+                        break;
                         //@TODO
                 }
             }
@@ -191,7 +192,7 @@ namespace ZappChat.Core.Socket
 
         private static void HandlingPongResponce(JObject responseJson)
         {
-            throw new NotImplementedException();
+            return;
         }
 
         private static void HndlingAuditResponce(JObject responseJson)
@@ -218,6 +219,20 @@ namespace ZappChat.Core.Socket
             Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveMessageEvent(_webSocket, dialogue));
         }
 
+        private static void HandlingChatHistory(JObject responseJson)
+        {
+            if(responseJson["messages"] == null) return;
+            var roomId = ulong.Parse((string)responseJson["room_id"]);
+            var messages = (from message in responseJson["messages"]
+                let mesId = ulong.Parse((string) message["id"])
+                let text = (string) message["message"]
+                let hash = (string) message["hash"]
+                let createTime = (string) message["created_at"]
+                let author = (string)message["user_name"]
+                let type = (string) message["type"]
+                select new Message(mesId, text, type, hash, createTime, author) {Status = MessageStatus.Read}).ToList();
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.OpenDialogueEvent(roomId, messages));
+        }
         private static void HandlingListResponce(JObject responseJson)
         {
             //@TODO - В этом нет необходимости, возмжно, пока
@@ -232,6 +247,6 @@ namespace ZappChat.Core.Socket
             //    MainWindow.Dispatcher.Invoke(action, _webSocket, newDialog);
             //}
 
-        }        
+        }
     }
 }

@@ -15,8 +15,10 @@ namespace ZappChat.Core
         private static string rootDirectory;
         private const string ZappChatDirectoryName = "ZappChat";
         private const string SettingFile = "ZappSetting";
+        private const string DialoguesInformationFile = "DialogueInformation";
 
         public static string FullPathToSettingFile { get; private set; }
+        public static string FullPasthToDialogueInformation { get; private set; }
 
         public static void InitializeFileDispetcher()
         {
@@ -25,6 +27,8 @@ namespace ZappChat.Core
 
             rootDirectory = Path.Combine(appDataDirectory, ZappChatDirectoryName);
             FullPathToSettingFile = Path.Combine(rootDirectory,SettingFile);
+            FullPasthToDialogueInformation = Path.Combine(rootDirectory, DialoguesInformationFile);
+
 
             CheckExistsFiles();
 
@@ -34,6 +38,7 @@ namespace ZappChat.Core
         {
             if (!Directory.Exists(rootDirectory)) Directory.CreateDirectory(rootDirectory);
             if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
+            if (!File.Exists(FullPasthToDialogueInformation)) File.Create(FullPasthToDialogueInformation);
         }
         public static string GetToken()
         {

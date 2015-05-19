@@ -16,7 +16,7 @@ namespace ZappChat.Core
         public string Query { get; set; }
         public DateTime LastDateTime { get; private set; }
         public string LastMessageDate { get; private set; }
-        public List<Message> Messages { get; private set; }
+        public List<Message> Messages { get; set; }
         public ulong QueryId { get; private set; }
 
         public Dialogue() { }

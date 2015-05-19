@@ -80,10 +80,10 @@ namespace ZappChat.Controls
             CurrentDialogue = opendedDialogue;
             DialogueTitle = CurrentDialogue.GetTitleMessage();
 
-            foreach (var message in CurrentDialogue.Messages)
-            {
-                message.Status = MessageStatus.Read;
-            }
+//            foreach (var message in CurrentDialogue.Messages)
+//            {
+//                message.Status = MessageStatus.Read;
+//            }
 
             ChatMessages = new ObservableCollection<ChatMessage>();
             foreach (var message in CurrentDialogue.Messages)

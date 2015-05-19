@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Newtonsoft.Json;
 using ZappChat.Core;
+using ZappChat.Core.Socket;
+using ZappChat.Core.Socket.Requests;
 
 namespace ZappChat.Controls
 {
@@ -102,26 +106,29 @@ namespace ZappChat.Controls
         {
             var selectedDialogue = (SelectedItem as MessageControl);
             if(selectedDialogue == null) return;
-
-            AppEventManager.OpenDialogueEvent(selectedDialogue, selectedDialogue.Dialogue);
-            SelectedIndex = -1;//TODO test
+            
+//            AppEventManager.OpenDialogueEvent(selectedDialogue, selectedDialogue.Dialogue);
+            var historyRequest = new HistoryRequest
+            {
+                from = null,
+                to = null,
+                chat_room_id = selectedDialogue.Dialogue.RoomId
+            };
+            var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
+            AppWebSocketEventManager.SendObject(historyRequestToJson);
+            SelectedIndex = -1;
         }
-        public void ChangeMessageStatus(Dialogue changedDialogue)
+        public Dialogue ChangeMessageStatus(ulong roomId, List<Message> messages)
         {
-            var openedDialogue =
-                DialogueWithoutQuery.FirstOrDefault(control => control.Dialogue.RoomId == changedDialogue.RoomId);
-            if (openedDialogue != null)
-                foreach (var message in openedDialogue.Dialogue.Messages)
-                {
-                    message.Status = MessageStatus.Read;
-                }
-            openedDialogue =
-                DialogueWithQuery.FirstOrDefault(control => control.Dialogue.RoomId == changedDialogue.RoomId);
-            if (openedDialogue != null)
-                foreach (var message in openedDialogue.Dialogue.Messages)
-                {
-                    message.Status = MessageStatus.Read;
-                }
+            var controlWithoutQuery =
+                DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
+            if (controlWithoutQuery != null)
+                controlWithoutQuery.Dialogue.Messages = messages;
+            var controlWithQuery =
+                DialogueWithQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
+            if (controlWithQuery != null)
+                controlWithQuery.Dialogue.Messages = messages;
+            return controlWithoutQuery != null ? controlWithoutQuery.Dialogue : controlWithQuery.Dialogue;
         }
 
         public void TakeNewDialogue(Dialogue newDialogue)

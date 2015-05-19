@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -119,23 +120,23 @@ namespace ZappChat
             //Блокера:
             ControlBlocker.Visibility = Visibility.Collapsed;
         }
-        private void OpenDialogue(object sender, DialogueOpenEventArgs e)
+        private void OpenDialogue(ulong roomId, List<Message> messages)
         {
             ShowDialogue(true);
             //Реагирование на открытие диалога:            
             //Список диалогов:
-            Dialogues.ChangeMessageStatus(e.OpenedDialogue);
+            var openedDialogue = Dialogues.ChangeMessageStatus(roomId, messages);
             //Чата
-            chat.OpenDialogue(e.OpenedDialogue);
+            chat.OpenDialogue(openedDialogue);
             //Кнопки сообщения:
-            var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue));
+            var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
             if (control != null && control.ContaintUnreadMessages)
             {
                 messageButton.MessagesCount--;
                 control.ContaintUnreadMessages = false;
             }
             //Кнопка запросов:
-            control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, e.OpenedDialogue));
+            control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
             if (control != null && !control.DialogueOpened)
             {
                 myQuaryButton.MessagesCount--;

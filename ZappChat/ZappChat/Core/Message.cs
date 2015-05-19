@@ -33,10 +33,10 @@ namespace ZappChat.Core
         {
             Id = id;
             Text = message;
-            Type = type == "incomming" ? MessageType.Incoming : MessageType.Outgoing;
+            Type = type == "incoming" ? MessageType.Incoming : MessageType.Outgoing;
             Hash = hash;
             Author = userName;
-            DateTime = DateTime.ParseExact(date, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture);
+            DateTime = DateTime.ParseExact(date, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture).AddHours(-1);
             Date = DateTime.ToString("M", new CultureInfo("ru-RU"));
         }
 
