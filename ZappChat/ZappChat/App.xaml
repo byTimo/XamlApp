@@ -26,6 +26,7 @@
                 <ResourceDictionary Source="/Themes/LoginButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/PasswordControlTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/LoginWindowStyles.xaml"/>
+                <ResourceDictionary Source="Themes/QueryList.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

@@ -27,7 +27,7 @@
                                 <TextBlock Text="Назад" Width="Auto" Height="Auto" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Foreground="#FFA1A2A2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             </StackPanel>
                         </local:CornerRadiusButton>
-                        <TextBlock Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="32" Foreground="#FF2FB6E5" Margin="30,5,5,5" VerticalAlignment="Top"/>
+                        <TextBox Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="32" Foreground="#FF2FB6E5" Margin="30,5,5,5" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" SelectionBrush="#FFE2E2E3" Style="{DynamicResource TextBoxStyle}" IsReadOnly="True"/>
                         <Grid Grid.Row="2" Margin="30,0,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="13*"/>

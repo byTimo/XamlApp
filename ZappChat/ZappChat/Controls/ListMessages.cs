@@ -104,15 +104,16 @@ namespace ZappChat.Controls
 
         public void OpenDialogue(object sender, SelectionChangedEventArgs e)
         {
-            var selectedDialogue = (SelectedItem as MessageControl);
-            if(selectedDialogue == null) return;
+            if(App.ConnectionStatus != ConnectionStatus.Connect) return;
+
+            var selectedMessageControl = (SelectedItem as MessageControl);
+            if(selectedMessageControl == null) return;
             
-//            AppEventManager.OpenDialogueEvent(selectedDialogue, selectedDialogue.Dialogue);
             var historyRequest = new HistoryRequest
             {
                 from = null,
                 to = null,
-                chat_room_id = selectedDialogue.Dialogue.RoomId
+                chat_room_id = selectedMessageControl.Dialogue.RoomId
             };
             var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
             AppWebSocketEventManager.SendObject(historyRequestToJson);

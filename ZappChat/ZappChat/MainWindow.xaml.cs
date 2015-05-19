@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace ZappChat
             AppEventManager.ReceiveMessage += ReceivingMessage;
             AppEventManager.ReceiveQuery += ReceivingQuery;
             AppEventManager.SendMessageSuccess += chat.SendMessageSuccess;
+            TabNow.Queries = new ObservableCollection<QueryControl>();
+            TabYesterday.Queries = new ObservableCollection<QueryControl>();
         }
 
         private void Connection(object sender)
@@ -96,6 +99,7 @@ namespace ZappChat
         }
         private void DeleteDialogue(object sender, DeletingEventArgs e)
         {
+            if(App.ConnectionStatus != ConnectionStatus.Connect) return;
             //Реагирование по запросу на удаление:
             if (e.IsConfirmed)
             {
@@ -115,7 +119,12 @@ namespace ZappChat
                     myQuaryButton.MessagesCount--;
                 //Списка диалогов
                 Dialogues.RemoveDialogueFromLists(e.DeletedDialogue.RoomId);
-                
+                //TabControl
+                var nowQueryControl = TabNow.Queries.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue));
+                if (nowQueryControl != null) TabNow.Queries.Remove(nowQueryControl);
+                var yestQueryControl = TabYesterday.Queries.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue));
+                if (yestQueryControl != null) TabYesterday.Queries.Remove(yestQueryControl);
+
             }
             //Блокера:
             ControlBlocker.Visibility = Visibility.Collapsed;
@@ -151,7 +160,7 @@ namespace ZappChat
             //Списка диалогов
             Dialogues.TakeQuery(dialogue);
             //TabControl
-            TabNow.Items.Insert(0,new QueryControl(dialogue));
+            TabControlReceiveQuery(dialogue);
             //Чата
             if (Equals(chat.CurrentDialogue, dialogue))
                 chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
@@ -162,6 +171,19 @@ namespace ZappChat
                 var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
                 if (control != null) control.DialogueOpened = false;
             }
+        }
+
+        private void TabControlReceiveQuery(Dialogue dialogue)
+        {
+            var dateNow = DateTime.Now;
+            if (dateNow.Year == dialogue.LastDateTime.Year && dateNow.DayOfYear == dialogue.LastDateTime.DayOfYear)
+            {
+                TabNow.Queries.Insert(0, new QueryControl(dialogue));
+                return;
+            }
+            var dateYeastr = dateNow.Subtract(new TimeSpan(1,0,0,0));
+            if (dateYeastr.Year == dialogue.LastDateTime.Year && dateYeastr.DayOfYear == dialogue.LastDateTime.DayOfYear)
+                TabYesterday.Queries.Insert(0, new QueryControl(dialogue));
         }
 
         private void ShowDialogue(bool solution)

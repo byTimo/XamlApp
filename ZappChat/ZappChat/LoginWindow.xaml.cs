@@ -101,6 +101,7 @@ namespace ZappChat
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            if(App.ConnectionStatus != ConnectionStatus.Connect) return;
             var button = sender as LoginButton;
             if (LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null)
             {

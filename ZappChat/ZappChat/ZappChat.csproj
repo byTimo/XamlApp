@@ -76,6 +76,7 @@
     <Compile Include="Controls\QueryControl.xaml.cs">
       <DependentUpon>QueryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\QueryList.cs" />
     <Compile Include="Core\Dialogue.cs" />
     <Compile Include="Core\Message.cs" />
     <Compile Include="Core\FileDispetcher.cs" />
@@ -155,6 +156,10 @@
     <Page Include="Themes\PasswordControlTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\QueryList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\TabControlZappChatTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>

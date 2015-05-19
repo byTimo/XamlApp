@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Newtonsoft.Json;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
@@ -118,6 +107,7 @@ namespace ZappChat.Controls
 
         private void SendUserMessage(object sender, RoutedEventArgs e)
         {
+            if(App.ConnectionStatus != ConnectionStatus.Connect) return;
             var userInput = GetTemplateChild("UserInput") as TextBox;
             if(userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
             var userMessage = userInput.Text.Trim();

@@ -56,12 +56,15 @@
 			
 			<!--Left part of window-->
             <TabControl x:Name="tabs" Style="{DynamicResource TabControlZappChat}" Grid.Column="1" BorderThickness="0" BorderBrush="{x:Null}" Margin="30,55,12,0" SelectedIndex="0">
-				<TabItem Header="Сегодня" VerticalContentAlignment="Top" HorizontalContentAlignment="Center">
-					<ListBox x:Name="TabNow"/>
+				<TabItem Header="Сегодня" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+					<controls:QueryList x:Name="TabNow"/>
 				</TabItem>
 				<TabItem Header="Вчера">
-					<ListBox x:Name="TabYesterday"/>
+					<controls:QueryList x:Name="TabYesterday"/>
 				</TabItem>
+				<!--<TabItem Header="За неделю">
+					<ListBox x:Name="TabSevenDays"/>
+				</TabItem>-->
 			</TabControl>
             <controls:Chat x:Name="chat" Grid.Column="1" Background="White" Margin="30,55,10,0" Visibility="Hidden"/>
         </Grid>
