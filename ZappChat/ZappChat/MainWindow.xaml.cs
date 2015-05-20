@@ -77,6 +77,8 @@ namespace ZappChat
             //Чата
             if (Equals(dialogue, chat.CurrentDialogue))
             {
+                var lastMessageCurrent = dialogue.GetLastMessage();
+                if(lastMessageCurrent != null) App.ChangeDialogueStatus(dialogue.RoomId, lastMessageCurrent.Id.ToString());
                 message.Status = MessageStatus.Read;
                 chat.AddNewMessageToChat(dialogue);
             }
