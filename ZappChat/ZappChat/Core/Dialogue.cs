@@ -55,12 +55,12 @@ namespace ZappChat.Core
         }
         public string GetTitleMessage()
         {
-            return Query ?? GetLastMessage().Text;
+            return Query ?? (GetLastMessage() != null ? GetLastMessage().Text : "");
         }
 
         public Message GetLastMessage()
         {
-            return Messages.Last(x => x.Type == MessageType.Incoming);
+            return Messages.LastOrDefault(x => x.Type == MessageType.Incoming);
         }
         protected bool Equals(Dialogue other)
         {

@@ -122,7 +122,7 @@ namespace ZappChat.Core
 
         }
 
-        public static void WriteAllCollection(string path, Dictionary<ulong, ulong> statuses)
+        public static void WriteAllCollection(string path, Dictionary<ulong, string> statuses)
         {
             var fileDataBuilder = new StringBuilder();
             foreach (var statuse in statuses)
@@ -133,20 +133,20 @@ namespace ZappChat.Core
             File.WriteAllText(path, fileDataBuilder.ToString());
         }
 
-        public static Dictionary<ulong, ulong> ReadAllCollection(string path)
+        public static Dictionary<ulong, string> ReadAllCollection(string path)
         {
             return File.ReadAllText(path)
                 .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
-                .ToDictionary(x => ulong.Parse(x.Split(':')[0]), x => ulong.Parse(x.Split(':')[1]));
+                .ToDictionary(x => ulong.Parse(x.Split(':')[0]), x => x.Split(':')[1]);
         }
 
-        public static void RewriteFileCollection(string path, Dictionary<ulong, ulong> statuses)
+        public static void RewriteFileCollection(string path, Dictionary<ulong, string> statuses)
         {
             if (File.Exists(path)) File.Delete(path);
             WriteAllCollection(path, statuses);
         }
 
-        public static void SynchronizeDialogueStatuses(Dictionary<ulong, ulong> statuses)
+        public static void SynchronizeDialogueStatuses(Dictionary<ulong, string> statuses)
         {
             var dictionaryInFile = ReadAllCollection(FullPasthToDialogueInformation);
             var currentDifferents = statuses.Except(dictionaryInFile);
@@ -247,7 +247,7 @@ namespace ZappChat.Core
     [TestFixture]
     internal class TestCollectionClass
     {
-        private Dictionary<ulong, ulong> _collectionInformation;
+        private Dictionary<ulong, string> _collectionInformation;
 
         [SetUp]
         public void SaveSetting()
@@ -268,14 +268,14 @@ namespace ZappChat.Core
         [Test]
         public void WriteDialogueStatuses()
         {
-            var dic = new Dictionary<ulong, ulong>
+            var dic = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {3, 2},
-                {4, 125}
+                {1, "d"},
+                {2, "d"},
+                {3, "2"},
+                {4, "125"}
             };
-            var testSuccess = "1:0;2:0;3:2;4:125;";
+            var testSuccess = "1:d;2:d;3:2;4:125;";
 
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, dic);
 
@@ -285,12 +285,12 @@ namespace ZappChat.Core
         [Test]
         public void ReadDialogueStatuses()
         {
-            var dicSuccess = new Dictionary<ulong, ulong>
+            var dicSuccess = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {3, 5},
-                {4, 40}
+                {1, "d"},
+                {2, "d"},
+                {3, "2"},
+                {4, "125"}
             };
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, dicSuccess);
 
@@ -302,21 +302,21 @@ namespace ZappChat.Core
         [Test]
         public void SyncAddTest()
         {
-            var startDic = new Dictionary<ulong, ulong>
+            var startDic = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {3, 50},
-                {4, 140}
+                {1, "d"},
+                {2, "d"},
+                {3, "2"},
+                {4, "125"}
             };
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation,startDic);
-            var endDic = new Dictionary<ulong, ulong>
+            var endDic = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {3, 50},
-                {4, 140},
-                {5,15}
+                {1, "d"},
+                {2, "d"},
+                {3, "2"},
+                {4, "125"},
+                {5, "1"}
             };
 
             FileDispetcher.SynchronizeDialogueStatuses(endDic);
@@ -327,20 +327,20 @@ namespace ZappChat.Core
         [Test]
         public void SyncChangeTest()
         {
-            var startDic = new Dictionary<ulong, ulong>
+            var startDic = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {3, 50},
-                {4, 140}
+                {1, "d"},
+                {2, "d"},
+                {3, "2"},
+                {4, "125"}
             };
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, startDic);
-            var endDic = new Dictionary<ulong, ulong>
+            var endDic = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {3, 51},
-                {4, 140}
+                {1, "d"},
+                {2, "d"},
+                {3, "d"},
+                {4, "125"}
             };
 
             FileDispetcher.SynchronizeDialogueStatuses(endDic);
@@ -350,19 +350,19 @@ namespace ZappChat.Core
         [Test]
         public void SyncDeleteTest()
         {
-            var startDic = new Dictionary<ulong, ulong>
+            var startDic = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {3, 50},
-                {4, 140}
+                {1, "d"},
+                {2, "d"},
+                {3, "2"},
+                {4, "125"}
             };
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPasthToDialogueInformation, startDic);
-            var endDic = new Dictionary<ulong, ulong>
+            var endDic = new Dictionary<ulong, string>
             {
-                {1, 0},
-                {2, 0},
-                {4, 140}
+                {1, "d"},
+                {2, "d"},
+                {4, "125"}
             };
 
             FileDispetcher.SynchronizeDialogueStatuses(endDic);

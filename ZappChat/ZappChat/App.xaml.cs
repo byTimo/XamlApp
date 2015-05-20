@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using ZappChat.Core;
@@ -28,6 +30,8 @@ namespace ZappChat
         private static DispatcherTimer fileMonitore;
         private static DispatcherTimer updateCountersDispatcherTimer;
 
+        public static Dictionary<ulong, string> DialoguesStatuses;
+
         enum OpenedWindow
         {
             Login,
@@ -38,6 +42,7 @@ namespace ZappChat
         {
             LastLogId = 0;
             FileDispetcher.InitializeFileDispetcher();
+            DialoguesStatuses = FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation);
             login = new LoginWindow();
             main = new MainWindow();
             AppEventManager.Connect += o =>
@@ -106,22 +111,25 @@ namespace ZappChat
             }
         }
 
-        //public static void StartTimerToPingRequest()
-        //{
-        //    var time = new TimeSpan();
-        //    pingRequestTime.Interval = TimeSpan.FromMilliseconds(50);
-        //    pingRequestTime.Tick += (sender, args) =>
-        //    {
-        //        if (PingRequestSuccses)
-        //        {
-        //            pingRequestTime.Stop();
-        //            AppEventManager.ConnectionEvent(pingRequestTime, ConnectionStatus.Connect);
-        //        }
-        //        if(!PingRequestSuccses && time.Seconds == 2)
-        //            AppEventManager.ConnectionEvent(pingRequestTime,ConnectionStatus.Disconnect);
-        //        time += PingInterval;
-        //    };
-        //    pingRequestTime.Start();
-        //}
+        public static bool IsThisDialogueDeleted(ulong roomId)
+        {
+            return DialoguesStatuses.Any(x => x.Key == roomId && x.Value == "d");
+        }
+
+        public static bool IsThisUnreadMessage(ulong roomId, ulong messageId)
+        {
+            if (!DialoguesStatuses.ContainsKey(roomId)) return true;
+            if (!char.IsDigit(DialoguesStatuses[roomId][0])) return false;
+            return ulong.Parse(DialoguesStatuses[roomId]) < messageId;
+        }
+
+        public static void ChangeDialogueStatus(ulong roomId, string status)
+        {
+            if(!DialoguesStatuses.ContainsKey(roomId))
+                DialoguesStatuses.Add(roomId, status);
+            else
+                DialoguesStatuses[roomId] = status;
+            FileDispetcher.SynchronizeDialogueStatuses(DialoguesStatuses);
+        }
     }
 }

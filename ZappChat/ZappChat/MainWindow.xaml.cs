@@ -68,6 +68,7 @@ namespace ZappChat
 
         private void ReceivingMessage(object sender, Dialogue dialogue)
         {
+            if (App.IsThisDialogueDeleted(dialogue.RoomId)) return;
             var message = dialogue.Messages[0];
             message.Status = MessageStatus.Delivered;
             //Реагирование на приход нового сообщения:
@@ -81,7 +82,9 @@ namespace ZappChat
             }
             //Кнопки "Сообщения"
             var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
-            if (control != null && !Equals(chat.CurrentDialogue, dialogue)
+            var lastMessage = dialogue.GetLastMessage();
+            if (control != null && !Equals(chat.CurrentDialogue, dialogue) &&
+                App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0)
                 && !control.ContaintUnreadMessages)
             {
                 messageButton.MessagesCount++;
@@ -109,6 +112,8 @@ namespace ZappChat
                     chat.CloseDialogue();
                     ShowDialogue(false);
                 }
+                //Файла статусов диалогов
+                App.ChangeDialogueStatus(e.DeletedDialogue.RoomId, "d");
                 //Кнопки сообщения:
                 var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, e.DeletedDialogue));
                 if (control != null && control.ContaintUnreadMessages)
@@ -132,9 +137,12 @@ namespace ZappChat
         private void OpenDialogue(ulong roomId, List<Message> messages)
         {
             ShowDialogue(true);
-            //Реагирование на открытие диалога:            
+            //Реагирование на открытие диалога:
             //Список диалогов:
             var openedDialogue = Dialogues.ChangeMessageStatus(roomId, messages);
+            //Файла статусов диалогов
+            var lastMessage = openedDialogue.GetLastMessage();
+            App.ChangeDialogueStatus(roomId, lastMessage != null ? lastMessage.Id.ToString() : "0");
             //Чата
             chat.OpenDialogue(openedDialogue);
             //Кнопки сообщения:
@@ -155,7 +163,7 @@ namespace ZappChat
 
         private void ReceivingQuery(object sender, Dialogue dialogue)
         {
-
+            if(App.IsThisDialogueDeleted(dialogue.RoomId)) return;
             //Реагирование на получение запроса:
             //Списка диалогов
             Dialogues.TakeQuery(dialogue);
@@ -165,7 +173,7 @@ namespace ZappChat
             if (Equals(chat.CurrentDialogue, dialogue))
                 chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
             //Кнопки запросов
-            if (!Equals(chat.CurrentDialogue, dialogue))
+            if (!Equals(chat.CurrentDialogue, dialogue) && App.IsThisUnreadMessage(dialogue.RoomId,0))
             {
                 myQuaryButton.MessagesCount++;
                 var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
