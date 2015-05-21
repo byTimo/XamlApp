@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using Newtonsoft.Json;
@@ -108,6 +109,7 @@ namespace ZappChat
             //Реагирование по запросу на удаление:
             if (e.IsConfirmed)
             {
+                App.NotifyIcon.CloseBalloon();
                 //Чата
                 if (Equals(chat.CurrentDialogue, e.DeletedDialogue))
                 {
@@ -180,6 +182,7 @@ namespace ZappChat
                 myQuaryButton.MessagesCount++;
                 var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
                 if (control != null) control.DialogueOpened = false;
+                App.CreateNotification(dialogue);
             }
         }
 
@@ -203,7 +206,7 @@ namespace ZappChat
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Hide();
         }
 
         private void HideButton_Click_1(object sender, RoutedEventArgs e)

@@ -72,7 +72,7 @@ namespace ZappChat
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            Hide();
         }
 
         private void MinimazeButton_Click(object sender, RoutedEventArgs e)

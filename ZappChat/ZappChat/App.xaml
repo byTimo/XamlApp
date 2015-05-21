@@ -2,19 +2,19 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
-	x:Class="ZappChat.App"
-    Startup="Application_Startup"><!--StartupUri="LoginWindow.xaml" -->
+    x:Class="ZappChat.App"
+    Startup="Application_Startup">
     <Application.Resources>
-	<!-- Ресурсы, масштабируемые на уровне приложения, должны определяться здесь.-->
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes/ExitButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/SliderButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/MyQuariesButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/SettingsButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/StatusButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/MinimazeButtonTemplate.xaml"/>
-				<ResourceDictionary Source="/Themes/GreyButtonTemplate.xaml"/>
+        <!-- Ресурсы, масштабируемые на уровне приложения, должны определяться здесь.-->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Themes/ExitButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/SliderButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/MyQuariesButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/SettingsButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/StatusButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/MinimazeButtonTemplate.xaml"/>
+                <ResourceDictionary Source="/Themes/GreyButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/BlueTopMenuTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/MenuButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
@@ -27,7 +27,7 @@
                 <ResourceDictionary Source="/Themes/PasswordControlTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/LoginWindowStyles.xaml"/>
                 <ResourceDictionary Source="Themes/QueryList.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-	</Application.Resources>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

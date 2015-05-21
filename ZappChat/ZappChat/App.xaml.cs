@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Hardcodet.Wpf.TaskbarNotification;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
 
@@ -15,15 +20,17 @@ namespace ZappChat
     // ReSharper disable once RedundantExtendsListEntry
     public partial class App : Application
     {
-        private const double IntervalBetweenConnectionInSeconds = 1.5;
-        private const double CheckingFilesIntervalInSeconds = 2.0;
-        private const double UpdateControlTimeIntervalInMinutes = 2.0;
+        public const double IntervalBetweenConnectionInSeconds = 1.5;
+        public const double CheckingFilesIntervalInSeconds = 2.0;
+        public const double UpdateControlTimeIntervalInMinutes = 2.0;
+        public const double NotificationCloseTimeInSeconds = 5.0;
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
         
         private static MainWindow main;
         private static LoginWindow login;
+        public static TaskbarIcon NotifyIcon { get; private set; }
         private static OpenedWindow currentWindow;
 
         private static DispatcherTimer reconnectionTimer;
@@ -45,6 +52,7 @@ namespace ZappChat
             DialoguesStatuses = FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation);
             login = new LoginWindow();
             main = new MainWindow();
+
             AppEventManager.Connect += o =>
             {
                 ConnectionStatus = ConnectionStatus.Connect;
@@ -60,6 +68,7 @@ namespace ZappChat
 
             AppWebSocketEventManager.MainWindow = main;
             AppWebSocketEventManager.Login = login;
+            InicializeNotyfication();
 
             reconnectionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(IntervalBetweenConnectionInSeconds) };
             reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
@@ -92,6 +101,34 @@ namespace ZappChat
                 SwitchWindow(OpenedWindow.Login);
         }
 
+        public static void CreateNotification(Dialogue dialogue)
+        {
+            NotifyIcon.CloseBalloon();
+            var balloon = new Notification(dialogue);
+            NotifyIcon.ShowCustomBalloon(balloon,PopupAnimation.Fade, null);
+        }
+
+        private void InicializeNotyfication()
+        {
+            var showCommand = new ShowWindowCommand();
+            var appCloseCommand = new CloseApplicationCommand();
+            var iconUri = new Uri("pack://application:,,,/Images/icon.ico", UriKind.RelativeOrAbsolute);
+            var icon = BitmapFrame.Create(iconUri);
+            NotifyIcon = new TaskbarIcon
+            {
+                IconSource = icon,
+                ToolTipText = "ZappChat",
+                DoubleClickCommand = showCommand,
+                ContextMenu = new ContextMenu
+                {
+                    Items =
+                    {
+                        new MenuItem {Header = "Показать", Command = showCommand},
+                        new MenuItem {Header = "Закрыть", Command = appCloseCommand}
+                    }
+                }
+            };
+        }
         private void SwitchWindow(OpenedWindow window)
         {
             if(currentWindow == window) return;
@@ -111,6 +148,20 @@ namespace ZappChat
             }
         }
 
+        public static void ShowCurrentWindow()
+        {
+//@TODO ---------------- что нибудь по адекватней, разворачивается там, на передний план и тд -------------------
+            if(currentWindow == OpenedWindow.Chat) main.Show();
+            else
+            {
+                login.Show();
+            }
+        }
+
+        public static bool IsCurrentWindowVisible()
+        {
+            return currentWindow == OpenedWindow.Chat ? main.IsVisible : login.IsVisible;
+        }
         public static bool IsThisDialogueDeleted(ulong roomId)
         {
             return DialoguesStatuses.Any(x => x.Key == roomId && x.Value == "d");
