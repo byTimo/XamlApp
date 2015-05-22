@@ -75,6 +75,9 @@ namespace ZappChat.Controls
             {
                 ChatMessages.Add(new ChatMessage(message));
             }
+            var carLabel = "" + (opendedDialogue.CarBrand ?? "")+ " " + (opendedDialogue.CarModel ?? "");
+            Car = carLabel.Trim() != "" ? carLabel : "Автомобиль";
+            Vin = opendedDialogue.VIN ?? "Vin";
             var chat = GetTemplateChild("MessageChat") as ListBox;
             if(chat == null) throw new NullReferenceException("Не определил ListBox в чате");
             if(chat.Items.Count != 0)
@@ -151,6 +154,14 @@ namespace ZappChat.Controls
         {
             CurrentDialogue.AddMessage(message);
             ChatMessages.Add(new ChatMessage(message));
+        }
+
+        public void SetCarInfoAdapter(string brand, string model, string vin, string year)
+        {
+            CurrentDialogue.SetCarInformation(brand, model, vin, year);
+            var carLabel = "" + (brand ?? "")+ " " + (model ?? "");
+            Car = carLabel.Trim() != "" ? carLabel : "Автомобиль";
+            Vin = vin ?? "Vin";
         }
     }
 }

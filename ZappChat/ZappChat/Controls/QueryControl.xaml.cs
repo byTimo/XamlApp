@@ -62,6 +62,15 @@ namespace ZappChat.Controls
             set { SetValue(PastTimeProperty, value); }
 	    }
 
+	    public static readonly DependencyProperty YearProperty = DependencyProperty.Register("Year", typeof (string),
+	        typeof (QueryControl), new FrameworkPropertyMetadata(""));
+
+	    public string Year
+	    {
+            get { return GetValue(YearProperty) as string; }
+            set { SetValue(YearProperty, value); }
+	    }
+
 	    public string PastTimeCalculate(DateTime time)
 	    {
             if (DateTime.Now.Year - time.Year != 0)
@@ -97,6 +106,17 @@ namespace ZappChat.Controls
 	        Text = dialogue.Query;
 	        PastTime = PastTimeCalculate(dialogue.LastDateTime);
 	        AppEventManager.UpdateCounter += () => PastTime = PastTimeCalculate(dialogue.LastDateTime);
+	    }
+
+	    public void SetCarInfoAdapter(string brand, string model, string vin, string year)
+	    {
+	        Dialogue.SetCarInformation(brand, model, vin, year);
+	        if (vin != null) IsVin = true;
+	        if (year != null)
+	        {
+	            IsYear = true;
+	            Year = year;
+	        }
 	    }
 	}
 }

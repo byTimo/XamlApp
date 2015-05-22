@@ -89,6 +89,7 @@
     <Compile Include="Core\NotifyCommands.cs" />
     <Compile Include="Core\Socket\Requests\AuditRequest.cs" />
     <Compile Include="Core\Socket\Requests\AuthorizationRequests.cs" />
+    <Compile Include="Core\Socket\Requests\CarInfoRequest.cs" />
     <Compile Include="Core\Socket\Requests\HistoryRequest.cs" />
     <Compile Include="Core\Socket\Requests\LightRequests.cs" />
     <Compile Include="Core\Socket\Requests\ListQueryRequest.cs" />

@@ -92,5 +92,12 @@ namespace ZappChat.Core
         {
             if (CloseDialogue != null) CloseDialogue();
         }
+
+        public static event Action<ulong, string, string, string, string> SetCarInfo;
+
+        public static void SetCarInfoEvent(ulong id, string brand, string model, string vin, string year)
+        {
+            if (SetCarInfo != null) SetCarInfo.Invoke(id, brand, model, vin, year);
+        }
     }
 }

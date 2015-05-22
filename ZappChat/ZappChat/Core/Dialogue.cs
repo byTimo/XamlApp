@@ -19,13 +19,20 @@ namespace ZappChat.Core
         public List<Message> Messages { get; set; }
         public ulong QueryId { get; private set; }
 
+        public ulong CarId { get; private set; }
+
+        public string CarBrand { get; set; }
+        public string CarModel { get; set; }
+        public string VIN { get; set; }
+        public string Year { get; set; }
+
         public Dialogue() { }
-        public Dialogue(ulong roomId, string quary, ulong queryId, string lastUpdate)
+        public Dialogue(ulong roomId, string quary, ulong queryId, string lastUpdate, ulong carId)
         {
             RoomId = roomId;
             QueryId = queryId;
             LastDateTime = DateTime.ParseExact(lastUpdate, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture).AddHours(-1);
-            
+            CarId = carId;
             LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
             Query = quary;
             Messages = new List<Message>();
@@ -67,6 +74,13 @@ namespace ZappChat.Core
             return RoomId == other.RoomId;
         }
 
+        public void SetCarInformation(string brand, string model, string vin, string year)
+        {
+            CarBrand = brand;
+            CarModel = model;
+            VIN = vin;
+            Year = year;
+        }
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;

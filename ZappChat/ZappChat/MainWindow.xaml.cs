@@ -35,6 +35,7 @@ namespace ZappChat
             AppEventManager.ReceiveMessage += ReceivingMessage;
             AppEventManager.ReceiveQuery += ReceivingQuery;
             AppEventManager.SendMessageSuccess += chat.SendMessageSuccess;
+            AppEventManager.SetCarInfo += SetCarInfo;
             TabNow.Queries = new ObservableCollection<QueryControl>();
             TabYesterday.Queries = new ObservableCollection<QueryControl>();
         }
@@ -95,6 +96,7 @@ namespace ZappChat
             }
 
         }
+
         private void DeleteConfirmationDialogue(object sender, DeletingEventArgs e)
         {
             //Реагирование по запросу на удаление:
@@ -103,6 +105,7 @@ namespace ZappChat
             //Синего меню:
             BlueMenu.DeleteDialgoueQery(e.DeletedDialogue);
         }
+
         private void DeleteDialogue(object sender, DeletingEventArgs e)
         {
             if(App.ConnectionStatus != ConnectionStatus.Connect) return;
@@ -138,6 +141,7 @@ namespace ZappChat
             //Блокера:
             ControlBlocker.Visibility = Visibility.Collapsed;
         }
+
         private void OpenDialogue(ulong roomId, List<Message> messages)
         {
             ShowDialogue(true);
@@ -184,6 +188,28 @@ namespace ZappChat
                 if (control != null) control.DialogueOpened = false;
                 App.CreateNotification(dialogue);
             }
+        }
+
+        private void SetCarInfo(ulong id, string brand, string model, string vin, string year)
+        {
+            //Реагирование на получение информации об автомобиле
+            //Список диалогов
+            foreach (var source in Dialogues.DialogueWithQuery.Where(x => x.Dialogue.CarId == id))
+            {
+                source.Dialogue.SetCarInformation(brand, model, vin, year);
+            }
+            //Списка запросов
+            foreach (var source in TabNow.Queries.Where(x => x.Dialogue.CarId == id))
+            {
+                source.SetCarInfoAdapter(brand,model,vin,year);
+            }
+            foreach (var source in TabYesterday.Queries.Where(x => x.Dialogue.CarId == id))
+            {
+                source.SetCarInfoAdapter(brand, model, vin, year);
+            }
+            //Чата
+            if (chat.CurrentDialogue.CarId == id)
+                chat.SetCarInfoAdapter(brand, model, vin, year);
         }
 
         private void TabControlReceiveQuery(Dialogue dialogue)

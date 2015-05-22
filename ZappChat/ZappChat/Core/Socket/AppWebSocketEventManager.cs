@@ -104,6 +104,9 @@ namespace ZappChat.Core.Socket
                     case "chat/history":
                         HandlingChatHistory(responseJson);
                         break;
+                    case "request/car":
+                        HandkingCarInfoRequest(responseJson);
+                        break;
                         //@TODO
                 }
             }
@@ -186,8 +189,13 @@ namespace ZappChat.Core.Socket
             var lastupdata = (string)request["updated_at"];
             var queryId = ulong.Parse((string)request["id"]);
             var query = (string)request["query"];
-            var dialogue = new Dialogue(roomId, query, queryId, lastupdata);
+            var carId = ulong.Parse((string)request["car_id"] ?? "0");
+            var dialogue = new Dialogue(roomId, query, queryId, lastupdata, carId);
             Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveQueryEvent(_webSocket, dialogue));
+            if(carId == 0) return;
+            var carInfoRequest = new CarInfoRequest {request_id = queryId};
+            var carInfoRequestToJson = JsonConvert.SerializeObject(carInfoRequest);
+            SendObject(carInfoRequestToJson);
         }
 
         private static void HandlingPongResponce(JObject responseJson)
@@ -247,6 +255,18 @@ namespace ZappChat.Core.Socket
                 select new Message(mesId, text, type, hashReceive, createTime, author) {Status = MessageStatus.Read})
                 .ToList();
             Application.Current.Dispatcher.Invoke(() => AppEventManager.OpenDialogueEvent(roomIdReceive, messages));
+        }
+
+        private static void HandkingCarInfoRequest(JObject responseJson)
+        {
+            if((string)responseJson["status"] != "ok") return;
+            var car = responseJson["car"];
+            var carId = ulong.Parse((string)car["id"]);
+            var brand = (string) car["manufacturer"];
+            var model = (string) car["model"];
+            var vin = (string) car["vin"];
+            var year = (string) car["year"];
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.SetCarInfoEvent(carId, brand, model, vin, year));
         }
 
         private static void HandlingListResponce(JObject responseJson)
