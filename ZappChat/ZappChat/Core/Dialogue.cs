@@ -12,7 +12,7 @@ namespace ZappChat.Core
     public class Dialogue
     {
         public ulong RoomId { get; private set; }
-
+        public DialogueStatus Status { get; set; }
         public string Query { get; set; }
         public DateTime LastDateTime { get; private set; }
         public string LastMessageDate { get; private set; }
@@ -27,7 +27,7 @@ namespace ZappChat.Core
         public string Year { get; set; }
 
         public Dialogue() { }
-        public Dialogue(ulong roomId, string quary, ulong queryId, string lastUpdate, ulong carId)
+        public Dialogue(ulong roomId, string quary, ulong queryId, string lastUpdate, ulong carId, DialogueStatus status)
         {
             RoomId = roomId;
             QueryId = queryId;
@@ -36,6 +36,7 @@ namespace ZappChat.Core
             LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
             Query = quary;
             Messages = new List<Message>();
+            Status = status;
         }
 
         public Dialogue(ulong roomId, Message message)
@@ -44,6 +45,7 @@ namespace ZappChat.Core
             LastDateTime = message.DateTime;
             LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
             Messages = new List<Message> {message};
+            Status = DialogueStatus.Created;
 
         }
         public void AddMessage(Message newMessage)

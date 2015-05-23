@@ -29,8 +29,15 @@
 
     public enum DialogueStatus
     {
-        Deleting,
-        Unreading,
-        Reading
+        Created,
+        Answered,
+        Missed
+    }
+
+    public enum AnswerType
+    {
+        Selling,
+        OnOrder,
+        NoSelling
     }
 }

@@ -15,9 +15,16 @@ namespace ZappChat.Controls
     [TemplatePart(Name = "Send", Type = typeof(CornerRadiusButton))]
     [TemplatePart(Name = "UserInput", Type = typeof(TextBox))]
     [TemplatePart(Name = "MessageChat", Type = typeof(ListBox))]
+    [TemplatePart(Name = "Selling", Type = typeof(CornerRadiusButton))]
+    [TemplatePart(Name = "OnOrder", Type = typeof(CornerRadiusButton))]
+    [TemplatePart(Name = "NoSelling", Type = typeof(CornerRadiusButton))]
     public class Chat : Control
     {
         public Dialogue CurrentDialogue { get; set; }
+
+        private CornerRadiusButton _selling;
+        private CornerRadiusButton _onOrder;
+        private CornerRadiusButton _noSelling;
 
         public static readonly DependencyProperty ChatMessagesProperty = DependencyProperty.Register("ChatMessages",
             typeof (ObservableCollection<ChatMessage>), typeof (Chat),
@@ -63,6 +70,18 @@ namespace ZappChat.Controls
 
         public void OpenDialogue(Dialogue opendedDialogue)
         {
+            if (opendedDialogue.Status != DialogueStatus.Created || opendedDialogue.QueryId == 0)
+            {
+                _selling.Visibility = Visibility.Collapsed;
+                _noSelling.Visibility = Visibility.Collapsed;
+                _onOrder.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                _selling.Visibility = Visibility.Visible;
+                _noSelling.Visibility = Visibility.Visible;
+                _onOrder.Visibility = Visibility.Visible;
+            }
             var userInput = GetTemplateChild("UserInput") as TextBox;
             if (userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
             if (!Equals(CurrentDialogue, opendedDialogue))
@@ -96,6 +115,13 @@ namespace ZappChat.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
+            _selling = GetTemplateChild("Selling") as CornerRadiusButton;
+            _selling.Click += (sender, args) => AnsweredToQuery(AnswerType.Selling);
+            _onOrder = GetTemplateChild("OnOrder") as CornerRadiusButton;
+            _onOrder.Click += (sender, args) => AnsweredToQuery(AnswerType.OnOrder);
+            _noSelling = GetTemplateChild("NoSelling") as CornerRadiusButton;
+            _noSelling.Click += (sender, args) => AnsweredToQuery(AnswerType.NoSelling);
+
             ChatMessages = new ObservableCollection<ChatMessage>();
             CurrentDialogue = new Dialogue();
             var backButton = GetTemplateChild("Back") as CornerRadiusButton;
@@ -162,6 +188,55 @@ namespace ZappChat.Controls
             var carLabel = "" + (brand ?? "")+ " " + (model ?? "");
             Car = carLabel.Trim() != "" ? carLabel : "Автомобиль";
             Vin = vin ?? "Vin";
+        }
+
+        private void AnsweredToQuery(AnswerType type)
+        {
+            if(App.ConnectionStatus != ConnectionStatus.Connect) return;
+           
+            var selling = type != AnswerType.NoSelling;
+            var onStock = type == AnswerType.Selling;
+            var answerRequest = new AnswerRequest
+            {
+                id = CurrentDialogue.QueryId,
+                selling = selling,
+                on_stock = onStock
+            };
+            var answerRequestToJson = JsonConvert.SerializeObject(answerRequest);
+            AppWebSocketEventManager.SendObject(answerRequestToJson);
+
+            var text = (selling && onStock)
+                ? "Запчасть имеется в наличии"
+                : (selling || onStock)
+                    ? "К сожалению, вашей запчасти нет в наличии, но мы готовы привести ее под заказ"
+                    : "Нет в продаже";
+
+            var newMessage = new Message(0, text, "outgoing", Guid.NewGuid().ToString(),
+                DateTime.Now.ToString(CultureInfo.InvariantCulture), "") { IsSuccessfully = false };
+            var sendMessageRequest = new SendMessageRequest
+            {
+                room_id = CurrentDialogue.RoomId,
+                message = newMessage.Text,
+                hash = newMessage.Hash,
+                system = true
+            };
+            var sendMessageRequestToJson = JsonConvert.SerializeObject(sendMessageRequest);
+
+            ChatMessages.Add(new ChatMessage(newMessage));
+            AppWebSocketEventManager.SendObject(sendMessageRequestToJson);
+
+            var chat = GetTemplateChild("MessageChat") as ListBox;
+            if (chat == null) throw new NullReferenceException("Не определил ListBox в чате");
+            if (chat.Items.Count != 0)
+                chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
+        }
+
+        public void ChangeDialogueStatus()
+        {
+            CurrentDialogue.Status = DialogueStatus.Answered;
+            _selling.Visibility = Visibility.Collapsed;
+            _noSelling.Visibility = Visibility.Collapsed;
+            _onOrder.Visibility = Visibility.Collapsed;
         }
     }
 }

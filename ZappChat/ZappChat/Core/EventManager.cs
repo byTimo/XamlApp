@@ -99,5 +99,13 @@ namespace ZappChat.Core
         {
             if (SetCarInfo != null) SetCarInfo.Invoke(id, brand, model, vin, year);
         }
+
+        public static event Action<ulong> AnswerOnQuery;
+
+        public static void AnswerOnQueryEvent(ulong queryId)
+        {
+            var handler = AnswerOnQuery;
+            if (handler != null) handler(queryId);
+        }
     }
 }

@@ -10,11 +10,12 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="37"/>
+                            <RowDefinition Height="39.467"/>
                         </Grid.RowDefinitions>
-                        <local:CornerRadiusButton x:Name="Back" CornerRadius="5" Grid.Row="0" HorizontalAlignment="Left" Margin="30,15,0,10" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" BorderThickness="0" Padding="0" BorderBrush="{x:Null}" Cursor="Hand" Width="Auto" Height="Auto">
+                        <local:CornerRadiusButton x:Name="Back" CornerRadius="5" Grid.Row="0" HorizontalAlignment="Left" Margin="30,15,0,10" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" BorderThickness="0" Padding="0" BorderBrush="{x:Null}" Cursor="Hand" Width="71.207" Height="Auto">
                             <local:CornerRadiusButton.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFFDFEFE" Offset="0"/>
@@ -27,7 +28,7 @@
                                 <TextBlock Text="Назад" Width="Auto" Height="Auto" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Foreground="#FFA1A2A2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             </StackPanel>
                         </local:CornerRadiusButton>
-                        <TextBox Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="32" Foreground="#FF2FB6E5" Margin="30,5,5,5" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" SelectionBrush="#FFE2E2E3" Style="{DynamicResource TextBoxStyle}" IsReadOnly="True"/>
+                        <TextBox Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="32" Foreground="#FF2FB6E5" Margin="30,5,5,0" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" SelectionBrush="#FFE2E2E3" Style="{DynamicResource TextBoxStyle}" IsReadOnly="True" Height="38.797"/>
                         <Grid Grid.Row="2" Margin="30,0,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="13*"/>
@@ -44,7 +45,10 @@
                         <Border Grid.Row="4" Margin="30,15,12,10" CornerRadius="10" BorderThickness="2" Background="White" BorderBrush="#FFC4E1EA" Padding="15,10,15,5" Width="Auto">
                             <TextBox x:Name="UserInput" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF2FB6E5" FontFamily="Arial" VerticalAlignment="Center" FontSize="18.667" Style="{DynamicResource TextBoxStyle}" UndoLimit="0" Width="521" TextWrapping="Wrap" MaxHeight="75" Margin="0,0,-7,0" />
                         </Border>
-                        <local:CornerRadiusButton x:Name="Send" Grid.Row="5" Content="Отправить" CornerRadius="10" FontFamily="Arial" FontSize="18.667" Margin="30,5,0,20" Background="#FF2FB6E5" HorizontalAlignment="Left" VerticalAlignment="Top" BorderBrush="{x:Null}" BorderThickness="0" Height="Auto" Padding="40,15" Width="Auto" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Cursor="Hand" Foreground="#FFF0F8FD" />
+                        <local:CornerRadiusButton x:Name="Send" Grid.Row="5" Content="Отправить" CornerRadius="10" FontFamily="Arial" FontSize="18.667" Margin="30,0,0,0" Background="#FF2FB6E5" HorizontalAlignment="Left" VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Height="51.467" Padding="40,15" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Cursor="Hand" Foreground="#FFF0F8FD" Grid.RowSpan="2" Width="172.563" />
+						<local:CornerRadiusButton x:Name="Selling" Grid.Row="5" Grid.RowSpan="2" Content="В наличии" CornerRadius="10" Background="#FF2FB6E5" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="16" FontFamily="/ZappChat;component/Fonts/#Arial" Padding="20,5" Margin="0,0,115,0" Cursor="Hand"/>
+						<local:CornerRadiusButton x:Name="OnOrder" Grid.Row="5" Content="Под заказ" CornerRadius="10" Background="#FF2FB6E5" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontFamily="/ZappChat;component/Fonts/#Arial" Padding="0,5" Margin="0,0,15,0" Width="100" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Cursor="Hand"/>
+						<local:CornerRadiusButton x:Name="NoSelling" Grid.Row="6" Content="Нет в наличии" CornerRadius="10" Background="#FF2FB6E5" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" FontSize="13.333" FontFamily="/ZappChat;component/Fonts/#Arial" Padding="0,5" Margin="0,0,15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="100" Cursor="Hand"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

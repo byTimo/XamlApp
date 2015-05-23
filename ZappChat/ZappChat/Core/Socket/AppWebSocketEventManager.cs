@@ -107,6 +107,9 @@ namespace ZappChat.Core.Socket
                     case "request/car":
                         HandkingCarInfoRequest(responseJson);
                         break;
+                    case "request/answer":
+                        HandlingAnswerRequest(responseJson);
+                        break;
                         //@TODO
                 }
             }
@@ -185,12 +188,15 @@ namespace ZappChat.Core.Socket
             if ((string) responseJson["log_id"] != null)
                 App.LastLogId = ulong.Parse((string) responseJson["log_id"]);
             var request = responseJson["request"];
+            var status = (string)request["status"] == "created"
+               ? DialogueStatus.Created
+               : (string)request["status"] == "answered" ? DialogueStatus.Answered : DialogueStatus.Missed;
             var roomId = ulong.Parse((string)request["chat_room_id"]);
             var lastupdata = (string)request["updated_at"];
             var queryId = ulong.Parse((string)request["id"]);
             var query = (string)request["query"];
             var carId = ulong.Parse((string)request["car_id"] ?? "0");
-            var dialogue = new Dialogue(roomId, query, queryId, lastupdata, carId);
+            var dialogue = new Dialogue(roomId, query, queryId, lastupdata, carId, status);
             Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveQueryEvent(_webSocket, dialogue));
             if(carId == 0) return;
             var carInfoRequest = new CarInfoRequest {request_id = queryId};
@@ -267,6 +273,14 @@ namespace ZappChat.Core.Socket
             var vin = (string) car["vin"];
             var year = (string) car["year"];
             Application.Current.Dispatcher.Invoke(() => AppEventManager.SetCarInfoEvent(carId, brand, model, vin, year));
+        }
+
+        private static void HandlingAnswerRequest(JObject responseJson)
+        {
+            if ((string)responseJson["status"] != "ok") return;
+            var request = responseJson["request"];
+            var id = ulong.Parse((string) request[0]["id"]);
+            Application.Current.Dispatcher.Invoke(() => AppEventManager.AnswerOnQueryEvent(id));
         }
 
         private static void HandlingListResponce(JObject responseJson)
