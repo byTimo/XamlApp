@@ -105,7 +105,7 @@ namespace ZappChat
         {
             NotifyIcon.CloseBalloon();
             var balloon = new Notification(dialogue);
-            NotifyIcon.ShowCustomBalloon(balloon,PopupAnimation.Fade, null);
+            NotifyIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, null);
         }
 
         private void InicializeNotyfication()
@@ -151,7 +151,11 @@ namespace ZappChat
         public static void ShowCurrentWindow()
         {
 //@TODO ---------------- что нибудь по адекватней, разворачивается там, на передний план и тд -------------------
-            if(currentWindow == OpenedWindow.Chat) main.Show();
+            if (currentWindow == OpenedWindow.Chat)
+            {
+                main.Show();
+                main.Activate();
+            }
             else
             {
                 login.Show();

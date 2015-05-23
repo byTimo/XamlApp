@@ -95,6 +95,8 @@ namespace ZappChat
                 control.ContaintUnreadMessages = true;
             }
 
+            App.CreateNotification(dialogue);
+
         }
 
         private void DeleteConfirmationDialogue(object sender, DeletingEventArgs e)
