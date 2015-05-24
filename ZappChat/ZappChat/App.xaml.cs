@@ -66,8 +66,6 @@ namespace ZappChat
             AppEventManager.AuthorizationSuccess += AuthorizationSuccess;
             AppEventManager.AuthorizationFail += AuthorizationFail;
 
-            AppWebSocketEventManager.MainWindow = main;
-            AppWebSocketEventManager.Login = login;
             InicializeNotyfication();
 
             reconnectionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(IntervalBetweenConnectionInSeconds) };

@@ -14,8 +14,6 @@ namespace ZappChat.Core.Socket
     static class AppWebSocketEventManager
     {
         private static readonly WebSocket _webSocket;
-        public static LoginWindow Login { get; set; }
-        public static MainWindow MainWindow { get; set; }
 
         /// <summary>
         /// Переменная, которая не даёт закрывать уже закрытый сокет, который пытается открыться.

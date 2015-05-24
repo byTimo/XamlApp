@@ -35,8 +35,10 @@ namespace ZappChat.Core
         public static void CheckExistsFiles()
         {
             if (!Directory.Exists(rootDirectory)) Directory.CreateDirectory(rootDirectory);
-            if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
-            if (!File.Exists(FullPasthToDialogueInformation)) File.Create(FullPasthToDialogueInformation);
+//            if (!File.Exists(FullPathToSettingFile)) File.Create(FullPathToSettingFile);
+//            if (!File.Exists(FullPasthToDialogueInformation)) File.Create(FullPasthToDialogueInformation);
+            if (!File.Exists(FullPathToSettingFile)) File.WriteAllText(FullPathToSettingFile,"");
+            if (!File.Exists(FullPasthToDialogueInformation)) File.WriteAllText(FullPasthToDialogueInformation, "");
         }
 
         public static string GetToken()

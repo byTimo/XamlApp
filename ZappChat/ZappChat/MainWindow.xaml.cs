@@ -95,8 +95,8 @@ namespace ZappChat
                 messageButton.MessagesCount++;
                 control.ContaintUnreadMessages = true;
             }
-
-            App.CreateNotification(dialogue);
+            if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0))
+                App.CreateNotification(dialogue);
 
         }
 
