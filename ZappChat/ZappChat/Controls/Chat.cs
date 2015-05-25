@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Newtonsoft.Json;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
@@ -25,6 +26,7 @@ namespace ZappChat.Controls
         private CornerRadiusButton _selling;
         private CornerRadiusButton _onOrder;
         private CornerRadiusButton _noSelling;
+        private TextBox _userInput;
 
         public static readonly DependencyProperty ChatMessagesProperty = DependencyProperty.Register("ChatMessages",
             typeof (ObservableCollection<ChatMessage>), typeof (Chat),
@@ -82,10 +84,8 @@ namespace ZappChat.Controls
                 _noSelling.Visibility = Visibility.Visible;
                 _onOrder.Visibility = Visibility.Visible;
             }
-            var userInput = GetTemplateChild("UserInput") as TextBox;
-            if (userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
             if (!Equals(CurrentDialogue, opendedDialogue))
-                userInput.Text = "";
+                _userInput.Text = "";
             CurrentDialogue = opendedDialogue;
             DialogueTitle = CurrentDialogue.GetTitleMessage();
 
@@ -121,6 +121,9 @@ namespace ZappChat.Controls
             _onOrder.Click += (sender, args) => AnsweredToQuery(AnswerType.OnOrder);
             _noSelling = GetTemplateChild("NoSelling") as CornerRadiusButton;
             _noSelling.Click += (sender, args) => AnsweredToQuery(AnswerType.NoSelling);
+            _userInput = GetTemplateChild("UserInput") as TextBox;
+            if (_userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
+            _userInput.KeyDown += UserInputOnKeyDown;
 
             ChatMessages = new ObservableCollection<ChatMessage>();
             CurrentDialogue = new Dialogue();
@@ -131,19 +134,29 @@ namespace ZappChat.Controls
                 AppEventManager.CloseDialogueEvent();
             };
             var sendButton = GetTemplateChild("Send") as CornerRadiusButton;
-            sendButton.Click += SendUserMessage;
+            sendButton.Click += SendMessageThroughtButtonClick;
+
         }
 
-        private void SendUserMessage(object sender, RoutedEventArgs e)
+        private void UserInputOnKeyDown(object sender, KeyEventArgs keyEventArgs)
         {
-            if(App.ConnectionStatus != ConnectionStatus.Connect) return;
-            var userInput = GetTemplateChild("UserInput") as TextBox;
-            if(userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
-            var userMessage = userInput.Text.Trim();
-            if(userMessage == "") return;
-            userInput.Text = "";
+            if(keyEventArgs.Key == Key.Enter)
+                SendMessage();
+        }
+
+        private void SendMessageThroughtButtonClick(object sender, RoutedEventArgs e)
+        {
+            SendMessage();
+        }
+
+        private void SendMessage()
+        {
+            if (App.ConnectionStatus != ConnectionStatus.Connect) return;
+            var userMessage = _userInput.Text.Trim();
+            if (userMessage == "") return;
+            _userInput.Text = "";
             var newMessage = new Message(0, userMessage, "outgoing", Guid.NewGuid().ToString(),
-                DateTime.Now.ToString(CultureInfo.InvariantCulture), "") {IsSuccessfully = false};
+                DateTime.Now.ToString(CultureInfo.InvariantCulture), "") { IsSuccessfully = false };
             var sendMessageRequest = new SendMessageRequest
             {
                 room_id = CurrentDialogue.RoomId,
@@ -160,7 +173,6 @@ namespace ZappChat.Controls
             if (chat == null) throw new NullReferenceException("Не определил ListBox в чате");
             if (chat.Items.Count != 0)
                 chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
-
         }
 
         public void SendMessageSuccess(ulong roomId, ulong messageId, string hash)

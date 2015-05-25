@@ -101,15 +101,19 @@ namespace ZappChat
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            if(App.ConnectionStatus != ConnectionStatus.Connect) return;
-            var button = sender as LoginButton;
-            if (LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" || button == null)
+           SendLoginAndPassword();
+        }
+
+        public void SendLoginAndPassword()
+        {
+            if (App.ConnectionStatus != ConnectionStatus.Connect) return;
+            if (LoginTextBox.Text == "" || PasswordBox.GetPassword() == "" )
             {
                 AuthorizationFail();
                 return;
             }
-            if (button.LoginTry) return;
-            button.SwapState(true);
+            if (loginButton.LoginTry) return;
+            loginButton.SwapState(true);
             var request = new AuthorizationLoginAndPasswordRequest
             {
                 email = LoginTextBox.Text,
@@ -117,7 +121,12 @@ namespace ZappChat
                     Support.XorEncoder(PasswordBox.GetPassword()))
             };
             var jsonString = JsonConvert.SerializeObject(request);
-            AppWebSocketEventManager.SendObject(jsonString);
+            AppWebSocketEventManager.SendObject(jsonString); 
+        }
+
+        private void PasswordBox_OnEnterPress(object sender, RoutedEventArgs e)
+        {
+            SendLoginAndPassword();
         }
     }
 }

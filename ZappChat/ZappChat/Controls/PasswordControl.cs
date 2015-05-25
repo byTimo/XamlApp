@@ -33,6 +33,22 @@ namespace ZappChat.Controls
             get { return (bool) GetValue(ViewPasswordProperty); }
             set { SetValue(ViewPasswordProperty, value); }
         }
+
+        public static readonly RoutedEvent EnterPressEvent = EventManager.RegisterRoutedEvent("EnterPress",
+            RoutingStrategy.Bubble, typeof (RoutedEventHandler), typeof (PasswordControl));
+
+        public event RoutedEventHandler EnterPress
+        {
+            add { AddHandler(EnterPressEvent, value); }
+            remove { RemoveHandler(EnterPressEvent, value); }
+        }
+
+        void RaiseEnterPress()
+        {
+            var newEventArgs  = new RoutedEventArgs(EnterPressEvent);
+            RaiseEvent(newEventArgs);
+        }
+
         static PasswordControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof (PasswordControl),
@@ -81,13 +97,36 @@ namespace ZappChat.Controls
                 if(_password.Password == string.Empty)
                     _label.Visibility = Visibility.Visible;
             };
+            _password.KeyDown += ControlKeyDown;
+            _text.KeyDown += ControlKeyDown;
+        }
+
+        void ControlKeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+                RaiseEnterPress();
         }
 
         public void AuthorizationFailReaction(string messageText, Brush messageBrush)
         {
-            ResetValues();
-            _label.Text = messageText;
-            _label.Foreground = messageBrush;
+            if (Equals(Keyboard.FocusedElement, _password))
+            {
+                ViewPassword = false;
+            }
+            else if (Equals(Keyboard.FocusedElement, _text))
+            {
+                Keyboard.Focus(_password);
+                ViewPassword = false;
+            }
+            else
+            {
+                _label.Visibility = Visibility.Visible;
+                _label.Text = messageText;
+                _label.Foreground = messageBrush;
+            }
+            _text.Text = "";
+            _password.Password = "";
+
         }
 
         public void ResetValues()
@@ -105,5 +144,7 @@ namespace ZappChat.Controls
         {
             return ViewPassword ? _text.Text : _password.Password;
         }
+
+
     }
 }
