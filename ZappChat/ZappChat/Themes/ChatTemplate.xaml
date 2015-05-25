@@ -93,7 +93,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBox}">
                     <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="1" SnapsToDevicePixels="true">
-                        <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Disabled">
+                        <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" HorizontalScrollBarVisibility="Disabled">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                         </ScrollViewer>
                     </Border>
