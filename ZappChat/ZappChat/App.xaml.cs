@@ -9,6 +9,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
+using NAppUpdate.Framework;
+using NAppUpdate.Framework.Sources;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
 
@@ -25,6 +27,9 @@ namespace ZappChat
         public const double UpdateControlTimeIntervalInMinutes = 2.0;
         public const double NotificationCloseTimeInSeconds = 5.0;
         public const double IntervalBetweenReshowNotificationInSecond = 300.0;
+
+        public const string WebSocketUrl = "ws://zappchat.ru:7778";
+        public const string UpdateFeedUrl = "http://zappchat.ru/setup/updates";
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
@@ -69,6 +74,8 @@ namespace ZappChat
 
             InicializeNotyfication();
 
+            AppUpdateManager.SetUrlRemoteServer(UpdateFeedUrl);
+
             reconnectionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(IntervalBetweenConnectionInSeconds) };
             reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             reconnectionTimer.Stop();
@@ -85,7 +92,8 @@ namespace ZappChat
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             login.Show();
             currentWindow = OpenedWindow.Login;
-            socketOpener.RunWorkerAsync();
+            AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(socketOpener.RunWorkerAsync);
+            
         }
 
         private void AuthorizationSuccess(object sender, AuthorizationType type)

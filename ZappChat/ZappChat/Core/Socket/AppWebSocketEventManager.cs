@@ -22,7 +22,7 @@ namespace ZappChat.Core.Socket
 
         static AppWebSocketEventManager()
         {
-            _webSocket = new WebSocket("ws://zappchat.ru:7778");
+            _webSocket = new WebSocket(App.WebSocketUrl);
             _webSocket.Opened += OpenedConnection;
             _webSocket.Closed += ClosedConnection;
             _webSocket.Error += SocketErrorEvent;

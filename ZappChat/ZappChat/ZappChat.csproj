@@ -39,6 +39,9 @@
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Drawing" />
+    <Reference Include="NAppUpdate.Framework">
+      <HintPath>..\packages\NAppUpdate.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -83,6 +86,7 @@
       <DependentUpon>QueryControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\QueryList.cs" />
+    <Compile Include="Core\AppUpdateManager.cs" />
     <Compile Include="Core\Dialogue.cs" />
     <Compile Include="Core\Message.cs" />
     <Compile Include="Core\FileDispetcher.cs" />
