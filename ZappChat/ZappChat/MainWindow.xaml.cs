@@ -95,6 +95,10 @@ namespace ZappChat
                 if(lastMessageCurrent != null) App.ChangeDialogueStatus(dialogue.RoomId, lastMessageCurrent.Id.ToString());
                 message.Status = MessageStatus.Read;
                 chat.AddNewMessageToChat(dialogue);
+
+                var readType = new ReadRoomRequest { room_id = dialogue.RoomId };
+                var readTypeToJson = JsonConvert.SerializeObject(readType);
+                AppWebSocketEventManager.SendObject(readTypeToJson);
             }
             //Кнопки "Сообщения"
             var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
@@ -181,6 +185,10 @@ namespace ZappChat
                 myQuaryButton.MessagesCount--;
                 control.DialogueOpened = true;
             }
+
+            var readType = new ReadRoomRequest {room_id = roomId};
+            var readTypeToJson = JsonConvert.SerializeObject(readType);
+            AppWebSocketEventManager.SendObject(readTypeToJson);
         }
 
         private void ReceivingQuery(object sender, Dialogue dialogue)

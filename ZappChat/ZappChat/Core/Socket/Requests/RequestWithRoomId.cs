@@ -30,6 +30,17 @@ namespace ZappChat.Core.Socket.Requests
         }
     }
 
+    class ReadRoomRequest : RequestWithRoomId
+    {
+        public string type { get; private set; }
+
+        public ReadRoomRequest()
+        {
+            action = "chat/message";
+            type = "read";
+        }
+    }
+
     class SendMessageRequest : RequestWithRoomId
     {
         public string type { get; private set; }
