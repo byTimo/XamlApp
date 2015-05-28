@@ -22,6 +22,22 @@ namespace ZappChat.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ListMessages), new FrameworkPropertyMetadata(typeof(ListMessages)));
         }
 
+        public Dialogue CheckUnreadedDialogues()
+        {
+            foreach (var messageControl in DialogueWithQuery)
+            {
+                if (App.IsThisUnreadMessage(messageControl.Dialogue.RoomId, 0))
+                    return messageControl.Dialogue;
+            }
+            foreach (var messageControl in DialogueWithoutQuery)
+            {
+                if (App.IsThisUnreadMessage(messageControl.Dialogue.RoomId, messageControl.Dialogue.GetLastMessage().Id))
+                    return messageControl.Dialogue;
+            
+            }
+            return null;
+
+        }
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();

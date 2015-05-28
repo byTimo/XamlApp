@@ -24,6 +24,7 @@ namespace ZappChat
         public const double CheckingFilesIntervalInSeconds = 2.0;
         public const double UpdateControlTimeIntervalInMinutes = 2.0;
         public const double NotificationCloseTimeInSeconds = 5.0;
+        public const double IntervalBetweenReshowNotificationInSecond = 300.0;
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }

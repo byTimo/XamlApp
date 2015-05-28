@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Newtonsoft.Json;
 using ZappChat.Controls;
 using ZappChat.Core;
@@ -21,6 +22,7 @@ namespace ZappChat
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DispatcherTimer reshowNotificationTimer;
         public MainWindow()
         {
             InitializeComponent();
@@ -39,6 +41,15 @@ namespace ZappChat
             AppEventManager.AnswerOnQuery += AnswerOnQuery;
             TabNow.Queries = new ObservableCollection<QueryControl>();
             TabYesterday.Queries = new ObservableCollection<QueryControl>();
+            reshowNotificationTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond)};
+            reshowNotificationTimer.Tick += (sender, args) =>
+            {
+                if (App.ConnectionStatus != ConnectionStatus.Connect) return;
+                var dialogue = Dialogues.CheckUnreadedDialogues();
+                if (dialogue != null)
+                    App.CreateNotification(dialogue);
+            };
+            reshowNotificationTimer.Start();
         }
 
         private void Connection(object sender)
