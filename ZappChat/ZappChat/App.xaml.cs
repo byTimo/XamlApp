@@ -55,7 +55,7 @@ namespace ZappChat
         {
             LastLogId = 0;
             FileDispetcher.InitializeFileDispetcher();
-            DialoguesStatuses = FileDispetcher.ReadAllCollection(FileDispetcher.FullPasthToDialogueInformation);
+            DialoguesStatuses = FileDispetcher.ReadAllCollection(FileDispetcher.FullPathToDialogueInformation);
             login = new LoginWindow();
             main = new MainWindow();
 

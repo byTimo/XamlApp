@@ -110,7 +110,7 @@ namespace ZappChat
                 messageButton.MessagesCount++;
                 control.ContaintUnreadMessages = true;
             }
-            if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0))
+            if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0) || !IsActive)
                 App.CreateNotification(dialogue);
 
         }
