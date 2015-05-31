@@ -82,6 +82,7 @@ namespace ZappChat
             AppEventManager.Disconnect += o =>
             {
                 ConnectionStatus = ConnectionStatus.Disconnect;
+                updateCountersDispatcherTimer.Stop();
                 reconnectionTimer.Start();
             };
             AppEventManager.AuthorizationSuccess += AuthorizationSuccess;
@@ -100,19 +101,20 @@ namespace ZappChat
 
             updateCountersDispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMinutes(UpdateControlTimeIntervalInMinutes)};
             updateCountersDispatcherTimer.Tick += (o, args) => AppEventManager.UpdateCounterEvent();
-            updateCountersDispatcherTimer.Start();
         }
 
         private void AuthorizationSuccess(object sender, AuthorizationType type)
         {
             if(currentWindow == OpenedWindow.Login)
                 SwitchWindow(OpenedWindow.Chat);
+            updateCountersDispatcherTimer.Start();
         }
 
         private void AuthorizationFail(object sender, AuthorizationType type)
         {
             if(currentWindow == OpenedWindow.Chat)
                 SwitchWindow(OpenedWindow.Login);
+            updateCountersDispatcherTimer.Stop();
         }
 
         public static void CreateNotification(Dialogue dialogue)
