@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using NAppUpdate.Framework;
 using NAppUpdate.Framework.Common;
 using NAppUpdate.Framework.Sources;
 
-namespace ZappChat.Core
+namespace ZappChatLauncher
 {
     static class AppUpdateManager
     {
@@ -30,14 +25,15 @@ namespace ZappChat.Core
             {
                 if (checkResult.IsCompleted)
                 {
-//@TODO ------------------ изменить этот кусок, когда сервер будет выдавать информацию об обновлениях ----------
                     try
                     {
                         ((UpdateProcessAsyncResult) checkResult).EndInvoke();
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        callBack.Invoke();
+                        MessageBox.Show(string.Format("Updates preperation failed. Check the feed and try again.{0}{1}",
+                   Environment.NewLine, ex));
+                        Application.Current.Dispatcher.Invoke(Application.Current.Shutdown);
                         return;
                     }
                     if (updManager.UpdatesAvailable == 0)
@@ -45,8 +41,8 @@ namespace ZappChat.Core
                         callBack.Invoke();
                         return;
                     }
+                    MessageBox.Show("Нашёл обновления");
                     updManager.BeginPrepareUpdates(OnPrepareUpdatesCompleted,null);
-//                    callBack.Invoke();
                 }
             }, null);
 

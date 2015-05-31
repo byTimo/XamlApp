@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CreateAndTestNewControls
+namespace ZappChat.Controls
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для CircularProgressBar.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CircularProgressBar : UserControl
     {
-        public MainWindow()
+        public CircularProgressBar()
         {
             InitializeComponent();
         }

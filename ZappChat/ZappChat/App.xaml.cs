@@ -53,6 +53,33 @@ namespace ZappChat
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            var comLineArgs = Environment.GetCommandLineArgs();
+            if (comLineArgs.Length < 2)
+            {
+                MessageBox.Show("Запускайте программу через ZappChatLauncher.exe");
+                Current.Shutdown();
+                return;
+            }
+            var test = comLineArgs.Aggregate("", (current, comLineArg) => current + comLineArg);
+            var isLastVersion = false;
+            try
+            {
+                isLastVersion = bool.Parse(comLineArgs[1]);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка в обновлении");
+                Current.Shutdown();
+                return;
+            }
+            if (!isLastVersion)
+            {
+                MessageBox.Show("Ошибка в обновлении");
+                Current.Shutdown();
+                return;
+            }
+
+            MessageBox.Show("Эта штука не должна появиться при запуске!");
             LastLogId = 0;
             FileDispetcher.InitializeFileDispetcher();
             DialoguesStatuses = FileDispetcher.ReadAllCollection(FileDispetcher.FullPathToDialogueInformation);
@@ -74,7 +101,6 @@ namespace ZappChat
 
             InicializeNotyfication();
 
-            AppUpdateManager.SetUrlRemoteServer(UpdateFeedUrl);
 
             reconnectionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(IntervalBetweenConnectionInSeconds) };
             reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
@@ -92,7 +118,7 @@ namespace ZappChat
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             login.Show();
             currentWindow = OpenedWindow.Login;
-            AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(socketOpener.RunWorkerAsync);
+            socketOpener.RunWorkerAsync();
             
         }
 
