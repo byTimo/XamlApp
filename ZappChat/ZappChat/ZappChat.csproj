@@ -323,7 +323,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\packages\NAppUpdate.Framework\NAppUpdate.Framework.csproj">
+    <ProjectReference Include="..\ThirdParty\NAppUpdate.Framework\NAppUpdate.Framework.csproj">
       <Project>{5c07ebdf-d43f-4be9-b560-d7a443c0edce}</Project>
       <Name>NAppUpdate.Framework</Name>
     </ProjectReference>
