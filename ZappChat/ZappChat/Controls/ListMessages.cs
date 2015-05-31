@@ -100,6 +100,7 @@ namespace ZappChat.Controls
 
         public void TakeQuery(Dialogue dialogue)
         {
+
             var thisDialogue = DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
             if (thisDialogue != null)
             {
@@ -114,7 +115,10 @@ namespace ZappChat.Controls
             thisDialogue = DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
             if (thisDialogue == null)
             {
-                DialogueWithQuery.Insert(0, new MessageControl(dialogue));
+                var isOpenedDialogue = !App.IsThisUnreadMessage(dialogue.RoomId, 0);
+
+                var newDialogueWithQuery = new MessageControl(dialogue) {DialogueOpened = isOpenedDialogue};
+                DialogueWithQuery.Insert(0, newDialogueWithQuery);
             }
         }
 
@@ -162,6 +166,7 @@ namespace ZappChat.Controls
         {
             ItemsSource = DialogueWithQuery;
         }
+
 
     }
 }

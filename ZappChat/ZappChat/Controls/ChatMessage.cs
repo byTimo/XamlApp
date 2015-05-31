@@ -83,8 +83,8 @@ namespace ZappChat.Controls
                     TextMessage = mes.Text;
                     TextAlignment = TextAlignment.Right;
                     HorizontalContentAlignment = HorizontalAlignment.Right;
-                    AuthorMargin = new Thickness(100, 5, 0, 10);
-                    TextMargin = new Thickness(100, 0, 0, 5);
+                    AuthorMargin = new Thickness(100, 5, 10, 10);
+                    TextMargin = new Thickness(100, 0, 10, 5);
                     break;
                 case MessageType.Incoming:
                     AuthorMessage = mes.Author;

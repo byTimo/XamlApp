@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using ZappChat.Core;
 
 namespace ZappChat.Controls
@@ -12,8 +13,51 @@ namespace ZappChat.Controls
 	public partial class MessageControl : UserControl
 	{
         public Dialogue Dialogue { get; set; }
-        public bool DialogueOpened { get; set; }
-        public bool ContaintUnreadMessages { get; set; }
+        private bool _dialogueOpened;
+
+	    public bool DialogueOpened
+	    {
+	        get { return _dialogueOpened; }
+	        set
+	        {
+	            if (value)
+	            {
+	                LayoutRoot.Background = !_containtUnreeadMessage ? Brushes.White : new SolidColorBrush(Color.FromRgb(254, 255, 242));
+
+	            }
+	            else
+	            {
+	                if (Dialogue.Query != null || _containtUnreeadMessage)
+	                    LayoutRoot.Background = new SolidColorBrush(Color.FromRgb(254, 255, 242));
+	                else
+	                    LayoutRoot.Background = Brushes.White;
+	            }
+	            _dialogueOpened = value;
+	        }
+	    }
+
+	    private bool _containtUnreeadMessage;
+
+	    public bool ContaintUnreadMessages
+	    {
+	        get { return _containtUnreeadMessage; }
+	        set
+	        {
+	            if (_dialogueOpened)
+	            {
+	                LayoutRoot.Background = !value ? Brushes.White : new SolidColorBrush(Color.FromRgb(254, 255, 242));
+
+	            }
+	            else
+	            {
+	                if (Dialogue.Query != null || value)
+	                    LayoutRoot.Background = new SolidColorBrush(Color.FromRgb(254, 255, 242));
+	                else
+	                    LayoutRoot.Background = Brushes.White;
+	            }
+	            _containtUnreeadMessage = value;
+	        }
+	    }
 
 	    public static readonly DependencyProperty MessageTextProperty =
 	        DependencyProperty.Register("MessageText", typeof (string), typeof (MessageControl));
@@ -36,8 +80,6 @@ namespace ZappChat.Controls
 		public MessageControl()
 		{
 			InitializeComponent();
-		    DialogueOpened = false;
-		    ContaintUnreadMessages = false;
             Trashcan.Click += Trashcan_Click;
 		}
 

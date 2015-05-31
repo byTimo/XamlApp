@@ -48,11 +48,6 @@ namespace ZappChat
             Dialogue = dialogue;
             NotificationText = dialogue.GetTitleMessage();
             _startBrush = MainBorder.Background;
-            /*closeTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(App.NotificationCloseTimeInSeconds)};
-            closeTimer.Tick += (sender, args) => CloseNotify();
-            if (App.IsCurrentWindowVisible())
-                closeTimer.Start();*/
-
         }
 
         private void CloseNotify()

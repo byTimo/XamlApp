@@ -277,7 +277,7 @@ namespace ZappChat.Core.Socket
         {
             if ((string)responseJson["status"] != "ok") return;
             var request = responseJson["request"];
-            var id = ulong.Parse((string) request[0]["id"]);
+            var id = ulong.Parse((string) request["id"]);
             Application.Current.Dispatcher.Invoke(() => AppEventManager.AnswerOnQueryEvent(id));
         }
 

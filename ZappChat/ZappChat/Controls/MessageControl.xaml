@@ -7,8 +7,8 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.MessageControl"
 	x:Name="messageControl"
-	d:DesignHeight="109" Cursor="Hand" Height="70" Background="White" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" Width="370">
-	<Grid x:Name="LayoutRoot">
+	d:DesignHeight="109" Cursor="Hand" Height="70" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" Width="370">
+	<Grid x:Name="LayoutRoot" Background="White">
 		<Image x:Name="Timer" Source="/ZappChat;component/Images/TimerImage.png" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="25,0,0,0" Width="20"/>
         <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="53,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="9.333" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontWeight="Bold" Foreground="#FFA49C9C" Width="50" Text="{Binding ElementName=messageControl,Path=MessageDate}">
         </TextBlock>

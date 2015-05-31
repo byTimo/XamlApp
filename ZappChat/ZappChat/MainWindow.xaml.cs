@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -22,7 +19,6 @@ namespace ZappChat
     /// </summary>
     public partial class MainWindow : Window
     {
-        private DispatcherTimer reshowNotificationTimer;
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +37,7 @@ namespace ZappChat
             AppEventManager.AnswerOnQuery += AnswerOnQuery;
             TabNow.Queries = new ObservableCollection<QueryControl>();
             TabYesterday.Queries = new ObservableCollection<QueryControl>();
-            reshowNotificationTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond)};
+            var reshowNotificationTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond)};
             reshowNotificationTimer.Tick += (sender, args) =>
             {
                 if (App.ConnectionStatus != ConnectionStatus.Connect) return;
@@ -127,6 +123,7 @@ namespace ZappChat
         private void DeleteDialogue(object sender, DeletingEventArgs e)
         {
             if(App.ConnectionStatus != ConnectionStatus.Connect) return;
+
             //Реагирование по запросу на удаление:
             if (e.IsConfirmed)
             {
@@ -194,6 +191,7 @@ namespace ZappChat
         private void ReceivingQuery(object sender, Dialogue dialogue)
         {
             if(App.IsThisDialogueDeleted(dialogue.RoomId)) return;
+
             //Реагирование на получение запроса:
             //Списка диалогов
             Dialogues.TakeQuery(dialogue);

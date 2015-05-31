@@ -42,6 +42,8 @@ namespace ZappChat
 
         public static Dictionary<ulong, string> DialoguesStatuses;
 
+        private static Notification _currentNotification;
+
         enum OpenedWindow
         {
             Login,
@@ -73,7 +75,6 @@ namespace ZappChat
                 Current.Dispatcher.Invoke(Current.Shutdown);
             });
 
-
             AppEventManager.Connect += o =>
             {
                 ConnectionStatus = ConnectionStatus.Connect;
@@ -87,6 +88,7 @@ namespace ZappChat
             };
             AppEventManager.AuthorizationSuccess += AuthorizationSuccess;
             AppEventManager.AuthorizationFail += AuthorizationFail;
+            AppEventManager.OpenDialogue +=AppEventManagerOnOpenDialogue;
 
             InicializeNotyfication();
 
@@ -120,8 +122,14 @@ namespace ZappChat
         public static void CreateNotification(Dialogue dialogue)
         {
             NotifyIcon.CloseBalloon();
-            var balloon = new Notification(dialogue);
-            NotifyIcon.ShowCustomBalloon(balloon, PopupAnimation.Fade, null);
+            _currentNotification = new Notification(dialogue);
+            NotifyIcon.ShowCustomBalloon(_currentNotification, PopupAnimation.Fade, null);
+        }
+
+        private void AppEventManagerOnOpenDialogue(ulong id, List<Message> messages)
+        {
+            if(_currentNotification.Dialogue.RoomId == id)
+                NotifyIcon.CloseBalloon();
         }
 
         private void InicializeNotyfication()
@@ -166,7 +174,6 @@ namespace ZappChat
 
         public static void ShowCurrentWindow()
         {
-//@TODO ---------------- что нибудь по адекватней, разворачивается там, на передний план и тд -------------------
             if (currentWindow == OpenedWindow.Chat)
             {
                 main.Show();
