@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZappChat", "ZappChat\ZappChat.csproj", "{807B0F21-9284-4421-9A90-873DB2188F66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZappChatLauncher", "ZappChatLauncher\ZappChatLauncher.csproj", "{03C37FB9-082A-470D-8EE7-C32F77F95F10}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Framework", "packages\NAppUpdate.Framework\NAppUpdate.Framework.csproj", "{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}"
 EndProject
 Global
@@ -24,12 +22,6 @@ Global
 		{807B0F21-9284-4421-9A90-873DB2188F66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{807B0F21-9284-4421-9A90-873DB2188F66}.Release|Any CPU.Build.0 = Release|Any CPU
 		{807B0F21-9284-4421-9A90-873DB2188F66}.Release|x86.ActiveCfg = Release|Any CPU
-		{03C37FB9-082A-470D-8EE7-C32F77F95F10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{03C37FB9-082A-470D-8EE7-C32F77F95F10}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{03C37FB9-082A-470D-8EE7-C32F77F95F10}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{03C37FB9-082A-470D-8EE7-C32F77F95F10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{03C37FB9-082A-470D-8EE7-C32F77F95F10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{03C37FB9-082A-470D-8EE7-C32F77F95F10}.Release|x86.ActiveCfg = Release|Any CPU
 		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}.Debug|x86.ActiveCfg = Debug|Any CPU
