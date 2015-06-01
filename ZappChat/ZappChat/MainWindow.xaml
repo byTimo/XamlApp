@@ -5,18 +5,19 @@
     xmlns:controls="clr-namespace:ZappChat.Controls"
     mc:Ignorable="d" x:Class="ZappChat.MainWindow"
         Title="MainWindow" WindowStyle="None"
-		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="687" Width="1024"
-		ResizeMode="CanResize" WindowStartupLocation="CenterScreen">
-	<Border x:Name="border" CornerRadius="10" Background="#FFEEF1F3" BorderBrush="#FFADB4BA" BorderThickness="1">
+		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinHeight="687" MinWidth="1024" Height="687" Width="1024"
+		ResizeMode="CanResizeWithGrip" WindowStartupLocation="Manual">
+	<Border x:Name="border" CornerRadius="10,10,0,10" Background="#FFEEF1F3" BorderBrush="#FFADB4BA" BorderThickness="1">
 		<Grid x:Name="mainGrid" >
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="197*"/>
-				<ColumnDefinition Width="315*"/>
+				<ColumnDefinition Width="394
+				"/>
+				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Grid Grid.Column="0" x:Name="LeftPanel" >
 				<Grid.RowDefinitions>
-					<RowDefinition Height="10*"/>
-					<RowDefinition Height="1.2*"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="75"/>
 				</Grid.RowDefinitions>
 				<controls:ListMessages x:Name="Dialogues" Grid.Row="0" Background="White" Margin="0,113,0,0"/>
 				<Rectangle x:Name="ControlBlocker" Grid.Row="0" Fill="#B2FFFFFF" Margin="0,113,0,0" Visibility="Collapsed"/>
@@ -54,7 +55,7 @@
 			</Grid>
 			
 			<!--Left part of window-->
-            <TabControl x:Name="tabs" Style="{DynamicResource TabControlZappChat}" Grid.Column="1" BorderThickness="0" BorderBrush="{x:Null}" Margin="30,55,12,0" SelectedIndex="0">
+            <TabControl x:Name="tabs" Style="{DynamicResource TabControlZappChat}" Grid.Column="1" BorderThickness="0" BorderBrush="{x:Null}" Margin="30,55,15,0" SelectedIndex="0">
 				<TabItem Header="Сегодня" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
 					<controls:QueryList x:Name="TabNow"/>
 				</TabItem>
@@ -65,7 +66,7 @@
 					<ListBox x:Name="TabSevenDays"/>
 				</TabItem>-->
 			</TabControl>
-            <controls:Chat x:Name="chat" Grid.Column="1" Background="White" Margin="30,55,10,0" Visibility="Hidden"/>
+            <controls:Chat x:Name="chat" Grid.Column="1" Background="White" Margin="30,55,15,0" Visibility="Hidden"/>
         </Grid>
 	</Border>
 

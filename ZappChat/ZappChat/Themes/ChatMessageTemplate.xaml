@@ -6,7 +6,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ChatMessage}">
-                    <Grid Background="{TemplateBinding Background}" Margin="30,0,10,0" Width="535">
+                    <Grid Background="{TemplateBinding Background}" Margin="30,0,10,0">
                     	<Grid.RowDefinitions>
                     		<RowDefinition Height="Auto"/>
                     		<RowDefinition Height="*"/>

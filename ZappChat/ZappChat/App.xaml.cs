@@ -83,7 +83,6 @@ namespace ZappChat
                 Current.Dispatcher.Invoke(new Action(Current.Shutdown));
             }
 
-
             AppEventManager.Connect += o =>
             {
                 ConnectionStatus = ConnectionStatus.Connect;
