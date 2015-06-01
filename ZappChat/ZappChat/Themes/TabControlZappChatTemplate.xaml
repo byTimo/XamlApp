@@ -119,19 +119,19 @@
 							<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
 						</ScrollViewer>
 					</Border>
-					<ControlTemplate.Triggers>
+					<!--<ControlTemplate.Triggers>
 						<Trigger Property="IsEnabled" Value="false">
 							<Setter Property="Background" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Background}"/>
 							<Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Border}"/>
 						</Trigger>
-						<MultiTrigger>
-							<MultiTrigger.Conditions>
+						~1~<MultiTrigger>
+							~2~<MultiTrigger.Conditions>
 								<Condition Property="IsGrouping" Value="true"/>
 								<Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
-							</MultiTrigger.Conditions>
+							</MultiTrigger.Conditions>@2@
 							<Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-						</MultiTrigger>
-					</ControlTemplate.Triggers>
+						</MultiTrigger>@1@
+					</ControlTemplate.Triggers>-->
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

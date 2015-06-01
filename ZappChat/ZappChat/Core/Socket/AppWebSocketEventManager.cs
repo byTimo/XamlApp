@@ -13,7 +13,7 @@ namespace ZappChat.Core.Socket
 {
     static class AppWebSocketEventManager
     {
-        private static readonly WebSocket _webSocket;
+        private static readonly WebSocket WebSocket;
 
         /// <summary>
         /// Переменная, которая не даёт закрывать уже закрытый сокет, который пытается открыться.
@@ -22,22 +22,22 @@ namespace ZappChat.Core.Socket
 
         static AppWebSocketEventManager()
         {
-            _webSocket = new WebSocket(App.WebSocketUrl);
-            _webSocket.Opened += OpenedConnection;
-            _webSocket.Closed += ClosedConnection;
-            _webSocket.Error += SocketErrorEvent;
-            _webSocket.MessageReceived += MessageReceivedEvent;
+            WebSocket = new WebSocket(App.WebSocketUrl);
+            WebSocket.Opened += OpenedConnection;
+            WebSocket.Closed += ClosedConnection;
+            WebSocket.Error += SocketErrorEvent;
+            WebSocket.MessageReceived += MessageReceivedEvent;
         }
 
         private static void OpenedConnection(object sender, EventArgs e)
         {
             socketAlreadyClosed = false;
             App.ConnectionStatus = ConnectionStatus.Connect;
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.Connection(_webSocket));
+            Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.Connection(WebSocket)));
             string token;
             try
             {
-                token = Application.Current.Dispatcher.Invoke<string>(FileDispetcher.GetToken);
+                token = Application.Current.Dispatcher.Invoke(new Func<string>(FileDispetcher.GetToken)) as string;
             }
             catch
             {
@@ -45,7 +45,7 @@ namespace ZappChat.Core.Socket
             }
             if (token == null)
             {
-                Application.Current.Dispatcher.Invoke(() => AppEventManager.AuthorizationFailEvent(_webSocket, AuthorizationType.Token));
+                Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.AuthorizationFailEvent(WebSocket, AuthorizationType.Token)));
                 return;
             }
             var requestToken = new AuthorizationTokenRequest
@@ -60,13 +60,13 @@ namespace ZappChat.Core.Socket
         {
             socketAlreadyClosed = true;
             App.ConnectionStatus = ConnectionStatus.Disconnect;
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.Disconnection(_webSocket));
+            Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.Disconnection(WebSocket)));
 
         }
 
         public static void SendObject(string jsonString)
         {
-            _webSocket.Send(jsonString);
+            WebSocket.Send(jsonString);
         }
 
         private static void MessageReceivedEvent(object sender, MessageReceivedEventArgs e)
@@ -121,15 +121,15 @@ namespace ZappChat.Core.Socket
         private static void SocketErrorEvent(object sender, ErrorEventArgs e)
         {
             if(!socketAlreadyClosed)
-                _webSocket.Close();
+                WebSocket.Close();
         }
 
         public static void OpenWebSocket()
         {
             try
             {
-                if (_webSocket.State == WebSocketState.Closed || _webSocket.State == WebSocketState.None)
-                    _webSocket.Open();
+                if (WebSocket.State == WebSocketState.Closed || WebSocket.State == WebSocketState.None)
+                    WebSocket.Open();
                 Thread.Sleep(1000);
             }
             catch (Exception e)
@@ -143,7 +143,7 @@ namespace ZappChat.Core.Socket
             switch ((string)json["status"])
             {
                 case "ok":
-                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationSuccessEvent), _webSocket, AuthorizationType.Token);
+                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationSuccessEvent), WebSocket, AuthorizationType.Token);
                     break;
                 case "fail":
                     try
@@ -152,7 +152,7 @@ namespace ZappChat.Core.Socket
                     }
                     finally 
                     {
-                        Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationFailEvent), _webSocket, AuthorizationType.Token);
+                        Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationFailEvent), WebSocket, AuthorizationType.Token);
                     }
                     break;
                 case "error":
@@ -168,11 +168,11 @@ namespace ZappChat.Core.Socket
             {
                 case "ok":
                     if ((string)json["token"] != null)
-                        Application.Current.Dispatcher.Invoke(() => FileDispetcher.SaveSettings("token", (string)json["token"]));
-                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationSuccessEvent), _webSocket, AuthorizationType.Login);
+                        Application.Current.Dispatcher.Invoke(new Func<bool>(() => FileDispetcher.SaveSettings("token", (string)json["token"])));
+                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationSuccessEvent), WebSocket, AuthorizationType.Login);
                     break;
                 case "fail":
-                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationFailEvent), _webSocket, AuthorizationType.Login);
+                    Application.Current.Dispatcher.Invoke(new Action<object, AuthorizationType>(AppEventManager.AuthorizationFailEvent), WebSocket, AuthorizationType.Login);
                     break;
                 case "error":
                     break;
@@ -195,7 +195,7 @@ namespace ZappChat.Core.Socket
             var query = (string)request["query"];
             var carId = ulong.Parse((string)request["car_id"] ?? "0");
             var dialogue = new Dialogue(roomId, query, queryId, lastupdata, carId, status);
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.ReceiveQueryEvent(_webSocket, dialogue));
+            Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.ReceiveQueryEvent(WebSocket, dialogue)));
             if(carId == 0) return;
             var carInfoRequest = new CarInfoRequest {request_id = queryId};
             var carInfoRequestToJson = JsonConvert.SerializeObject(carInfoRequest);
@@ -233,14 +233,14 @@ namespace ZappChat.Core.Socket
                     var message = new Message(mesId, text, type, hash, lastUpdata, author);
                     var dialogue = new Dialogue(roomId, message);
                     Application.Current.Dispatcher.Invoke(
-                        () => AppEventManager.ReceiveMessageEvent(_webSocket, dialogue));
+                        new Action(() => AppEventManager.ReceiveMessageEvent(WebSocket, dialogue)));
                     break;
                 case "send":
                     var roomIdSend = ulong.Parse((string) responseJson["room_id"]);
                     var hashSend = (string) responseJson["hash"];
                     var mesIdSend = ulong.Parse((string) responseJson["id"]);
                     Application.Current.Dispatcher.Invoke(
-                        () => AppEventManager.SendMessageSuccessEvent(roomIdSend, mesIdSend, hashSend));
+                        new Action(() => AppEventManager.SendMessageSuccessEvent(roomIdSend, mesIdSend, hashSend)));
                     break;
             }
         }
@@ -258,7 +258,7 @@ namespace ZappChat.Core.Socket
                 let type = (string) message["type"]
                 select new Message(mesId, text, type, hashReceive, createTime, author) {Status = MessageStatus.Read})
                 .ToList();
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.OpenDialogueEvent(roomIdReceive, messages));
+            Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.OpenDialogueEvent(roomIdReceive, messages)));
         }
 
         private static void HandkingCarInfoRequest(JObject responseJson)
@@ -270,7 +270,7 @@ namespace ZappChat.Core.Socket
             var model = (string) car["model"];
             var vin = (string) car["vin"];
             var year = (string) car["year"];
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.SetCarInfoEvent(carId, brand, model, vin, year));
+            Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.SetCarInfoEvent(carId, brand, model, vin, year)));
         }
 
         private static void HandlingAnswerRequest(JObject responseJson)
@@ -278,7 +278,7 @@ namespace ZappChat.Core.Socket
             if ((string)responseJson["status"] != "ok") return;
             var request = responseJson["request"];
             var id = ulong.Parse((string) request["id"]);
-            Application.Current.Dispatcher.Invoke(() => AppEventManager.AnswerOnQueryEvent(id));
+            Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.AnswerOnQueryEvent(id)));
         }
 
         private static void HandlingListResponce(JObject responseJson)

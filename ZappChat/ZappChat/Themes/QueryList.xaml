@@ -20,13 +20,13 @@
     					</ScrollViewer>
     				</Border>
                     <ControlTemplate.Triggers>
-                        <MultiTrigger>
+                        <!--<MultiTrigger>
     						<MultiTrigger.Conditions>
     							<Condition Property="IsGrouping" Value="true"/>
     							<Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
     						</MultiTrigger.Conditions>
     						<Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-    					</MultiTrigger>
+    					</MultiTrigger>-->
     				</ControlTemplate.Triggers>
     			</ControlTemplate>
     		</Setter.Value>

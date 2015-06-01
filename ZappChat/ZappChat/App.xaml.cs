@@ -72,7 +72,7 @@ namespace ZappChat
                     return;
                 }
                 MessageBox.Show("Ошибка в обновлении!");
-                Current.Dispatcher.Invoke(Current.Shutdown);
+                Current.Dispatcher.Invoke(new Action(Current.Shutdown));
             });
 
             AppEventManager.Connect += o =>
@@ -98,7 +98,7 @@ namespace ZappChat
             reconnectionTimer.Stop();
 
             fileMonitore = new DispatcherTimer { Interval = TimeSpan.FromSeconds(CheckingFilesIntervalInSeconds) };
-            fileMonitore.Tick += (o, args) => Dispatcher.Invoke(FileDispetcher.CheckExistsFiles);
+            fileMonitore.Tick += (o, args) => Dispatcher.Invoke(new Action(FileDispetcher.CheckExistsFiles));
             fileMonitore.Start();
 
             updateCountersDispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMinutes(UpdateControlTimeIntervalInMinutes)};
@@ -128,6 +128,7 @@ namespace ZappChat
 
         private void AppEventManagerOnOpenDialogue(ulong id, List<Message> messages)
         {
+            if(_currentNotification == null) return;
             if(_currentNotification.Dialogue.RoomId == id)
                 NotifyIcon.CloseBalloon();
         }

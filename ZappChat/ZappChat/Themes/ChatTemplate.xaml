@@ -65,13 +65,13 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
-            <MultiTrigger>
+            <!--<MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
                     <Condition Property="IsSelectionActive" Value="false"/>
                 </MultiTrigger.Conditions>
                 <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
-            </MultiTrigger>
+            </MultiTrigger>-->
         </Style.Triggers>
     </Style>
     <SolidColorBrush x:Key="ListBox.Static.Background" Color="#FFFFFFFF"/>
@@ -102,13 +102,13 @@
                             <Setter Property="Background" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Background}"/>
                             <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource ListBox.Disabled.Border}"/>
                         </Trigger>
-                        <MultiTrigger>
+                        <!--<MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsGrouping" Value="true"/>
                                 <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
                             </MultiTrigger.Conditions>
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-                        </MultiTrigger>
+                        </MultiTrigger>-->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
