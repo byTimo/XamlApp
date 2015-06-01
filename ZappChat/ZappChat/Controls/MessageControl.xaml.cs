@@ -15,6 +15,27 @@ namespace ZappChat.Controls
         public Dialogue Dialogue { get; set; }
         private bool _dialogueOpened;
 
+	    readonly Brush _unreadBackground = new SolidColorBrush(Color.FromRgb(206,244,253));
+	    readonly Brush _readBackground = Brushes.White;
+
+	    private readonly Brush _unreadGradient = new LinearGradientBrush(new GradientStopCollection(new[]
+	    {
+	        new GradientStop(Color.FromRgb(231, 250, 255), 0.8),
+	        new GradientStop(Color.FromArgb(0, 231, 250, 255), 0.0)
+	    }));
+
+	    private readonly Brush _readGradient = new LinearGradientBrush(new GradientStopCollection(new[]
+	    {
+	        new GradientStop(Colors.White, 0.8),
+	        new GradientStop(Color.FromArgb(0, 255, 255, 255), 0.0)
+	    }));
+
+	    private void SetColors(Brush background, Brush gradient)
+	    {
+	        LayoutRoot.Background = background;
+	        GradientRectangle.Fill = gradient;
+	    }
+
 	    public bool DialogueOpened
 	    {
 	        get { return _dialogueOpened; }
@@ -22,15 +43,15 @@ namespace ZappChat.Controls
 	        {
 	            if (value)
 	            {
-	                LayoutRoot.Background = !_containtUnreeadMessage ? Brushes.White : new SolidColorBrush(Color.FromRgb(254, 255, 242));
-
+	                SetColors(!_containtUnreeadMessage ? _readBackground : _unreadBackground,
+	                    !_containtUnreeadMessage ? _readGradient : _unreadGradient);
 	            }
 	            else
 	            {
 	                if (Dialogue.Query != null || _containtUnreeadMessage)
-	                    LayoutRoot.Background = new SolidColorBrush(Color.FromRgb(254, 255, 242));
+	                    SetColors(_unreadBackground, _unreadGradient);
 	                else
-	                    LayoutRoot.Background = Brushes.White;
+	                    SetColors(_readBackground, _readGradient);
 	            }
 	            _dialogueOpened = value;
 	        }
@@ -45,15 +66,16 @@ namespace ZappChat.Controls
 	        {
 	            if (_dialogueOpened)
 	            {
-	                LayoutRoot.Background = !value ? Brushes.White : new SolidColorBrush(Color.FromRgb(254, 255, 242));
+                    SetColors(!value ? _readBackground : _unreadBackground,
+                        !_containtUnreeadMessage ? _readGradient : _unreadGradient);
 
 	            }
 	            else
 	            {
 	                if (Dialogue.Query != null || value)
-	                    LayoutRoot.Background = new SolidColorBrush(Color.FromRgb(254, 255, 242));
+                        SetColors(_unreadBackground, _unreadGradient);
 	                else
-	                    LayoutRoot.Background = Brushes.White;
+                        SetColors(_readBackground, _readGradient);
 	            }
 	            _containtUnreeadMessage = value;
 	        }

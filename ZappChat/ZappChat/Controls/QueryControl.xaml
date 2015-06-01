@@ -7,7 +7,7 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.QueryControl"
 	x:Name="quaryControl"
-	d:DesignWidth="640" d:DesignHeight="480" Height="100" Width="565" Cursor="Hand">
+	d:DesignWidth="640" d:DesignHeight="480" Height="100" Width="Auto" Cursor="Hand">
 	<UserControl.Resources>
 		<Storyboard x:Key="OnMouseEnter1">
 			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="LayoutRoot">

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using Newtonsoft.Json;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
@@ -19,6 +20,7 @@ namespace ZappChat.Controls
     [TemplatePart(Name = "Selling", Type = typeof(CornerRadiusButton))]
     [TemplatePart(Name = "OnOrder", Type = typeof(CornerRadiusButton))]
     [TemplatePart(Name = "NoSelling", Type = typeof(CornerRadiusButton))]
+    [TemplatePart(Name = "Blocker", Type = typeof(Rectangle))]
     public class Chat : Control
     {
         public Dialogue CurrentDialogue { get; set; }
@@ -27,6 +29,7 @@ namespace ZappChat.Controls
         private CornerRadiusButton _onOrder;
         private CornerRadiusButton _noSelling;
         private TextBox _userInput;
+        private Rectangle _blocker;
 
         public static readonly DependencyProperty ChatMessagesProperty = DependencyProperty.Register("ChatMessages",
             typeof (ObservableCollection<ChatMessage>), typeof (Chat),
@@ -125,6 +128,9 @@ namespace ZappChat.Controls
             if (_userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
             _userInput.KeyDown += UserInputOnKeyDown;
 
+            _blocker = GetTemplateChild("Blocker") as Rectangle;
+            if (_blocker == null) throw new NullReferenceException("Не определеил Blocker");
+
             ChatMessages = new ObservableCollection<ChatMessage>();
             CurrentDialogue = new Dialogue();
             var backButton = GetTemplateChild("Back") as CornerRadiusButton;
@@ -200,6 +206,12 @@ namespace ZappChat.Controls
             var carLabel = "" + (brand ?? "")+ " " + (model ?? "");
             Car = carLabel.Trim() != "" ? carLabel : "Автомобиль";
             Vin = vin ?? "Vin";
+        }
+
+        public void BlockingChat(bool block)
+        {
+            if(_blocker == null) return;
+            _blocker.Visibility = block ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void AnsweredToQuery(AnswerType type)

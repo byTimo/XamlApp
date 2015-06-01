@@ -7,7 +7,7 @@
         Title="MainWindow" WindowStyle="None"
 		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="687" Width="1024"
 		ResizeMode="CanResize" WindowStartupLocation="CenterScreen">
-    <Border CornerRadius="10" Background="White">
+    <Border CornerRadius="10" Background="#FFEEF1F3" BorderBrush="#FFADB4BA" BorderThickness="1">
         <Grid x:Name="MainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

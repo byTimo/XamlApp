@@ -116,6 +116,9 @@ namespace ZappChat
             //Реагирование по запросу на удаление:
             //Блокера:
             ControlBlocker.Visibility = Visibility.Visible;
+            //Чат-блокер
+            if(chat != null)
+                chat.BlockingChat(true);
             //Синего меню:
             BlueMenu.DeleteDialgoueQery(e.DeletedDialogue);
         }
@@ -155,6 +158,9 @@ namespace ZappChat
             }
             //Блокера:
             ControlBlocker.Visibility = Visibility.Collapsed;
+            //Чат-блокер
+            if (chat != null)
+                chat.BlockingChat(false);
         }
 
         private void OpenDialogue(ulong roomId, List<Message> messages)

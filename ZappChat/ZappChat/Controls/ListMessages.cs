@@ -44,6 +44,7 @@ namespace ZappChat.Controls
             DialogueWithQuery = new ObservableCollection<MessageControl>();
             DialogueWithoutQuery = new ObservableCollection<MessageControl>();
             SelectionChanged += OpenDialogue;
+            SelectWithQuery();
         }
 
         public void AddNewMessageToList(Dialogue dialogue)

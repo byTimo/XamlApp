@@ -7,13 +7,13 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.MessageControl"
 	x:Name="messageControl"
-	d:DesignHeight="109" Cursor="Hand" Height="70" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" Width="370">
+	d:DesignHeight="109" Cursor="Hand" Height="70" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
 	<Grid x:Name="LayoutRoot" Background="White">
 		<Image x:Name="Timer" Source="/ZappChat;component/Images/TimerImage.png" HorizontalAlignment="Left" VerticalAlignment="Center" Height="20" Margin="25,0,0,0" Width="20"/>
         <TextBlock x:Name="Date" HorizontalAlignment="Left" Margin="53,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="9.333" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontWeight="Bold" Foreground="#FFA49C9C" Width="50" Text="{Binding ElementName=messageControl,Path=MessageDate}">
         </TextBlock>
 	    <TextBlock x:Name="Text" HorizontalAlignment="Left" Margin="107,0,0,0" Text="{Binding ElementName=messageControl, Path=MessageText}" VerticalAlignment="Center" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="14.667" Width="260" Foreground="#FF505050"/>
-		<Rectangle x:Name="GradientRectangle" HorizontalAlignment="Right" Width="120" Margin="0">
+		<Rectangle x:Name="GradientRectangle" HorizontalAlignment="Right" Width="150" Margin="0">
 			<Rectangle.Fill>
 				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
 					<LinearGradientBrush.RelativeTransform>
@@ -24,12 +24,12 @@
 							<TranslateTransform/>
 						</TransformGroup>
 					</LinearGradientBrush.RelativeTransform>
-					<GradientStop Color="White" Offset="0.243"/>
+					<GradientStop Color="White"/>
 					<GradientStop Offset="1"/>
 				</LinearGradientBrush>
 			</Rectangle.Fill>
 		</Rectangle>
-        <Button x:Name="Trashcan" HorizontalAlignment="Right" VerticalAlignment="Center" Background="#00000000" BorderBrush="#00000000" Margin="0,0,10,0" Width="20" Height="25" HorizontalContentAlignment="Center" Visibility="Collapsed">
+        <Button x:Name="Trashcan" HorizontalAlignment="Right" VerticalAlignment="Center" Background="#00000000" BorderBrush="#00000000" Margin="0,0,26,0" Width="20" Height="25" HorizontalContentAlignment="Center" Visibility="Collapsed">
             <Image Source="/ZappChat;component/Images/TrashcanImage.png" Width="17" Height="20"/>
         </Button>
     </Grid>

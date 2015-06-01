@@ -64,16 +64,25 @@ namespace ZappChat
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             login.Show();
             currentWindow = OpenedWindow.Login;
-            AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(b =>
+            try
             {
-                if (b)
+                AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(b =>
                 {
-                    socketOpener.RunWorkerAsync();
-                    return;
-                }
-                MessageBox.Show("Ошибка в обновлении!");
+                    if (b)
+                    {
+                        socketOpener.RunWorkerAsync();
+                        return;
+                    }
+                    MessageBox.Show("Ошибка в обновлении!");
+                    Current.Dispatcher.Invoke(new Action(Current.Shutdown));
+                });
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(String.Format("Ошибка в обновлении!\n{0}", exception.Message));
                 Current.Dispatcher.Invoke(new Action(Current.Shutdown));
-            });
+            }
+
 
             AppEventManager.Connect += o =>
             {
