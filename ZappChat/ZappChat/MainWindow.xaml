@@ -10,8 +10,7 @@
 	<Border x:Name="border" CornerRadius="10,10,0,10" Background="#FFEEF1F3" BorderBrush="#FFADB4BA" BorderThickness="1">
 		<Grid x:Name="mainGrid" >
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="394
-				"/>
+				<ColumnDefinition Width="394"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Grid Grid.Column="0" x:Name="LeftPanel" >
