@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZappChat", "ZappChat\ZappCh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Framework", "ThirdParty\NAppUpdate.Framework\NAppUpdate.Framework.csproj", "{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAppUpdate.Updater", "ThirdParty\NAppUpdate.Updater\NAppUpdate.Updater.csproj", "{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Updater", "Updater", "{28D821CD-996C-4078-A7F7-71E3E3464138}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,8 +32,18 @@ Global
 		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE}.Release|x86.ActiveCfg = Release|Any CPU
+		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE} = {28D821CD-996C-4078-A7F7-71E3E3464138}
+		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40} = {28D821CD-996C-4078-A7F7-71E3E3464138}
 	EndGlobalSection
 EndGlobal

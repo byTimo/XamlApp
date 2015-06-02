@@ -12,6 +12,10 @@ namespace ZappChat.Core
         {
             UpdateManager.Instance.UpdateSource = new SimpleWebSource(url);
             UpdateManager.Instance.ReinstateIfRestarted();
+            UpdateManager.Instance.Config.TempFolder = FileDispetcher.FullPathToUpdateFolder;
+
+            if(UpdateManager.Instance.State == UpdateManager.UpdateProcessState.AfterRestart)
+                UpdateManager.Instance.CleanUp();
         }
 
         public static void StartupCheckAndPrepareUpdateFeeds(Action<bool> callBack)
@@ -43,8 +47,7 @@ namespace ZappChat.Core
             }
             try
             {
-                UpdateManager.Instance.ApplyUpdates(true);
-
+                UpdateManager.Instance.ApplyUpdates(true, true, false);
             }
             catch (Exception ex)
             {
@@ -52,7 +55,7 @@ namespace ZappChat.Core
                     Environment.NewLine, ex));
                 callBack.Invoke(false);
             }
-            UpdateManager.Instance.CleanUp();
+           
         }
 
     }

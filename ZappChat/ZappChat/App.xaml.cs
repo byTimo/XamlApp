@@ -26,7 +26,7 @@ namespace ZappChat
         public const double IntervalBetweenReshowNotificationInSecond = 300.0;
 
         public const string WebSocketUrl = "ws://zappchat.ru:7778";
-        public const string UpdateFeedUrl = "http://zappchat.spyric.ru/ReleaseTest/feed.xml";
+        public const string UpdateFeedUrl = "http://zappchat.spyric.ru/program/feed.xml";
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
@@ -58,12 +58,14 @@ namespace ZappChat
             login = new LoginWindow();
             main = new MainWindow();
 
+#if !DEBUG
             AppUpdateManager.SetUrlRemoteServer(UpdateFeedUrl);
-
+#endif
             var socketOpener = new BackgroundWorker();
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             login.Show();
             currentWindow = OpenedWindow.Login;
+#if !DEBUG
             try
             {
                 AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(b =>
@@ -82,6 +84,10 @@ namespace ZappChat
                 MessageBox.Show(String.Format("Ошибка в обновлении!\n{0}", exception.Message));
                 Current.Dispatcher.Invoke(new Action(Current.Shutdown));
             }
+#else
+            socketOpener.RunWorkerAsync();
+#endif
+
 
             AppEventManager.Connect += o =>
             {
@@ -186,11 +192,14 @@ namespace ZappChat
             if (currentWindow == OpenedWindow.Chat)
             {
                 main.Show();
+                main.WindowState = WindowState.Normal;
                 main.Activate();
             }
             else
             {
                 login.Show();
+                login.WindowState = WindowState.Normal;
+                login.Activate();
             }
         }
 

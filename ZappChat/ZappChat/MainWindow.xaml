@@ -5,7 +5,7 @@
     xmlns:controls="clr-namespace:ZappChat.Controls"
     mc:Ignorable="d" x:Class="ZappChat.MainWindow"
         Title="MainWindow" WindowStyle="None"
-		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinHeight="687" MinWidth="1024" Height="687" Width="1024"
+		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinHeight="500" MinWidth="800" Height="687" Width="1024"
 		ResizeMode="CanResizeWithGrip" WindowStartupLocation="Manual">
 	<Border x:Name="border" CornerRadius="10,10,0,10" Background="#FFEEF1F3" BorderBrush="#FFADB4BA" BorderThickness="1">
 		<Grid x:Name="mainGrid" >
@@ -48,7 +48,7 @@
 					<ColumnDefinition Width="37*"/>
 					<ColumnDefinition Width="63*"/>
 				</Grid.ColumnDefinitions>
-			 <TextBlock x:Name="VersionText" HorizontalAlignment="Left" Margin="0,0,0,-17.4" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Foreground="#FFC7CACC" FontSize="16" FontFamily="/ZappChat;component/Fonts/#Arial" Padding="0,17,1,17" Width="181" TextAlignment="Center" Grid.ColumnSpan="2" Height="52.4" Visibility="Collapsed"/>
+			 <TextBlock x:Name="VersionText" HorizontalAlignment="Left" Margin="0,0,0,-17.4" TextWrapping="Wrap" Text="Zappchat v3.0" VerticalAlignment="Top" Foreground="#FFC7CACC" FontSize="16" FontFamily="/ZappChat;component/Fonts/#Arial" Padding="0,17,1,17" Width="181" TextAlignment="Center" Grid.ColumnSpan="2" Height="52.4" Visibility="Collapsed"/>
 			 <TextBlock x:Name="NoConnectionText" FontSize="16" FontFamily="/ZappChat;component/Fonts/#Arial" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Нет сети" Foreground="#FFC8C9C9" Margin="0,8.3" Height="18.4" Width="64.323" />
 			 <Image x:Name="NoConnectionImage" Margin="0,10,5,10" Source="Images/not.png" Stretch="Fill" VerticalAlignment="Center" HorizontalAlignment="Right" Height="15" Width="15"/>
 			</Grid>

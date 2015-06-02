@@ -88,5 +88,10 @@ namespace ZappChat
             }
             CloseNotify();
         }
+
+        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            CornerRadiusButton_Click(null, null);
+        }
 	}
 }

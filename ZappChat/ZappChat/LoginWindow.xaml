@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:ZappChat" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
     xmlns:controls="clr-namespace:ZappChat.Controls"
     mc:Ignorable="d" x:Class="ZappChat.LoginWindow"
-        Title="MainWindow" WindowStyle="None"
+        Title="ZappChat" WindowStyle="None"
 		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="687" Width="1024"
 		ResizeMode="CanResize" WindowStartupLocation="CenterScreen">
     <Border CornerRadius="10" Background="#FFEEF1F3" BorderBrush="#FFADB4BA" BorderThickness="1">
@@ -13,7 +13,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Left" Margin="30,15,0,15" TextWrapping="Wrap" Text="Zappchat v1.0" VerticalAlignment="Top" Foreground="#FFA3A3A3" FontSize="16" FontFamily="/ZappChat;component/Fonts/#Arial" Height="21"/>
+            <TextBlock HorizontalAlignment="Left" Margin="30,15,0,15" TextWrapping="Wrap" Text="Zappchat v3.0" VerticalAlignment="Top" Foreground="#FFA3A3A3" FontSize="16" FontFamily="/ZappChat;component/Fonts/#Arial" Height="21"/>
             <Button x:Name="CloseButton" HorizontalAlignment="Right" Height="30" Margin="0,12.5,12.5,0" Style="{DynamicResource ExitButton}" VerticalAlignment="Top" Width="30" Click="CloseButton_Click"/>
             <Button x:Name="MinimazeButton" HorizontalAlignment="Right" Height="30" Style="{DynamicResource MinimazeButton}" VerticalAlignment="Top" Width="30" Margin="0,12.5,47.5,0" Click="MinimazeButton_Click"/>
 
