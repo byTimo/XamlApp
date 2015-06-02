@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -127,6 +128,17 @@ namespace ZappChat
         private void PasswordBox_OnEnterPress(object sender, RoutedEventArgs e)
         {
             SendLoginAndPassword();
+        }
+
+        private void CanNotEnter(object sender, RoutedEventArgs e)
+        {
+            var goToUrl = App.HelpUrl;
+
+            var userInput = LoginTextBox.Text.Trim();
+            if (!userInput.Equals(string.Empty))
+                goToUrl += "?email=" + userInput;
+
+            Process.Start(goToUrl);
         }
     }
 }

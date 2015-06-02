@@ -67,7 +67,7 @@ namespace ZappChat.Controls
 	            if (_dialogueOpened)
 	            {
                     SetColors(!value ? _readBackground : _unreadBackground,
-                        !_containtUnreeadMessage ? _readGradient : _unreadGradient);
+                        !value ? _readGradient : _unreadGradient);
 
 	            }
 	            else

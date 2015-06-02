@@ -199,6 +199,8 @@ namespace ZappChat
         {
             if(App.IsThisDialogueDeleted(dialogue.RoomId)) return;
 
+            if (dialogue.Status != DialogueStatus.Created && App.IsThisUnreadMessage(dialogue.RoomId,0))
+                App.ChangeDialogueStatus(dialogue.RoomId, "0");
             //Реагирование на получение запроса:
             //Списка диалогов
             Dialogues.TakeQuery(dialogue);

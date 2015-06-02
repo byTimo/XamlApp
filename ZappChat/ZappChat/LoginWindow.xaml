@@ -74,13 +74,13 @@
                 			</controls:LoginButton.Background>
                 		</controls:LoginButton>
 					</StackPanel>
-					<Button Grid.Row="2" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55,0,0,0" BorderBrush="Transparent" >
+					<Button Grid.Row="2" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="55,0,0,0" BorderBrush="Transparent" Visibility="Collapsed" >
 						<StackPanel Orientation="Horizontal">
 							<Image Source="Images/StartVideo.png" Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" Width="39" Height="39"/>
 							<TextBlock Text="Видеопрезентация" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="16" Margin="10,0,0,0" />
 						</StackPanel>
 					</Button>
-					<Button Grid.Column="1" Grid.Row="2" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60,0,0,0" BorderBrush="Transparent" >
+					<Button Grid.Column="1" Grid.Row="2" Background="Transparent" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="60,0,0,0" BorderBrush="Transparent" Click="CanNotEnter">
 						<StackPanel Orientation="Horizontal">
 							<Image Source="Images/Can'tEnter.png" Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" Width="39" Height="39"/>
 							<TextBlock Text="Не можете войти?" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="16" Margin="10,0,0,0" />

@@ -24,9 +24,11 @@ namespace ZappChat
         public const double UpdateControlTimeIntervalInMinutes = 2.0;
         public const double NotificationCloseTimeInSeconds = 5.0;
         public const double IntervalBetweenReshowNotificationInSecond = 300.0;
+        public const double InterbalBetweenUpdateTryInSeconds = 10.0;
 
         public const string WebSocketUrl = "ws://zappchat.ru:7778";
         public const string UpdateFeedUrl = "http://zappchat.spyric.ru/program/feed.xml";
+        public const string HelpUrl = "http://ekaterinburg.zappchat.spyric.ru/lost-password";
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
@@ -38,6 +40,7 @@ namespace ZappChat
 
         private static DispatcherTimer reconnectionTimer;
         private static DispatcherTimer fileMonitore;
+        private static DispatcherTimer updateTryTimer;
         private static DispatcherTimer updateCountersDispatcherTimer;
 
         public static Dictionary<ulong, string> DialoguesStatuses;
@@ -65,25 +68,10 @@ namespace ZappChat
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
             login.Show();
             currentWindow = OpenedWindow.Login;
+            updateTryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(InterbalBetweenUpdateTryInSeconds) };
+            updateTryTimer.Tick += (o, args) => Update(socketOpener.RunWorkerAsync);
 #if !DEBUG
-            try
-            {
-                AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(b =>
-                {
-                    if (b)
-                    {
-                        socketOpener.RunWorkerAsync();
-                        return;
-                    }
-                    MessageBox.Show("Ошибка в обновлении!");
-                    Current.Dispatcher.Invoke(new Action(Current.Shutdown));
-                });
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(String.Format("Ошибка в обновлении!\n{0}", exception.Message));
-                Current.Dispatcher.Invoke(new Action(Current.Shutdown));
-            }
+            Update(socketOpener.RunWorkerAsync);
 #else
             socketOpener.RunWorkerAsync();
 #endif
@@ -203,6 +191,32 @@ namespace ZappChat
             }
         }
 
+        private static void Update(Action callback)
+        {
+            login.Show();
+            login.Activate();
+            try
+            {
+                AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(b =>
+                {
+                    if (b)
+                    {
+                        callback.Invoke();
+                        updateTryTimer.Stop();
+                        return;
+                    }
+                    MessageBox.Show("Ошибка в обновлении!");
+                    login.Hide();
+                    updateTryTimer.Start();
+                });
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(string.Format("Ошибка в обновлении!\n{0}", exception.Message));
+                login.Hide();
+                updateTryTimer.Start();
+            }
+        }
         public static bool IsCurrentWindowVisible()
         {
             return currentWindow == OpenedWindow.Chat ? main.IsVisible : login.IsVisible;
