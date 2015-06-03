@@ -18,6 +18,7 @@ namespace ZappChat.Core
         public MessageType Type { get; private set; }
         public string Hash { get; private set; }
         public bool IsSuccessfully { get; set; }
+        public bool IsUnread { get; set; }
 
         public Message(ulong id, string message, string type, string hash, string date, string userName)
         {
@@ -29,8 +30,14 @@ namespace ZappChat.Core
             DateTime = DateTime.ParseExact(date, "MM'/'dd'/'yyyy' 'HH':'mm':'ss", CultureInfo.InvariantCulture).AddHours(-1);
             Date = DateTime.ToString("M", new CultureInfo("ru-RU"));
             IsSuccessfully = true;
+            IsUnread = false;
         }
 
+        public Message(ulong id, string message, string type, string hash, string date, string userName, bool isUnread)
+            : this(id, message, type, hash, date, userName)
+        {
+            IsUnread = isUnread;
+        }
         protected bool Equals(Message other)
         {
             return string.Equals(Hash, other.Hash);

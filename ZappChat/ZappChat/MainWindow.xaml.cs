@@ -36,15 +36,16 @@ namespace ZappChat
             AppEventManager.SendMessageSuccess += chat.SendMessageSuccess;
             AppEventManager.SetCarInfo += SetCarInfo;
             AppEventManager.AnswerOnQuery += AnswerOnQuery;
+            AppEventManager.NotificationAnswer +=AppEventManager_NotificationAnswer;
             TabNow.Queries = new ObservableCollection<QueryControl>();
             TabYesterday.Queries = new ObservableCollection<QueryControl>();
             var reshowNotificationTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond)};
             reshowNotificationTimer.Tick += (sender, args) =>
             {
-                if (App.ConnectionStatus != ConnectionStatus.Connect) return;
-                var dialogue = Dialogues.CheckUnreadedDialogues();
-                if (dialogue != null)
-                    App.CreateNotification(dialogue);
+//                if (App.ConnectionStatus != ConnectionStatus.Connect) return;
+//                var dialogue = Dialogues.CheckUnreadedDialogues();
+//                if (dialogue != null)
+//                    App.CreateNotification(dialogue);
             };
             reshowNotificationTimer.Start();
         }
@@ -80,8 +81,12 @@ namespace ZappChat
         private void ReceivingMessage(object sender, Dialogue dialogue)
         {
             if (App.IsThisDialogueDeleted(dialogue.RoomId)) return;
+
             var message = dialogue.Messages[0];
             message.Status = MessageStatus.Delivered;
+
+            if (!message.IsUnread && App.IsThisUnreadMessage(dialogue.RoomId, message.Id))
+                App.ChangeDialogueStatus(dialogue.RoomId, message.Id.ToString());
             //Реагирование на приход нового сообщения:
             //Списка диалогов
             Dialogues.AddNewMessageToList(dialogue);
@@ -107,8 +112,8 @@ namespace ZappChat
                 messageButton.MessagesCount++;
                 control.ContaintUnreadMessages = true;
             }
-            if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0) || !IsActive)
-                App.CreateNotification(dialogue);
+            if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0))
+                App.CreateMessageNotification(dialogue);
 
         }
 
@@ -167,6 +172,7 @@ namespace ZappChat
         private void OpenDialogue(ulong roomId, List<Message> messages)
         {
             ShowDialogue(true);
+
             //Реагирование на открытие диалога:
             //Список диалогов:
             var openedDialogue = Dialogues.ChangeMessageStatus(roomId, messages);
@@ -195,6 +201,23 @@ namespace ZappChat
             AppWebSocketEventManager.SendObject(readTypeToJson);
         }
 
+        private void AppEventManager_NotificationAnswer(ulong obj)
+        {
+            var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.RoomId == obj);
+            if (control != null && control.ContaintUnreadMessages)
+            {
+                messageButton.MessagesCount--;
+                control.ContaintUnreadMessages = false;
+            }
+            //Кнопка запросов:
+            control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.RoomId == obj);
+            if (control != null && !control.DialogueOpened)
+            {
+                myQuaryButton.MessagesCount--;
+                control.DialogueOpened = true;
+            }
+        }
+
         private void ReceivingQuery(object sender, Dialogue dialogue)
         {
             if(App.IsThisDialogueDeleted(dialogue.RoomId)) return;
@@ -215,7 +238,7 @@ namespace ZappChat
                 myQuaryButton.MessagesCount++;
                 var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
                 if (control != null) control.DialogueOpened = false;
-                App.CreateNotification(dialogue);
+                App.CreateQueryNotification(dialogue);
             }
         }
 

@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
+using ZappChat.Controls;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
 
@@ -45,7 +46,8 @@ namespace ZappChat
 
         public static Dictionary<ulong, string> DialoguesStatuses;
 
-        private static Notification _currentNotification;
+        private static INotification currentNotification;
+        private static Queue<INotification> notifications;
 
         enum OpenedWindow
         {
@@ -91,9 +93,11 @@ namespace ZappChat
             AppEventManager.AuthorizationSuccess += AuthorizationSuccess;
             AppEventManager.AuthorizationFail += AuthorizationFail;
             AppEventManager.OpenDialogue +=AppEventManagerOnOpenDialogue;
+            AppEventManager.CloseNotification+=AppEventManager_CloseNotification;
+            AppEventManager.SetCarInfo+=AppEventManager_SetCarInfo;
 
             InicializeNotyfication();
-
+            notifications = new Queue<INotification>();
 
             reconnectionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(IntervalBetweenConnectionInSeconds) };
             reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
@@ -121,18 +125,107 @@ namespace ZappChat
             updateCountersDispatcherTimer.Stop();
         }
 
-        public static void CreateNotification(Dialogue dialogue)
+        private static void CreateNotification(INotification newNotification)
         {
-            NotifyIcon.CloseBalloon();
-            _currentNotification = new Notification(dialogue);
-            NotifyIcon.ShowCustomBalloon(_currentNotification, PopupAnimation.Fade, null);
+//            NotifyIcon.CloseBalloon();
+//            currentQueryNotification = new QueryNotification(dialogue);
+//            NotifyIcon.ShowCustomBalloon(currentQueryNotification, PopupAnimation.Fade, null);
+            if (currentNotification == null)
+            {
+                currentNotification = newNotification;
+                NotifyIcon.ShowCustomBalloon(newNotification as UIElement, PopupAnimation.Fade, null);
+            }
+            else
+            {
+                if (currentNotification.Dialogue.Equals(newNotification.Dialogue))
+                {
+                    currentNotification = newNotification;
+                    NotifyIcon.CloseBalloon();
+                    NotifyIcon.ShowCustomBalloon(newNotification as UIElement, PopupAnimation.Fade, null);
+                    return;
+                }
+                if(!notifications.Contains(newNotification,Support.DialogueComparer))
+                    notifications.Enqueue(newNotification);
+                else
+                {
+                    var oldNotification =
+                        notifications.First(x => Equals(newNotification.Dialogue.RoomId, x.Dialogue.RoomId));
+                    notifications = Change(notifications, oldNotification, newNotification);
+                }
+            }
+        }
+
+        private void AppEventManager_SetCarInfo(ulong arg1, string arg2, string arg3, string arg4, string arg5)
+        {
+            var notify = notifications.FirstOrDefault(x => x.Dialogue.CarId == arg1);
+            if (notify != null)
+            {
+                notify.SetCarInfo(arg2, arg3, arg4, arg5);
+                notifications = Change(notifications, notify, notify);
+                return;
+            }
+            if (currentNotification.Dialogue.CarId == arg1)
+            {
+                currentNotification.SetCarInfo(arg2, arg3, arg4, arg5);
+            }
+        }
+
+        public static void CreateQueryNotification(Dialogue dialogue)
+        {
+            var newNotification = new QueryNotification(dialogue);
+            CreateNotification(newNotification);
+        }
+
+        public static void CreateMessageNotification(Dialogue dialogue)
+        {
+            var newNotification = new MessageNotification(dialogue);
+            CreateNotification(newNotification);
         }
 
         private void AppEventManagerOnOpenDialogue(ulong id, List<Message> messages)
         {
-            if(_currentNotification == null) return;
-            if(_currentNotification.Dialogue.RoomId == id)
-                NotifyIcon.CloseBalloon();
+            if (currentNotification != null)
+                if (currentNotification.Dialogue.RoomId == id)
+                    currentNotification.CloseNotify();
+            if (notifications.Count != 0)
+            {
+                var notification = notifications.FirstOrDefault(x => x.Dialogue.RoomId == id);
+                if (notification != null)
+                    notifications = Remove(notifications, notification);
+            }
+
+        }
+        private static Queue<INotification> Remove(Queue<INotification> queue, INotification removable)
+        {
+            if (removable == null) throw new NullReferenceException("Ссылка не ссылается на объект");
+            if (!queue.Contains(removable,Support.DialogueComparer)) throw new ArgumentException("Переданного объекта нет в очереди");
+            return new Queue<INotification>(queue.Where(notification => !notification.Dialogue.Equals(removable.Dialogue)));
+        }
+
+        private static Queue<INotification> Change(Queue<INotification> queue, INotification changing, INotification changed)
+        {
+            if (changed == null) throw new NullReferenceException("Ссылка не ссылается на объект");
+            if (!queue.Contains(changing, Support.DialogueComparer)) throw new ArgumentException("Переданного объекта нет в очереди");
+            var newQueue = new Queue<INotification>(queue.Count);
+            foreach (var notification in queue)
+            {
+                newQueue.Enqueue(notification.Equals(changing) ? changed : notification);
+            }
+            return newQueue;
+        }
+
+        private void AppEventManager_CloseNotification()
+        {
+            NotifyIcon.CloseBalloon();
+            if (notifications.Count != 0)
+            {
+                currentNotification = notifications.Dequeue();
+                NotifyIcon.ShowCustomBalloon(currentNotification as UIElement, PopupAnimation.Fade, null);
+            }
+            else
+            {
+                currentNotification = null;
+            }
         }
 
         private void InicializeNotyfication()
@@ -156,6 +249,7 @@ namespace ZappChat
                 }
             };
         }
+
         private void SwitchWindow(OpenedWindow window)
         {
             if(currentWindow == window) return;

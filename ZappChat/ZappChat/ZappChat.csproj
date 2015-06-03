@@ -51,8 +51,11 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -81,8 +84,8 @@
     <Compile Include="Controls\CornerRadiusButton.cs" />
     <Compile Include="Controls\ListMessages.cs" />
     <Compile Include="Controls\LoginButton.cs" />
-    <Compile Include="Controls\Notification.xaml.cs">
-      <DependentUpon>Notification.xaml</DependentUpon>
+    <Compile Include="Controls\QueryNotification.xaml.cs">
+      <DependentUpon>QueryNotification.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PasswordControl.cs" />
     <Compile Include="Controls\QueryControl.xaml.cs">
@@ -91,6 +94,7 @@
     <Compile Include="Controls\QueryList.cs" />
     <Compile Include="Core\AppUpdateManager.cs" />
     <Compile Include="Core\Dialogue.cs" />
+    <Compile Include="Core\INotification.cs" />
     <Compile Include="Core\Message.cs" />
     <Compile Include="Core\FileDispetcher.cs" />
     <Compile Include="Core\NotifyCommands.cs" />
@@ -112,7 +116,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Notification.xaml">
+    <Page Include="Controls\QueryNotification.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -121,6 +125,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="LoginWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MessageNotifiaction.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -234,6 +242,9 @@
     <Compile Include="Controls\MessageControl.xaml.cs">
       <DependentUpon>MessageControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MessageNotifiaction.xaml.cs">
+      <DependentUpon>MessageNotifiaction.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -329,6 +340,9 @@
       <Project>{5c07ebdf-d43f-4be9-b560-d7a443c0edce}</Project>
       <Name>NAppUpdate.Framework</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\window.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Expression\Blend\.NETFramework\v4.5\Microsoft.Expression.Blend.WPF.targets" />

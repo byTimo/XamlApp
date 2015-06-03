@@ -107,5 +107,21 @@ namespace ZappChat.Core
             var handler = AnswerOnQuery;
             if (handler != null) handler(queryId);
         }
+
+        public static event Action CloseNotification;
+
+        public static void CloseNotificationEvent()
+        {
+            if(CloseNotification != null)
+                CloseNotification.Invoke();
+        }
+
+        public static event Action<ulong> NotificationAnswer;
+
+        public static void NotificationAnswerEvent(ulong roomId)
+        {
+            if(NotificationAnswer != null)
+                NotificationAnswer.Invoke(roomId);
+        }
     }
 }

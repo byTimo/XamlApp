@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using ZappChat.Controls;
 
 namespace ZappChat.Core
 {
@@ -71,7 +72,31 @@ namespace ZappChat.Core
 
             return result.ToString();
         }
+        private sealed class DialogueEqualityComparer : IEqualityComparer<INotification>
+        {
+            public bool Equals(INotification x, INotification y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (ReferenceEquals(x, null)) return false;
+                if (ReferenceEquals(y, null)) return false;
+                if (x.GetType() != y.GetType()) return false;
+                return Equals(x.Dialogue, y.Dialogue);
+            }
+
+            public int GetHashCode(INotification obj)
+            {
+                return (obj.Dialogue != null ? obj.Dialogue.GetHashCode() : 0);
+            }
+        }
+
+        private static readonly IEqualityComparer<INotification> DialogueComparerInstance = new DialogueEqualityComparer();
+
+        public static IEqualityComparer<INotification> DialogueComparer
+        {
+            get { return DialogueComparerInstance; }
+        }
     }
+
 
     [TestFixture]
     class SomethingTester

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZappChat", "ZappChat\ZappChat.csproj", "{807B0F21-9284-4421-9A90-873DB2188F66}"
 EndProject
@@ -43,7 +43,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE} = {28D821CD-996C-4078-A7F7-71E3E3464138}
 		{7D4D18D4-DBD2-4ADC-9D82-397D6C5E9F40} = {28D821CD-996C-4078-A7F7-71E3E3464138}
+		{5C07EBDF-D43F-4BE9-B560-D7A443C0EDCE} = {28D821CD-996C-4078-A7F7-71E3E3464138}
 	EndGlobalSection
 EndGlobal

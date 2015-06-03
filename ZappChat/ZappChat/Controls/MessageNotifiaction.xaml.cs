@@ -1,35 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
 using Newtonsoft.Json;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
 using ZappChat.Core.Socket.Requests;
 
-namespace ZappChat
+namespace ZappChat.Controls
 {
     /// <summary>
-    /// Логика взаимодействия для Notification.xaml
+    /// Логика взаимодействия для MessageNotification.xaml
     /// </summary>
-    public partial class Notification : UserControl
+    public partial class MessageNotification : UserControl, INotification
     {
         public Dialogue Dialogue { get; set; }
-        private readonly Brush _startBrush;
-        private DispatcherTimer closeTimer;
 
         public static readonly DependencyProperty NotificationTextProperty = DependencyProperty.Register(
-            "NotificationText", typeof (string), typeof (Notification), new FrameworkPropertyMetadata("Title"));
+            "NotificationText", typeof(string), typeof(MessageNotification), new FrameworkPropertyMetadata("Title"));
 
         public string NotificationText
         {
@@ -38,33 +27,24 @@ namespace ZappChat
 
         }
 
-        public Notification()
+        public MessageNotification()
         {
             this.InitializeComponent();
         }
 
-        public Notification(Dialogue dialogue) : this()
+        public MessageNotification(Dialogue dialogue)
+            : this()
         {
             Dialogue = dialogue;
             NotificationText = dialogue.GetTitleMessage();
-            _startBrush = MainBorder.Background;
         }
 
-        private void CloseNotify()
+        public void CloseNotify()
         {
-            var taskbarIcon = TaskbarIcon.GetParentTaskbarIcon(this);
-            if(taskbarIcon != null)
-                taskbarIcon.CloseBalloon();
-        }
-
-    private void Border_MouseEnter(object sender, MouseEventArgs e)
-        {
-            MainBorder.Background = Brushes.Black;
-        }
-
-        private void MainBorder_MouseLeave(object sender, MouseEventArgs e)
-        {
-            MainBorder.Background = _startBrush;
+//            var taskbarIcon = TaskbarIcon.GetParentTaskbarIcon(this);
+//            if (taskbarIcon != null)
+//                taskbarIcon.CloseBalloon();
+            AppEventManager.CloseNotificationEvent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -93,5 +73,10 @@ namespace ZappChat
         {
             CornerRadiusButton_Click(null, null);
         }
-	}
+
+        public void SetCarInfo(string brand, string model, string vin, string year)
+        {
+            Dialogue.SetCarInformation(brand, model, vin, year);
+        }
+    }
 }

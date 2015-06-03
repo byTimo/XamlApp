@@ -230,7 +230,8 @@ namespace ZappChat.Core.Socket
                     var text = (string) mes["message"];
                     var author = (string) mes["user_name"];
                     var lastUpdata = (string) mes["created_at"];
-                    var message = new Message(mesId, text, type, hash, lastUpdata, author);
+                    var isUnread = (string)mes["unread"] == "1";
+                    var message = new Message(mesId, text, type, hash, lastUpdata, author, isUnread);
                     var dialogue = new Dialogue(roomId, message);
                     Application.Current.Dispatcher.Invoke(
                         new Action(() => AppEventManager.ReceiveMessageEvent(WebSocket, dialogue)));
