@@ -80,7 +80,7 @@
 		</Style>
 	</UserControl.Resources>
 
-	<Border x:Name="MainBorder" Background="#FF001022" CornerRadius="10">
+    <Border x:Name="MainBorder" Background="#0C2F45" CornerRadius="10">
 		<Grid x:Name="LayoutRoot">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="35"/>

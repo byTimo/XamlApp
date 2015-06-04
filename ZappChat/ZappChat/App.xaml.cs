@@ -164,10 +164,14 @@ namespace ZappChat
                 notifications = Change(notifications, notify, notify);
                 return;
             }
-            if (currentNotification.Dialogue.CarId == arg1)
+            if (currentNotification != null)
             {
-                currentNotification.SetCarInfo(arg2, arg3, arg4, arg5);
+                if (currentNotification.Dialogue.CarId == arg1)
+                {
+                    currentNotification.SetCarInfo(arg2, arg3, arg4, arg5);
+                }
             }
+            
         }
 
         public static void CreateQueryNotification(Dialogue dialogue)

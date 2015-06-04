@@ -57,6 +57,11 @@ namespace ZappChat.Controls
         {
             Dialogue = dialogue;
             NotificationText = dialogue.GetTitleMessage();
+            NotificationText += " " + (dialogue.CarBrand ?? "");
+            NotificationText += " " + (dialogue.CarModel ?? "");
+
+            NotificationText = NotificationText.Trim();
+
             NotificationVin = dialogue.VIN ?? "";
             NotificationYear = dialogue.Year ?? "";
             Label.GotKeyboardFocus += (sender, args) =>
@@ -77,6 +82,10 @@ namespace ZappChat.Controls
         public void SetCarInfo(string brand, string model, string vin, string year)
         {
             Dialogue.SetCarInformation(brand, model, vin, year);
+            string carBrandModel = brand + " " + model;
+            if (NotificationText.IndexOf(carBrandModel) == -1)
+                NotificationText += " " + carBrandModel;
+
             if (vin == null)
                 NotificationVin = "";
             else
