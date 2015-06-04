@@ -178,7 +178,8 @@ namespace ZappChat
             var openedDialogue = Dialogues.ChangeMessageStatus(roomId, messages);
             //Файла статусов диалогов
             var lastMessage = openedDialogue.GetLastMessage();
-            App.ChangeDialogueStatus(roomId, lastMessage != null ? lastMessage.Id.ToString() : "0");
+            if (lastMessage != null)
+                App.ChangeDialogueStatus(roomId, lastMessage.Id.ToString());
             //Чата
             chat.OpenDialogue(openedDialogue);
             //Кнопки сообщения:
@@ -193,7 +194,7 @@ namespace ZappChat
             if (control != null && !control.DialogueOpened)
             {
                 myQuaryButton.MessagesCount--;
-                control.DialogueOpened = true;
+                //control.DialogueOpened = true;
             }
 
             var readType = new ReadRoomRequest {room_id = roomId};
@@ -269,15 +270,24 @@ namespace ZappChat
             //Реагирование на получение информации об автомобиле
             //Список диалогов
             var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.QueryId == obj);
-            if(control != null) control.Dialogue.Status = DialogueStatus.Answered;
+            if (control != null)
+            {
+                control.Dialogue.Status = DialogueStatus.Answered;
+                if (App.IsThisUnreadMessage(control.Dialogue.RoomId, 0))
+                    App.ChangeDialogueStatus(control.Dialogue.RoomId, "0");
+
+                control.DialogueOpened = true;
+            }
             //Табов
             var todayQuery = TabNow.Queries.FirstOrDefault(x => x.Dialogue.QueryId == obj);
             if (todayQuery != null) todayQuery.Dialogue.Status = DialogueStatus.Answered;
             var yestQuery = TabYesterday.Queries.FirstOrDefault(x => x.Dialogue.QueryId == obj);
             if (yestQuery != null) yestQuery.Dialogue.Status = DialogueStatus.Answered;
             //Чата
-            if(chat.CurrentDialogue.QueryId == obj)
+            if (chat.CurrentDialogue.QueryId == obj)
+            {
                 chat.ChangeDialogueStatus();
+            }
         }
 
         private void TabControlReceiveQuery(Dialogue dialogue)
