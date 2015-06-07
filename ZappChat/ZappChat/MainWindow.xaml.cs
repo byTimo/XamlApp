@@ -114,6 +114,10 @@ namespace ZappChat
             }
             if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0))
                 App.CreateMessageNotification(dialogue);
+            if (Equals(chat.CurrentDialogue, dialogue) && !IsActive)
+            {
+                App.CreateMessageNotification(dialogue);
+            }
 
         }
 
@@ -239,6 +243,10 @@ namespace ZappChat
                 myQuaryButton.MessagesCount++;
                 var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
                 if (control != null) control.DialogueOpened = false;
+                App.CreateQueryNotification(dialogue);
+            }
+            if(Equals(chat.CurrentDialogue, dialogue) && !IsActive)
+            {
                 App.CreateQueryNotification(dialogue);
             }
         }
