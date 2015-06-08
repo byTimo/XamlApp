@@ -98,8 +98,13 @@ namespace ZappChat.Controls
             reshowNotification = new DispatcherTimer { Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond) };
             reshowNotification.Tick += (s, e) =>
             {
-                reshowNotification.Stop();
-                AppEventManager.ReshowNotificationEvent(Dialogue, Type);
+                if(!App.MainWin.IsEqualChatDialogue(Dialogue))
+                {
+                    reshowNotification.Stop();
+                    AppEventManager.ReshowNotificationEvent(Dialogue, Type);
+                }
+                if (!App.IsThisUnreadMessage(Dialogue.RoomId, 0))
+                    reshowNotification.Stop();
             };
             reshowNotification.Stop();
         }
@@ -120,7 +125,7 @@ namespace ZappChat.Controls
 
         public void CloseNotify(bool isOpened)
         {
-            if (!isOpened)
+            if (App.IsThisUnreadMessage(Dialogue.RoomId, 0))
                 reshowNotification.Start();
             AppEventManager.CloseNotificationEvent();
         }

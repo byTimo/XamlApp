@@ -24,7 +24,7 @@ namespace ZappChat
         public const double CheckingFilesIntervalInSeconds = 2.0;
         public const double UpdateControlTimeIntervalInMinutes = 2.0;
         public const double NotificationCloseTimeInSeconds = 5.0;
-        public const double IntervalBetweenReshowNotificationInSecond = 300.0;
+        public const double IntervalBetweenReshowNotificationInSecond = 5.0;
         public const double InterbalBetweenUpdateTryInSeconds = 10.0;
 
 #if DEBUG
@@ -44,8 +44,8 @@ namespace ZappChat
         public static double RightMonitorBorder = SystemParameters.WorkArea.Right;
         public static double BottomMoniorBorder = SystemParameters.WorkArea.Bottom;
 
-        private static MainWindow main;
-        private static LoginWindow login;
+        public static MainWindow MainWin;
+        public static LoginWindow LoginWin;
         public static TaskbarIcon NotifyIcon { get; private set; }
         private static OpenedWindow currentWindow;
 
@@ -70,15 +70,15 @@ namespace ZappChat
             LastLogId = 0;
             FileDispetcher.InitializeFileDispetcher();
             DialoguesStatuses = FileDispetcher.ReadAllCollection(FileDispetcher.FullPathToDialogueInformation);
-            login = new LoginWindow();
-            main = new MainWindow();
+            LoginWin = new LoginWindow();
+            MainWin = new MainWindow();
 
 #if !DEBUG
             AppUpdateManager.SetUrlRemoteServer(UpdateFeedUrl);
 #endif
             var socketOpener = new BackgroundWorker();
             socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
-            login.Show();
+            LoginWin.Show();
             currentWindow = OpenedWindow.Login;
             updateTryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(InterbalBetweenUpdateTryInSeconds) };
             updateTryTimer.Tick += (o, args) => Update(socketOpener.RunWorkerAsync);
@@ -285,13 +285,13 @@ namespace ZappChat
             switch (window)
             {
                 case OpenedWindow.Login:
-                    main.Hide();
-                    login.Show();
+                    MainWin.Hide();
+                    LoginWin.Show();
                     currentWindow = OpenedWindow.Login;
                     break;
                 case OpenedWindow.Chat:
-                    login.Hide();
-                    main.Show();
+                    LoginWin.Hide();
+                    MainWin.Show();
                     currentWindow = OpenedWindow.Chat;
                     break;
 
@@ -301,22 +301,22 @@ namespace ZappChat
         {
             if (currentWindow == OpenedWindow.Chat)
             {
-                main.Show();
-                main.WindowState = WindowState.Normal;
-                main.Activate();
+                MainWin.Show();
+                MainWin.WindowState = WindowState.Normal;
+                MainWin.Activate();
             }
             else
             {
-                login.Show();
-                login.WindowState = WindowState.Normal;
-                login.Activate();
+                LoginWin.Show();
+                LoginWin.WindowState = WindowState.Normal;
+                LoginWin.Activate();
             }
         }
 
         private static void Update(Action callback)
         {
-            login.Show();
-            login.Activate();
+            LoginWin.Show();
+            LoginWin.Activate();
             try
             {
                 AppUpdateManager.StartupCheckAndPrepareUpdateFeeds(b =>
@@ -328,20 +328,20 @@ namespace ZappChat
                         return;
                     }
                     MessageBox.Show("Ошибка в обновлении!");
-                    login.Hide();
+                    LoginWin.Hide();
                     updateTryTimer.Start();
                 });
             }
             catch (Exception exception)
             {
                 MessageBox.Show(string.Format("Ошибка в обновлении!\n{0}", exception.Message));
-                login.Hide();
+                LoginWin.Hide();
                 updateTryTimer.Start();
             }
         }
         public static bool IsCurrentWindowVisible()
         {
-            return currentWindow == OpenedWindow.Chat ? main.IsVisible : login.IsVisible;
+            return currentWindow == OpenedWindow.Chat ? MainWin.IsVisible : LoginWin.IsVisible;
         }
         public static bool IsThisDialogueDeleted(ulong roomId)
         {

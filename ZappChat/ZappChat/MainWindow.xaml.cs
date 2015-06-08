@@ -327,12 +327,17 @@ namespace ZappChat
             Dialogues.SelectWithoutQuery();
         }
 
+        public bool IsEqualChatDialogue(Dialogue dialogue)
+        {
+            return chat.CurrentDialogue.Equals(dialogue);
+        }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             DragMove();
         }
-
+        
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
         }
