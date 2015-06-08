@@ -27,9 +27,16 @@ namespace ZappChat
         public const double IntervalBetweenReshowNotificationInSecond = 300.0;
         public const double InterbalBetweenUpdateTryInSeconds = 10.0;
 
-        public const string WebSocketUrl = "ws://zappchat.ru:7778";
+#if DEBUG
+        public const string WebSocketUrl = "ws://zappchat.spyric.ru:7778";
         public const string UpdateFeedUrl = "http://zappchat.spyric.ru/program/feed.xml";
         public const string HelpUrl = "http://ekaterinburg.zappchat.spyric.ru/lost-password";
+#else
+        public const string WebSocketUrl = "ws://zappchat.ru:8888";
+        public const string UpdateFeedUrl = "http://zappchat.ru/program/feed.xml";
+        public const string HelpUrl = "http://ekaterinburg.zappchat.ru/lost-password";
+#endif
+        
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
