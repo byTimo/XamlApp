@@ -123,5 +123,11 @@ namespace ZappChat.Core
             if(NotificationAnswer != null)
                 NotificationAnswer.Invoke(roomId);
         }
+        public static event Action<Dialogue, NotificationType> ReshowNotification;
+        public static void ReshowNotificationEvent(Dialogue dialogue, NotificationType type)
+        {
+            if (ReshowNotification != null)
+                ReshowNotification.Invoke(dialogue, type);
+        }
     }
 }

@@ -105,6 +105,7 @@ namespace ZappChat
             AppEventManager.OpenDialogue += AppEventManagerOnOpenDialogue;
             AppEventManager.CloseNotification += AppEventManager_CloseNotification;
             AppEventManager.SetCarInfo += AppEventManager_SetCarInfo;
+            AppEventManager.ReshowNotification += AppEventManager_ReshowNotification;
 
             InicializeNotyfication();
             notifications = new Queue<INotification>();
@@ -153,8 +154,8 @@ namespace ZappChat
             {
                 if (currentNotification.Dialogue.Equals(newNotification.Dialogue))
                 {
-                    currentNotification = newNotification;
                     CloseNotification();
+                    currentNotification = newNotification;
                     ShowNotification(newNotification as Window);
                     return;
                 }
@@ -204,7 +205,7 @@ namespace ZappChat
         {
             if (currentNotification != null)
                 if (currentNotification.Dialogue.RoomId == id)
-                    currentNotification.CloseNotify();
+                    currentNotification.CloseNotify(true);
             if (notifications.Count != 0)
             {
                 var notification = notifications.FirstOrDefault(x => x.Dialogue.RoomId == id);
@@ -246,6 +247,16 @@ namespace ZappChat
             }
         }
 
+        void AppEventManager_ReshowNotification(Dialogue dialogue, NotificationType type)
+        {
+            INotification notification;
+            if (type == NotificationType.Message)
+                notification = new MessageNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
+            else
+                notification = new QueryNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
+            if (currentNotification == null || !notifications.Contains(notification, Support.DialogueComparer))
+                CreateNotification(notification);
+        }
         private void InicializeNotyfication()
         {
             var showCommand = new ShowWindowCommand();

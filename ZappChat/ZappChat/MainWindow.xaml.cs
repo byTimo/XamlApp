@@ -39,15 +39,6 @@ namespace ZappChat
             AppEventManager.NotificationAnswer +=AppEventManager_NotificationAnswer;
             TabNow.Queries = new ObservableCollection<QueryControl>();
             TabYesterday.Queries = new ObservableCollection<QueryControl>();
-            var reshowNotificationTimer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond)};
-            reshowNotificationTimer.Tick += (sender, args) =>
-            {
-//                if (App.ConnectionStatus != ConnectionStatus.Connect) return;
-//                var dialogue = Dialogues.CheckUnreadedDialogues();
-//                if (dialogue != null)
-//                    App.CreateNotification(dialogue);
-            };
-            reshowNotificationTimer.Start();
         }
 
         private void Connection(object sender)

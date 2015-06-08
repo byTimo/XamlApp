@@ -40,4 +40,9 @@
         OnOrder,
         NoSelling
     }
+    public enum NotificationType
+    {
+        Message,
+        Query
+    }
 }

@@ -16,6 +16,7 @@ using ZappChat.Core;
 using ZappChat.Core.Socket;
 using ZappChat.Core.Socket.Requests;
 using System.Globalization;
+using System.Windows.Threading;
 
 namespace ZappChat.Controls
 {
@@ -24,7 +25,11 @@ namespace ZappChat.Controls
     /// </summary>
     public partial class MessageNotificationWindow : Window, INotification
     {
+
+        private DispatcherTimer reshowNotification;
         public Dialogue Dialogue { get; set; }
+
+        public NotificationType Type { get; set; }
 
         public static readonly DependencyProperty NotificationTextProperty = DependencyProperty.Register(
             "NotificationText", typeof(string), typeof(MessageNotificationWindow), new FrameworkPropertyMetadata("Title"));
@@ -43,20 +48,29 @@ namespace ZappChat.Controls
             : this()
         {
             Dialogue = dialogue;
+            Type = NotificationType.Message;
             NotificationText = dialogue.GetTitleMessage();
             Left = rightMonitorBorder - Width - 10;
             Top = bottomMonitorBorders - Height - 10;
-            Title.Text = NotificationText;
+            reshowNotification = new DispatcherTimer { Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond) };
+            reshowNotification.Tick += (s, e) =>
+            {
+                reshowNotification.Stop();
+                AppEventManager.ReshowNotificationEvent(Dialogue, Type);
+            };
+            reshowNotification.Stop();
         }
 
-        public void CloseNotify()
+        public void CloseNotify(bool isOpened)
         {
+            if(!isOpened)
+                reshowNotification.Start();
             AppEventManager.CloseNotificationEvent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            CloseNotify();
+            CloseNotify(false);
         }
 
         private void CornerRadiusButton_Click(object sender, RoutedEventArgs e)
@@ -73,7 +87,7 @@ namespace ZappChat.Controls
                 AppWebSocketEventManager.SendObject(historyRequestToJson);
                 App.ShowCurrentWindow();
             }
-            CloseNotify();
+            CloseNotify(true);
         }
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)

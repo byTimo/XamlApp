@@ -16,6 +16,7 @@ using ZappChat.Core;
 using ZappChat.Core.Socket;
 using ZappChat.Core.Socket.Requests;
 using System.Globalization;
+using System.Windows.Threading;
 
 namespace ZappChat.Controls
 {
@@ -24,7 +25,9 @@ namespace ZappChat.Controls
     /// </summary>
     public partial class QueryNotificationWindow : Window, INotification
     {
+        private DispatcherTimer reshowNotification;
         public Dialogue Dialogue { get; set; }
+        public NotificationType Type { get; set; }
 
         public static readonly DependencyProperty NotificationTextProperty = DependencyProperty.Register(
             "NotificationText", typeof(string), typeof(QueryNotificationWindow), new FrameworkPropertyMetadata("Title"));
@@ -63,6 +66,7 @@ namespace ZappChat.Controls
             : this()
         {
             Dialogue = dialogue;
+            Type = NotificationType.Query;
             Left = rightMonitorBorder - Width - 10;
             Top = bottomMonitorBorders - Height - 10;
             NotificationText = dialogue.GetTitleMessage();
@@ -71,13 +75,9 @@ namespace ZappChat.Controls
 
             NotificationText = NotificationText.Trim();
 
-
-
             NotificationVin = dialogue.VIN ?? "";
             NotificationYear = dialogue.Year ?? "";
-            Title.Text = NotificationText;
-            Vin.Text = NotificationVin;
-            Year.Text = NotificationYear;
+            
             Label.MouseDown += (sender, args) =>
             {
                 Keyboard.Focus(Label);
@@ -95,6 +95,13 @@ namespace ZappChat.Controls
                 if (UserInput.Text.Trim().Equals(string.Empty))
                     Label.Visibility = Visibility.Visible;
             };
+            reshowNotification = new DispatcherTimer { Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond) };
+            reshowNotification.Tick += (s, e) =>
+            {
+                reshowNotification.Stop();
+                AppEventManager.ReshowNotificationEvent(Dialogue, Type);
+            };
+            reshowNotification.Stop();
         }
 
         public void SetCarInfo(string brand, string model, string vin, string year)
@@ -109,20 +116,19 @@ namespace ZappChat.Controls
             else
                 NotificationVin = "VIN: " + vin;
             NotificationYear = year ?? "";
-
-            Vin.Text = NotificationVin;
-            Year.Text = NotificationYear;
         }
 
-        public void CloseNotify()
+        public void CloseNotify(bool isOpened)
         {
+            if (!isOpened)
+                reshowNotification.Start();
             AppEventManager.CloseNotificationEvent();
         }
 
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            CloseNotify();
+            CloseNotify(false);
         }
 
 
@@ -140,7 +146,7 @@ namespace ZappChat.Controls
                 AppWebSocketEventManager.SendObject(historyRequestToJson);
                 App.ShowCurrentWindow();
             }
-            CloseNotify();
+            CloseNotify(true);
         }
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
@@ -182,7 +188,7 @@ namespace ZappChat.Controls
                 SendAnswerMessageRequest(userInput);
 
             AppEventManager.NotificationAnswerEvent(Dialogue.RoomId);
-            AppEventManager.CloseNotificationEvent();
+            CloseNotify(true);
 
         }
         private void SendAnswerRequest(bool selling, bool onStock)

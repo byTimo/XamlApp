@@ -74,7 +74,7 @@
                 <RowDefinition Height="100*"/>
                 <RowDefinition Height="25*"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="Title" Grid.Column="1" Margin="0,15,0,0" Grid.Row="1" TextWrapping="Wrap" MouseDown="TextBlock_MouseDown" Foreground="White" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="19" VerticalAlignment="Top" TextDecorations="Underline" Height="22"/>
+            <TextBlock x:Name="Title" Text="{Binding ElementName=MessageNotification,Path=NotificationText}"  Grid.Column="1" Margin="0,15,0,0" Grid.Row="1" TextWrapping="Wrap" MouseDown="TextBlock_MouseDown" Foreground="White" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="19" VerticalAlignment="Top" TextDecorations="Underline" Height="22"/>
             <local:CornerRadiusButton Grid.Column="2" Grid.Row="1" BorderBrush="White" BorderThickness="2" CornerRadius="7" FontFamily="/ZappChat;component/Fonts/#Arial" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Foreground="White" Height="30" Background="#002FB6E5" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Открыть"  Margin="4,8.833,4,9.833" Padding="15,5" Click="CornerRadiusButton_Click" Cursor="Hand"/>
             <Button Grid.Column="2" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Right" Margin="0,5,10,0" Grid.RowSpan="2" VerticalAlignment="Top" Click="Button_Click" Cursor="Hand">
                 <Image Height="10" Source="/ZappChat;component/Images/whiteCross.png" Stretch="Fill" Width="10"/>
