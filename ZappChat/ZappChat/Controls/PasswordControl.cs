@@ -64,12 +64,22 @@ namespace ZappChat.Controls
             _label = GetTemplateChild("Label") as TextBox;
             _label.GotKeyboardFocus += (sender, args) =>
             {
-                if (!ViewPassword)
+                if (ViewPassword)
+                {
+                    Keyboard.Focus(_text);
+                }
+                else
                 {
                     Keyboard.Focus(_password);
                 }
             };
             _password.GotKeyboardFocus += (sender, args) =>
+            {
+                _label.Text = "Пароль";
+                _label.Foreground = new SolidColorBrush(Color.FromRgb(141, 141, 141));
+                _label.Visibility = Visibility.Collapsed;
+            };
+            _text.GotKeyboardFocus += (sender, args) =>
             {
                 _label.Text = "Пароль";
                 _label.Foreground = new SolidColorBrush(Color.FromRgb(141, 141, 141));
@@ -84,17 +94,19 @@ namespace ZappChat.Controls
             };
             _showButton.Checked += (sender, args) =>
             {
+                ViewPassword = true;
                 _text.Text = _password.Password;
-                _password.Visibility =Visibility.Collapsed;
+                _password.Visibility = Visibility.Collapsed;
                 _text.Visibility = Visibility.Visible;
                 _label.Visibility = Visibility.Collapsed;
             };
             _showButton.Unchecked += (sender, args) =>
             {
+                ViewPassword = false;
                 _password.Password = _text.Text;
                 _password.Visibility = Visibility.Visible;
-                _text.Visibility =Visibility.Collapsed;
-                if(_password.Password == string.Empty)
+                _text.Visibility = Visibility.Collapsed;
+                if (_password.Password == string.Empty)
                     _label.Visibility = Visibility.Visible;
             };
             _password.KeyDown += ControlKeyDown;
