@@ -185,12 +185,12 @@ namespace ZappChat
                 control.ContaintUnreadMessages = false;
             }
             //Кнопка запросов:
-            control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
+            /*control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
             if (control != null && !control.DialogueOpened)
             {
                 myQuaryButton.MessagesCount--;
                 //control.DialogueOpened = true;
-            }
+            }*/
 
             var readType = new ReadRoomRequest {room_id = roomId};
             var readTypeToJson = JsonConvert.SerializeObject(readType);
@@ -274,7 +274,8 @@ namespace ZappChat
                 control.Dialogue.Status = DialogueStatus.Answered;
                 if (App.IsThisUnreadMessage(control.Dialogue.RoomId, 0))
                     App.ChangeDialogueStatus(control.Dialogue.RoomId, "0");
-
+                if (!control.DialogueOpened)
+                    myQuaryButton.MessagesCount--;
                 control.DialogueOpened = true;
             }
             //Табов

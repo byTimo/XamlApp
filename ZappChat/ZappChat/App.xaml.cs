@@ -24,7 +24,7 @@ namespace ZappChat
         public const double CheckingFilesIntervalInSeconds = 2.0;
         public const double UpdateControlTimeIntervalInMinutes = 2.0;
         public const double NotificationCloseTimeInSeconds = 5.0;
-        public const double IntervalBetweenReshowNotificationInSecond = 5.0;
+        public const double IntervalBetweenReshowNotificationInSecond = 300.0;
         public const double InterbalBetweenUpdateTryInSeconds = 10.0;
 
 #if DEBUG
