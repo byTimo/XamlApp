@@ -1,33 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using Hardcodet.Wpf.TaskbarNotification;
 using Newtonsoft.Json;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
 using ZappChat.Core.Socket.Requests;
+using System.Globalization;
 
 namespace ZappChat.Controls
 {
     /// <summary>
-    /// Логика взаимодействия для QueryNotification.xaml
+    /// Логика взаимодействия для QueryNotificationWindow.xaml
     /// </summary>
-    public partial class QueryNotification : UserControl, INotification
+    public partial class QueryNotificationWindow : Window, INotification
     {
         public Dialogue Dialogue { get; set; }
 
         public static readonly DependencyProperty NotificationTextProperty = DependencyProperty.Register(
-            "NotificationText", typeof (string), typeof (QueryNotification), new FrameworkPropertyMetadata("Title"));
+            "NotificationText", typeof(string), typeof(QueryNotificationWindow), new FrameworkPropertyMetadata("Title"));
 
         public static readonly DependencyProperty NotificationVinProperty =
-            DependencyProperty.Register("NotificationVin", typeof (string), typeof (QueryNotification),
+            DependencyProperty.Register("NotificationVin", typeof(string), typeof(QueryNotificationWindow),
                 new FrameworkPropertyMetadata(""));
 
         public static readonly DependencyProperty NotificationYearProperty =
-            DependencyProperty.Register("NotificationYear", typeof(string), typeof(QueryNotification),
+            DependencyProperty.Register("NotificationYear", typeof(string), typeof(QueryNotificationWindow),
                 new FrameworkPropertyMetadata(""));
 
         public string NotificationText
@@ -48,22 +55,33 @@ namespace ZappChat.Controls
             set { SetValue(NotificationYearProperty, value); }
         }
 
-        public QueryNotification()
+        public QueryNotificationWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
-
-        public QueryNotification(Dialogue dialogue) : this()
+        public QueryNotificationWindow(Dialogue dialogue, double rightMonitorBorder, double bottomMonitorBorders)
+            : this()
         {
             Dialogue = dialogue;
+            Left = rightMonitorBorder - Width - 10;
+            Top = bottomMonitorBorders - Height - 10;
             NotificationText = dialogue.GetTitleMessage();
             NotificationText += " " + (dialogue.CarBrand ?? "");
             NotificationText += " " + (dialogue.CarModel ?? "");
 
             NotificationText = NotificationText.Trim();
 
+
+
             NotificationVin = dialogue.VIN ?? "";
             NotificationYear = dialogue.Year ?? "";
+            Title.Text = NotificationText;
+            Vin.Text = NotificationVin;
+            Year.Text = NotificationYear;
+            Label.MouseDown += (sender, args) =>
+            {
+                Keyboard.Focus(Label);
+            };
             Label.GotKeyboardFocus += (sender, args) =>
             {
                 Keyboard.Focus(UserInput);
@@ -91,6 +109,9 @@ namespace ZappChat.Controls
             else
                 NotificationVin = "VIN: " + vin;
             NotificationYear = year ?? "";
+
+            Vin.Text = NotificationVin;
+            Year.Text = NotificationYear;
         }
 
         public void CloseNotify()
@@ -157,7 +178,7 @@ namespace ZappChat.Controls
             SendAnswerMessageRequest(text);
 
             var userInput = UserInput.Text.Trim();
-            if(!userInput.Equals(string.Empty))
+            if (!userInput.Equals(string.Empty))
                 SendAnswerMessageRequest(userInput);
 
             AppEventManager.NotificationAnswerEvent(Dialogue.RoomId);
@@ -189,6 +210,11 @@ namespace ZappChat.Controls
             };
             var sendMessageRequestToJson = JsonConvert.SerializeObject(sendMessageRequest);
             AppWebSocketEventManager.SendObject(sendMessageRequestToJson);
+        }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            DragMove();
         }
     }
 }

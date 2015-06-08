@@ -1,24 +1,33 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using Hardcodet.Wpf.TaskbarNotification;
 using Newtonsoft.Json;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
 using ZappChat.Core.Socket.Requests;
+using System.Globalization;
 
 namespace ZappChat.Controls
 {
     /// <summary>
-    /// Логика взаимодействия для MessageNotification.xaml
+    /// Логика взаимодействия для MessageNotificationWindow.xaml
     /// </summary>
-    public partial class MessageNotification : UserControl, INotification
+    public partial class MessageNotificationWindow : Window, INotification
     {
         public Dialogue Dialogue { get; set; }
 
         public static readonly DependencyProperty NotificationTextProperty = DependencyProperty.Register(
-            "NotificationText", typeof(string), typeof(MessageNotification), new FrameworkPropertyMetadata("Title"));
+            "NotificationText", typeof(string), typeof(MessageNotificationWindow), new FrameworkPropertyMetadata("Title"));
 
         public string NotificationText
         {
@@ -26,24 +35,22 @@ namespace ZappChat.Controls
             set { SetValue(NotificationTextProperty, value); }
 
         }
-
-        public MessageNotification()
+        public MessageNotificationWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
-
-        public MessageNotification(Dialogue dialogue)
+        public MessageNotificationWindow(Dialogue dialogue, double rightMonitorBorder, double bottomMonitorBorders)
             : this()
         {
             Dialogue = dialogue;
             NotificationText = dialogue.GetTitleMessage();
+            Left = rightMonitorBorder - Width - 10;
+            Top = bottomMonitorBorders - Height - 10;
+            Title.Text = NotificationText;
         }
 
         public void CloseNotify()
         {
-//            var taskbarIcon = TaskbarIcon.GetParentTaskbarIcon(this);
-//            if (taskbarIcon != null)
-//                taskbarIcon.CloseBalloon();
             AppEventManager.CloseNotificationEvent();
         }
 
@@ -77,6 +84,11 @@ namespace ZappChat.Controls
         public void SetCarInfo(string brand, string model, string vin, string year)
         {
             Dialogue.SetCarInformation(brand, model, vin, year);
+        }
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            DragMove();
         }
     }
 }

@@ -33,7 +33,10 @@ namespace ZappChat
 
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
-        
+
+        public static double RightMonitorBorder = SystemParameters.WorkArea.Right;
+        public static double BottomMoniorBorder = SystemParameters.WorkArea.Bottom;
+
         private static MainWindow main;
         private static LoginWindow login;
         public static TaskbarIcon NotifyIcon { get; private set; }
@@ -92,9 +95,9 @@ namespace ZappChat
             };
             AppEventManager.AuthorizationSuccess += AuthorizationSuccess;
             AppEventManager.AuthorizationFail += AuthorizationFail;
-            AppEventManager.OpenDialogue +=AppEventManagerOnOpenDialogue;
-            AppEventManager.CloseNotification+=AppEventManager_CloseNotification;
-            AppEventManager.SetCarInfo+=AppEventManager_SetCarInfo;
+            AppEventManager.OpenDialogue += AppEventManagerOnOpenDialogue;
+            AppEventManager.CloseNotification += AppEventManager_CloseNotification;
+            AppEventManager.SetCarInfo += AppEventManager_SetCarInfo;
 
             InicializeNotyfication();
             notifications = new Queue<INotification>();
@@ -107,44 +110,48 @@ namespace ZappChat
             fileMonitore.Tick += (o, args) => Dispatcher.Invoke(new Action(FileDispetcher.CheckExistsFiles));
             fileMonitore.Start();
 
-            updateCountersDispatcherTimer = new DispatcherTimer {Interval = TimeSpan.FromMinutes(UpdateControlTimeIntervalInMinutes)};
+            updateCountersDispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(UpdateControlTimeIntervalInMinutes) };
             updateCountersDispatcherTimer.Tick += (o, args) => AppEventManager.UpdateCounterEvent();
         }
 
         private void AuthorizationSuccess(object sender, AuthorizationType type)
         {
-            if(currentWindow == OpenedWindow.Login)
+            if (currentWindow == OpenedWindow.Login)
                 SwitchWindow(OpenedWindow.Chat);
             updateCountersDispatcherTimer.Start();
         }
 
         private void AuthorizationFail(object sender, AuthorizationType type)
         {
-            if(currentWindow == OpenedWindow.Chat)
+            if (currentWindow == OpenedWindow.Chat)
                 SwitchWindow(OpenedWindow.Login);
             updateCountersDispatcherTimer.Stop();
         }
-
+        private static void ShowNotification(Window notificationWindow)
+        {
+            notificationWindow.Show();
+        }
+        private static void CloseNotification()
+        {
+            (currentNotification as Window).Close();
+        }
         private static void CreateNotification(INotification newNotification)
         {
-//            NotifyIcon.CloseBalloon();
-//            currentQueryNotification = new QueryNotification(dialogue);
-//            NotifyIcon.ShowCustomBalloon(currentQueryNotification, PopupAnimation.Fade, null);
             if (currentNotification == null)
             {
                 currentNotification = newNotification;
-                NotifyIcon.ShowCustomBalloon(newNotification as UIElement, PopupAnimation.Fade, null);
+                ShowNotification(newNotification as Window);
             }
             else
             {
                 if (currentNotification.Dialogue.Equals(newNotification.Dialogue))
                 {
                     currentNotification = newNotification;
-                    NotifyIcon.CloseBalloon();
-                    NotifyIcon.ShowCustomBalloon(newNotification as UIElement, PopupAnimation.Fade, null);
+                    CloseNotification();
+                    ShowNotification(newNotification as Window);
                     return;
                 }
-                if(!notifications.Contains(newNotification,Support.DialogueComparer))
+                if (!notifications.Contains(newNotification, Support.DialogueComparer))
                     notifications.Enqueue(newNotification);
                 else
                 {
@@ -171,18 +178,18 @@ namespace ZappChat
                     currentNotification.SetCarInfo(arg2, arg3, arg4, arg5);
                 }
             }
-            
+
         }
 
         public static void CreateQueryNotification(Dialogue dialogue)
         {
-            var newNotification = new QueryNotification(dialogue);
+            var newNotification = new QueryNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
             CreateNotification(newNotification);
         }
 
         public static void CreateMessageNotification(Dialogue dialogue)
         {
-            var newNotification = new MessageNotification(dialogue);
+            var newNotification = new MessageNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
             CreateNotification(newNotification);
         }
 
@@ -202,7 +209,7 @@ namespace ZappChat
         private static Queue<INotification> Remove(Queue<INotification> queue, INotification removable)
         {
             if (removable == null) throw new NullReferenceException("Ссылка не ссылается на объект");
-            if (!queue.Contains(removable,Support.DialogueComparer)) throw new ArgumentException("Переданного объекта нет в очереди");
+            if (!queue.Contains(removable, Support.DialogueComparer)) throw new ArgumentException("Переданного объекта нет в очереди");
             return new Queue<INotification>(queue.Where(notification => !notification.Dialogue.Equals(removable.Dialogue)));
         }
 
@@ -220,11 +227,11 @@ namespace ZappChat
 
         private void AppEventManager_CloseNotification()
         {
-            NotifyIcon.CloseBalloon();
+            CloseNotification();
             if (notifications.Count != 0)
             {
                 currentNotification = notifications.Dequeue();
-                NotifyIcon.ShowCustomBalloon(currentNotification as UIElement, PopupAnimation.Fade, null);
+                ShowNotification(currentNotification as Window);
             }
             else
             {
@@ -256,7 +263,7 @@ namespace ZappChat
 
         private void SwitchWindow(OpenedWindow window)
         {
-            if(currentWindow == window) return;
+            if (currentWindow == window) return;
             switch (window)
             {
                 case OpenedWindow.Login:
@@ -272,7 +279,6 @@ namespace ZappChat
 
             }
         }
-
         public static void ShowCurrentWindow()
         {
             if (currentWindow == OpenedWindow.Chat)
@@ -333,7 +339,7 @@ namespace ZappChat
 
         public static void ChangeDialogueStatus(ulong roomId, string status)
         {
-            if(!DialoguesStatuses.ContainsKey(roomId))
+            if (!DialoguesStatuses.ContainsKey(roomId))
                 DialoguesStatuses.Add(roomId, status);
             else
                 DialoguesStatuses[roomId] = status;
