@@ -24,7 +24,11 @@ namespace ZappChat
         public const double CheckingFilesIntervalInSeconds = 2.0;
         public const double UpdateControlTimeIntervalInMinutes = 2.0;
         public const double NotificationCloseTimeInSeconds = 5.0;
+#if DEBUG
+        public const double IntervalBetweenReshowNotificationInSecond = 5.0;
+#else
         public const double IntervalBetweenReshowNotificationInSecond = 300.0;
+#endif
         public const double InterbalBetweenUpdateTryInSeconds = 10.0;
 
 #if DEBUG
@@ -41,12 +45,10 @@ namespace ZappChat
         public static ConnectionStatus ConnectionStatus { get; set; }
         public static ulong LastLogId { get; set; }
 
-        public static double RightMonitorBorder = SystemParameters.WorkArea.Right;
-        public static double BottomMoniorBorder = SystemParameters.WorkArea.Bottom;
 
         public static MainWindow MainWin;
         public static LoginWindow LoginWin;
-        public static TaskbarIcon NotifyIcon { get; private set; }
+        public static TaskbarIcon Taskbar { get; private set; }
         private static OpenedWindow currentWindow;
 
         private static DispatcherTimer reconnectionTimer;
@@ -55,9 +57,6 @@ namespace ZappChat
         private static DispatcherTimer updateCountersDispatcherTimer;
 
         public static Dictionary<ulong, string> DialoguesStatuses;
-
-        private static INotification currentNotification;
-        private static Queue<INotification> notifications;
 
         enum OpenedWindow
         {
@@ -104,11 +103,11 @@ namespace ZappChat
             AppEventManager.AuthorizationFail += AuthorizationFail;
             AppEventManager.OpenDialogue += AppEventManagerOnOpenDialogue;
             AppEventManager.CloseNotification += AppEventManager_CloseNotification;
-            AppEventManager.SetCarInfo += AppEventManager_SetCarInfo;
-            AppEventManager.ReshowNotification += AppEventManager_ReshowNotification;
+            AppEventManager.AnswerOnQuery += AppEventManagerOnAnswerOnQuery;
+            AppEventManager.DeleteDialogue +=
+                (o, args) => AppEventManager.CloseNotificationEvent(args.DeletedDialogue.RoomId, false);
 
-            InicializeNotyfication();
-            notifications = new Queue<INotification>();
+            InicializeTaskbar();
 
             reconnectionTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(IntervalBetweenConnectionInSeconds) };
             reconnectionTimer.Tick += (o, args) => AppWebSocketEventManager.OpenWebSocket();
@@ -121,6 +120,14 @@ namespace ZappChat
             updateCountersDispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(UpdateControlTimeIntervalInMinutes) };
             updateCountersDispatcherTimer.Tick += (o, args) => AppEventManager.UpdateCounterEvent();
         }
+
+        private void AppEventManagerOnAnswerOnQuery(ulong queryId)
+        {
+            var dialogue = MainWin.Dialogues.DialogueWithQuery.FirstOrDefault(d => d.Dialogue.QueryId == queryId);
+            if (dialogue != null)
+                AppEventManager.CloseNotificationEvent(dialogue.Dialogue.RoomId, false);
+        }
+
 
         private void AuthorizationSuccess(object sender, AuthorizationType type)
         {
@@ -135,119 +142,23 @@ namespace ZappChat
                 SwitchWindow(OpenedWindow.Login);
             updateCountersDispatcherTimer.Stop();
         }
-        private static void ShowNotification(Window notificationWindow)
-        {
-            notificationWindow.Show();
-        }
-        private static void CloseNotification()
-        {
-            (currentNotification as Window).Close();
-        }
-        private static void CreateNotification(INotification newNotification)
-        {
-            if (currentNotification == null)
-            {
-                currentNotification = newNotification;
-                ShowNotification(newNotification as Window);
-            }
-            else
-            {
-                if (currentNotification.Dialogue.Equals(newNotification.Dialogue))
-                {
-                    CloseNotification();
-                    currentNotification = newNotification;
-                    ShowNotification(newNotification as Window);
-                    return;
-                }
-                if (!notifications.Contains(newNotification, Support.DialogueComparer))
-                    notifications.Enqueue(newNotification);
-                else
-                {
-                    var oldNotification =
-                        notifications.First(x => Equals(newNotification.Dialogue.RoomId, x.Dialogue.RoomId));
-                    notifications = Change(notifications, oldNotification, newNotification);
-                }
-            }
-        }
-
-        private void AppEventManager_SetCarInfo(ulong arg1, string arg2, string arg3, string arg4, string arg5)
-        {
-            var notify = notifications.FirstOrDefault(x => x.Dialogue.CarId == arg1);
-            if (notify != null)
-            {
-                notify.SetCarInfo(arg2, arg3, arg4, arg5);
-                notifications = Change(notifications, notify, notify);
-                return;
-            }
-            if (currentNotification != null)
-            {
-                if (currentNotification.Dialogue.CarId == arg1)
-                {
-                    currentNotification.SetCarInfo(arg2, arg3, arg4, arg5);
-                }
-            }
-
-        }
-
-        public static void CreateQueryNotification(Dialogue dialogue)
-        {
-            var newNotification = new QueryNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
-            CreateNotification(newNotification);
-        }
-
-        public static void CreateMessageNotification(Dialogue dialogue)
-        {
-            var newNotification = new MessageNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
-            CreateNotification(newNotification);
-        }
-
         private void AppEventManagerOnOpenDialogue(ulong id, List<Message> messages)
         {
-            if (currentNotification != null)
-                if (currentNotification.Dialogue.RoomId == id)
-                    currentNotification.CloseNotify(true);
-            if (notifications.Count != 0)
-            {
-                var notification = notifications.FirstOrDefault(x => x.Dialogue.RoomId == id);
-                if (notification != null)
-                    notifications = Remove(notifications, notification);
-            }
+            var notification = AppNotificationManager.GetNotificationOnRoomId(id);
+            if(notification == null) return;
 
-        }
-        private static Queue<INotification> Remove(Queue<INotification> queue, INotification removable)
-        {
-            if (removable == null) throw new NullReferenceException("Ссылка не ссылается на объект");
-            if (!queue.Contains(removable, Support.DialogueComparer)) throw new ArgumentException("Переданного объекта нет в очереди");
-            return new Queue<INotification>(queue.Where(notification => !notification.Dialogue.Equals(removable.Dialogue)));
+            AppEventManager.CloseNotificationEvent(id, notification.Type != NotificationType.Message);
         }
 
-        private static Queue<INotification> Change(Queue<INotification> queue, INotification changing, INotification changed)
+        private void AppEventManager_CloseNotification(ulong id, bool flag)
         {
-            if (changed == null) throw new NullReferenceException("Ссылка не ссылается на объект");
-            if (!queue.Contains(changing, Support.DialogueComparer)) throw new ArgumentException("Переданного объекта нет в очереди");
-            var newQueue = new Queue<INotification>(queue.Count);
-            foreach (var notification in queue)
-            {
-                newQueue.Enqueue(notification.Equals(changing) ? changed : notification);
-            }
-            return newQueue;
-        }
-
-        private void AppEventManager_CloseNotification()
-        {
-            CloseNotification();
-            if (notifications.Count != 0)
-            {
-                currentNotification = notifications.Dequeue();
-                ShowNotification(currentNotification as Window);
-            }
+            if (flag)
+                AppNotificationManager.CloseNotificationWithReshow(id);
             else
-            {
-                currentNotification = null;
-            }
+                AppNotificationManager.CloseNotificationWithoutReshow(id);
         }
 
-        void AppEventManager_ReshowNotification(Dialogue dialogue, NotificationType type)
+/*        void AppEventManager_ReshowNotification(Dialogue dialogue, NotificationType type)
         {
             INotification notification;
             if (type == NotificationType.Message)
@@ -256,14 +167,14 @@ namespace ZappChat
                 notification = new QueryNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
             if (currentNotification == null || !notifications.Contains(notification, Support.DialogueComparer))
                 CreateNotification(notification);
-        }
-        private void InicializeNotyfication()
+        }*/
+        private void InicializeTaskbar()
         {
             var showCommand = new ShowWindowCommand();
             var appCloseCommand = new CloseApplicationCommand();
             var iconUri = new Uri("pack://application:,,,/Images/icon.ico", UriKind.RelativeOrAbsolute);
             var icon = BitmapFrame.Create(iconUri);
-            NotifyIcon = new TaskbarIcon
+            Taskbar = new TaskbarIcon
             {
                 IconSource = icon,
                 ToolTipText = "ZappChat",

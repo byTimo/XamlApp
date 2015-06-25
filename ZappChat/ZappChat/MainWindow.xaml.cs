@@ -104,10 +104,10 @@ namespace ZappChat
                 control.ContaintUnreadMessages = true;
             }
             if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0))
-                App.CreateMessageNotification(dialogue);
+                AppNotificationManager.CreateMessageNotification(dialogue);
             if (Equals(chat.CurrentDialogue, dialogue) && !IsActive)
             {
-                App.CreateMessageNotification(dialogue);
+                AppNotificationManager.CreateMessageNotification(dialogue);
             }
 
         }
@@ -131,7 +131,7 @@ namespace ZappChat
             //Реагирование по запросу на удаление:
             if (e.IsConfirmed)
             {
-                App.NotifyIcon.CloseBalloon();
+                App.Taskbar.CloseBalloon();
                 //Чата
                 if (Equals(chat.CurrentDialogue, e.DeletedDialogue))
                 {
@@ -234,11 +234,11 @@ namespace ZappChat
                 myQuaryButton.MessagesCount++;
                 var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
                 if (control != null) control.DialogueOpened = false;
-                App.CreateQueryNotification(dialogue);
+                AppNotificationManager.CreateQueryNotification(dialogue);
             }
             if(Equals(chat.CurrentDialogue, dialogue) && !IsActive)
             {
-                App.CreateQueryNotification(dialogue);
+                AppNotificationManager.CreateQueryNotification(dialogue);
             }
         }
 

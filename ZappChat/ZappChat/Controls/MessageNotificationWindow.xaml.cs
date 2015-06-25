@@ -16,6 +16,7 @@ using ZappChat.Core;
 using ZappChat.Core.Socket;
 using ZappChat.Core.Socket.Requests;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 
 namespace ZappChat.Controls
@@ -25,8 +26,8 @@ namespace ZappChat.Controls
     /// </summary>
     public partial class MessageNotificationWindow : Window, INotification
     {
+        public DispatcherTimer ReshowTimer { get; set; }
 
-        private DispatcherTimer reshowNotification;
         public Dialogue Dialogue { get; set; }
 
         public NotificationType Type { get; set; }
@@ -52,25 +53,17 @@ namespace ZappChat.Controls
             NotificationText = dialogue.GetTitleMessage();
             Left = rightMonitorBorder - Width - 10;
             Top = bottomMonitorBorders - Height - 10;
-            reshowNotification = new DispatcherTimer { Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond) };
-            reshowNotification.Tick += (s, e) =>
+            ReshowTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond) };
+            ReshowTimer.Tick += (s, e) =>
             {
-                reshowNotification.Stop();
-                AppEventManager.ReshowNotificationEvent(Dialogue, Type);
+                ReshowTimer.Stop();
+                AppEventManager.ReshowNotificationEvent(Dialogue.RoomId);
             };
-            reshowNotification.Stop();
-        }
-
-        public void CloseNotify(bool isOpened)
-        {
-            if(!isOpened)
-                reshowNotification.Start();
-            AppEventManager.CloseNotificationEvent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            CloseNotify(false);
+            AppEventManager.CloseNotificationEvent(Dialogue.RoomId, true);
         }
 
         private void CornerRadiusButton_Click(object sender, RoutedEventArgs e)
@@ -87,7 +80,7 @@ namespace ZappChat.Controls
                 AppWebSocketEventManager.SendObject(historyRequestToJson);
                 App.ShowCurrentWindow();
             }
-            CloseNotify(true);
+            AppEventManager.CloseNotificationEvent(Dialogue.RoomId, false);
         }
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
@@ -99,6 +92,7 @@ namespace ZappChat.Controls
         {
             Dialogue.SetCarInformation(brand, model, vin, year);
         }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);

@@ -108,12 +108,12 @@ namespace ZappChat.Core
             if (handler != null) handler(queryId);
         }
 
-        public static event Action CloseNotification;
+        public static event Action<ulong,bool> CloseNotification;
 
-        public static void CloseNotificationEvent()
+        public static void CloseNotificationEvent(ulong roomId, bool reshowNotificationInFuture)
         {
             if(CloseNotification != null)
-                CloseNotification.Invoke();
+                CloseNotification.Invoke(roomId, reshowNotificationInFuture);
         }
 
         public static event Action<ulong> NotificationAnswer;
@@ -123,11 +123,11 @@ namespace ZappChat.Core
             if(NotificationAnswer != null)
                 NotificationAnswer.Invoke(roomId);
         }
-        public static event Action<Dialogue, NotificationType> ReshowNotification;
-        public static void ReshowNotificationEvent(Dialogue dialogue, NotificationType type)
+        public static event Action<ulong> ReshowNotification;
+        public static void ReshowNotificationEvent(ulong roomId)
         {
             if (ReshowNotification != null)
-                ReshowNotification.Invoke(dialogue, type);
+                ReshowNotification.Invoke(roomId);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace ZappChat.Controls
     /// </summary>
     public partial class QueryNotificationWindow : Window, INotification
     {
-        private DispatcherTimer reshowNotification;
+        public DispatcherTimer ReshowTimer { get; set; }
         public Dialogue Dialogue { get; set; }
         public NotificationType Type { get; set; }
 
@@ -95,18 +95,17 @@ namespace ZappChat.Controls
                 if (UserInput.Text.Trim().Equals(string.Empty))
                     Label.Visibility = Visibility.Visible;
             };
-            reshowNotification = new DispatcherTimer { Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond) };
-            reshowNotification.Tick += (s, e) =>
+            ReshowTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(App.IntervalBetweenReshowNotificationInSecond) };
+            ReshowTimer.Tick += (s, e) =>
             {
                 if(!App.MainWin.IsEqualChatDialogue(Dialogue))
                 {
-                    reshowNotification.Stop();
-                    AppEventManager.ReshowNotificationEvent(Dialogue, Type);
+                    ReshowTimer.Stop();
+                    AppEventManager.ReshowNotificationEvent(Dialogue.RoomId);
                 }
                 if (!App.IsThisUnreadMessage(Dialogue.RoomId, 0))
-                    reshowNotification.Stop();
+                    ReshowTimer.Stop();
             };
-            reshowNotification.Stop();
         }
 
         public void SetCarInfo(string brand, string model, string vin, string year)
@@ -122,18 +121,9 @@ namespace ZappChat.Controls
                 NotificationVin = "VIN: " + vin;
             NotificationYear = year ?? "";
         }
-
-        public void CloseNotify(bool isOpened)
-        {
-            if (App.IsThisUnreadMessage(Dialogue.RoomId, 0))
-                reshowNotification.Start();
-            AppEventManager.CloseNotificationEvent();
-        }
-
-
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            CloseNotify(false);
+            AppEventManager.CloseNotificationEvent(Dialogue.RoomId, true);
         }
 
 
@@ -151,7 +141,7 @@ namespace ZappChat.Controls
                 AppWebSocketEventManager.SendObject(historyRequestToJson);
                 App.ShowCurrentWindow();
             }
-            CloseNotify(true);
+            AppEventManager.CloseNotificationEvent(Dialogue.RoomId, true);
         }
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
@@ -193,7 +183,7 @@ namespace ZappChat.Controls
                 SendAnswerMessageRequest(userInput);
 
             AppEventManager.NotificationAnswerEvent(Dialogue.RoomId);
-            CloseNotify(true);
+            AppEventManager.CloseNotificationEvent(Dialogue.RoomId, false);
 
         }
         private void SendAnswerRequest(bool selling, bool onStock)

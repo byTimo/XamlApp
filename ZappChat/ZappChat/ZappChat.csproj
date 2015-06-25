@@ -98,6 +98,7 @@
     <Compile Include="Controls\QueryNotificationWindow.xaml.cs">
       <DependentUpon>QueryNotificationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Core\AppNotificationManager.cs" />
     <Compile Include="Core\AppUpdateManager.cs" />
     <Compile Include="Core\Dialogue.cs" />
     <Compile Include="Core\INotification.cs" />
