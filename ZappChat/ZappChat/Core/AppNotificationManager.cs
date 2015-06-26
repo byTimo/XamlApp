@@ -119,7 +119,8 @@ namespace ZappChat.Core
         {
             if (currentNotification != null && currentNotification.Dialogue.RoomId == roomId)
                 return currentNotification;
-            return otherNotification.FirstOrDefault(n => n.Dialogue.RoomId == roomId);
+            return otherNotification.FirstOrDefault(n => n.Dialogue.RoomId == roomId) ??
+                   WaitingNotifications.FirstOrDefault(n => n.Dialogue.RoomId == roomId);
         }
         private static void CreateNotification(INotification newNotification)
         {

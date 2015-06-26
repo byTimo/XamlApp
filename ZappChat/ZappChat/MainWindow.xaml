@@ -58,13 +58,10 @@
 				<TabItem Header="Сегодня" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
 					<controls:QueryList x:Name="TabNow"/>
 				</TabItem>
-				<TabItem Header="Вчера">
-					<controls:QueryList x:Name="TabYesterday"/>
-				</TabItem>
-				<!--<TabItem Header="За неделю">
-					<ListBox x:Name="TabSevenDays"/>
-				</TabItem>-->
-			</TabControl>
+                <TabItem Header="Вчера">
+                    <controls:QueryList x:Name="TabYesterday"/>
+                </TabItem>
+            </TabControl>
             <controls:Chat x:Name="chat" Grid.Column="1" Background="White" Margin="15,55,15,0" Visibility="Hidden"/>
         </Grid>
 	</Border>
