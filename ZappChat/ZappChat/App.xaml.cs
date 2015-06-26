@@ -158,16 +158,6 @@ namespace ZappChat
                 AppNotificationManager.CloseNotificationWithoutReshow(id);
         }
 
-/*        void AppEventManager_ReshowNotification(Dialogue dialogue, NotificationType type)
-        {
-            INotification notification;
-            if (type == NotificationType.Message)
-                notification = new MessageNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
-            else
-                notification = new QueryNotificationWindow(dialogue, RightMonitorBorder, BottomMoniorBorder);
-            if (currentNotification == null || !notifications.Contains(notification, Support.DialogueComparer))
-                CreateNotification(notification);
-        }*/
         private void InicializeTaskbar()
         {
             var showCommand = new ShowWindowCommand();
