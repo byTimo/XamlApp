@@ -88,10 +88,10 @@
             <Button Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Right" Margin="0,10,30,0" VerticalAlignment="Top" Click="OpenButton_Click" Cursor="Hand" Width="17" Height="15">
                 <Image Source="/ZappChat;component/Images/window.png" Stretch="Fill"/>
             </Button>
-            <TextBlock x:Name="Title" Text="{Binding ElementName=QueryNotification,Path=NotificationText}"  Margin="25,0,10,0" Grid.Row="1" TextWrapping="Wrap" Foreground="White" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="19" VerticalAlignment="Top" TextDecorations="Underline" Height="25"/>
+            <TextBox x:Name="TitleTextBox" Text="{Binding ElementName=QueryNotification,Path=NotificationText}" IsReadOnly="True"  Margin="25,0,10,0" Grid.Row="1" TextWrapping="Wrap" Foreground="White" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="19" VerticalAlignment="Top" TextDecorations="Underline" Height="25" Background="{x:Null}" BorderBrush="{x:Null}" GotMouseCapture="TextBoxGotMouseCapture"/>
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="25,0,10,0" VerticalAlignment="Top" Height="20">
-                <TextBlock x:Name="Vin" Text="{Binding ElementName=QueryNotification,Path=NotificationVin}" Foreground="#FF60605F" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Margin="0,0,5,0" />
-                <TextBlock x:Name="Year" Text="{Binding ElementName=QueryNotification,Path=NotificationYear}" Foreground="#FF60605F" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333"  />
+                <TextBox x:Name="VinTextBox" Text="{Binding ElementName=QueryNotification,Path=NotificationVin}" IsReadOnly="True" Foreground="#FF60605F" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Margin="0,0,5,0" Background="{x:Null}" BorderBrush="{x:Null}" GotMouseCapture="TextBoxGotMouseCapture"/>
+                <TextBox x:Name="YearTextBox" Text="{Binding ElementName=QueryNotification,Path=NotificationYear}" IsReadOnly="True" Foreground="#FF60605F" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Background="{x:Null}" BorderBrush="{x:Null}" GotMouseCapture="TextBoxGotMouseCapture"/>
             </StackPanel>
             <Border Grid.Row="3" Margin="25,0,35,5" BorderThickness="2" CornerRadius="7" BorderBrush="White">
                 <Grid Margin="10,5">

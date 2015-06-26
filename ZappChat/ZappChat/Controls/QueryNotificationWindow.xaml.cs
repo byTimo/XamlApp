@@ -144,11 +144,6 @@ namespace ZappChat.Controls
             AppEventManager.CloseNotificationEvent(Dialogue.RoomId, true);
         }
 
-        private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            OpenButton_Click(null, null);
-        }
-
         private void FirstButton_OnClick(object sender, RoutedEventArgs e)
         {
             SendAnswer(AnswerType.Selling);
@@ -216,6 +211,10 @@ namespace ZappChat.Controls
         {
             base.OnMouseLeftButtonDown(e);
             DragMove();
+        }
+        private void TextBoxGotMouseCapture(object sender, MouseEventArgs mouseEventArgs)
+        {
+            ((TextBox)sender).SelectAll();
         }
     }
 }

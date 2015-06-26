@@ -21,6 +21,10 @@ namespace ZappChat.Controls
     [TemplatePart(Name = "OnOrder", Type = typeof(CornerRadiusButton))]
     [TemplatePart(Name = "NoSelling", Type = typeof(CornerRadiusButton))]
     [TemplatePart(Name = "Blocker", Type = typeof(Rectangle))]
+    [TemplatePart(Name = "TitleTextBox", Type = typeof(TextBox))]
+    [TemplatePart(Name = "CarTextBox", Type = typeof(TextBox))]
+    [TemplatePart(Name = "VinTextBox", Type = typeof(TextBox))]
+
     public class Chat : Control
     {
         public Dialogue CurrentDialogue { get; set; }
@@ -29,6 +33,9 @@ namespace ZappChat.Controls
         private CornerRadiusButton _onOrder;
         private CornerRadiusButton _noSelling;
         private TextBox _userInput;
+        private TextBox _titleTextBox;
+        private TextBox _carTextBox;
+        private TextBox _vinTextBox;
         private Rectangle _blocker;
 
         public static readonly DependencyProperty ChatMessagesProperty = DependencyProperty.Register("ChatMessages",
@@ -127,9 +134,17 @@ namespace ZappChat.Controls
             _userInput = GetTemplateChild("UserInput") as TextBox;
             if (_userInput == null) throw new NullReferenceException("Не определил TextBox в чате!");
             _userInput.KeyDown += UserInputOnKeyDown;
-
             _blocker = GetTemplateChild("Blocker") as Rectangle;
             if (_blocker == null) throw new NullReferenceException("Не определеил Blocker");
+            _titleTextBox = GetTemplateChild("TitleTextBox") as TextBox;
+            if (_titleTextBox == null) throw new NullReferenceException("Не определил TextBox в чате!");
+            _titleTextBox.GotMouseCapture += TextBoxGotMouseCapture;
+            _carTextBox = GetTemplateChild("CarTextBox") as TextBox;
+            if (_carTextBox == null) throw new NullReferenceException("Не определил TextBox в чате!");
+            _carTextBox.GotMouseCapture += TextBoxGotMouseCapture;
+            _vinTextBox = GetTemplateChild("VinTextBox") as TextBox;
+            if (_vinTextBox == null) throw new NullReferenceException("Не определил TextBox в чате!");
+            _vinTextBox.GotMouseCapture += TextBoxGotMouseCapture;
 
             ChatMessages = new ObservableCollection<ChatMessage>();
             CurrentDialogue = new Dialogue();
@@ -142,6 +157,11 @@ namespace ZappChat.Controls
             var sendButton = GetTemplateChild("Send") as CornerRadiusButton;
             sendButton.Click += SendMessageThroughtButtonClick;
 
+        }
+
+        private void TextBoxGotMouseCapture(object sender, MouseEventArgs mouseEventArgs)
+        {
+            ((TextBox)sender).SelectAll();
         }
 
         private void UserInputOnKeyDown(object sender, KeyEventArgs keyEventArgs)
