@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Newtonsoft.Json;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
@@ -25,7 +28,7 @@ namespace ZappChat.Controls
     [TemplatePart(Name = "TitleTextBox", Type = typeof(TextBox))]
     [TemplatePart(Name = "CarTextBox", Type = typeof(TextBox))]
     [TemplatePart(Name = "VinTextBox", Type = typeof(TextBox))]
-
+    [TemplatePart(Name = "MessageLoad", Type = typeof(StackPanel))]
     public class Chat : Control
     {
         public Dialogue CurrentDialogue { get; set; }
@@ -38,6 +41,7 @@ namespace ZappChat.Controls
         private TextBox _carTextBox;
         private TextBox _vinTextBox;
         private Rectangle _blocker;
+        private StackPanel _messageLoad;
 
         public static readonly DependencyProperty ChatMessagesProperty = DependencyProperty.Register("ChatMessages",
             typeof (ObservableCollection<ChatMessage>), typeof (Chat),
@@ -50,7 +54,7 @@ namespace ZappChat.Controls
         }
         public static readonly DependencyProperty DialogueTitleProperty = DependencyProperty.Register("DialogueTitle",
             typeof (string), typeof (Chat),
-            new FrameworkPropertyMetadata("Title"));
+            new FrameworkPropertyMetadata(""));
 
         public string DialogueTitle
         {
@@ -80,7 +84,6 @@ namespace ZappChat.Controls
             get { return GetValue(VinProperty) as string; }
             set { SetValue(VinProperty, value); }
         }
-
         static Chat()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Chat), new FrameworkPropertyMetadata(typeof(Chat)));
@@ -88,35 +91,41 @@ namespace ZappChat.Controls
 
         public void OpenDialogue(Dialogue opendedDialogue)
         {
-            if (opendedDialogue.Status != DialogueStatus.Created || opendedDialogue.QueryId == 0)
+            var back = new BackgroundWorker();
+            back.DoWork += (sender, args) => Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                _selling.Visibility = Visibility.Collapsed;
-                _noSelling.Visibility = Visibility.Collapsed;
-                _onOrder.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                _selling.Visibility = Visibility.Visible;
-                _noSelling.Visibility = Visibility.Visible;
-                _onOrder.Visibility = Visibility.Visible;
-            }
-            if (!Equals(CurrentDialogue, opendedDialogue))
-                _userInput.Text = "";
-            CurrentDialogue = opendedDialogue;
-            DialogueTitle = CurrentDialogue.GetTitleMessage();
+                if (opendedDialogue.Status != DialogueStatus.Created || opendedDialogue.QueryId == 0)
+                {
+                    _selling.Visibility = Visibility.Collapsed;
+                    _noSelling.Visibility = Visibility.Collapsed;
+                    _onOrder.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    _selling.Visibility = Visibility.Visible;
+                    _noSelling.Visibility = Visibility.Visible;
+                    _onOrder.Visibility = Visibility.Visible;
+                }
+                if (!Equals(CurrentDialogue, opendedDialogue))
+                    _userInput.Text = "";
+                CurrentDialogue = opendedDialogue;
+                DialogueTitle = CurrentDialogue.GetTitleMessage();
 
-            ChatMessages = new ObservableCollection<ChatMessage>();
-            foreach (var message in CurrentDialogue.Messages)
-            {
-                ChatMessages.Add(new ChatMessage(message));
-            }
-            var carLabel = "" + (opendedDialogue.CarBrand ?? "")+ " " + (opendedDialogue.CarModel ?? "");
-            Car = carLabel.Trim() != "" ? carLabel : "Автомобиль";
-            Vin = opendedDialogue.VIN ?? "Vin";
-            var chat = GetTemplateChild("MessageChat") as ListBox;
-            if(chat == null) throw new NullReferenceException("Не определил ListBox в чате");
-            if(chat.Items.Count != 0)
-                chat.ScrollIntoView(chat.Items[chat.Items.Count-1]);
+                ChatMessages = new ObservableCollection<ChatMessage>();
+                foreach (var message in CurrentDialogue.Messages)
+                {
+                    ChatMessages.Add(new ChatMessage(message));
+                }
+                var carLabel = "" + (opendedDialogue.CarBrand ?? "") + " " + (opendedDialogue.CarModel ?? "");
+                Car = carLabel.Trim() != "" ? carLabel : "Автомобиль";
+                Vin = opendedDialogue.VIN ?? "Vin";
+                var chat = GetTemplateChild("MessageChat") as ListBox;
+                if (chat == null) throw new NullReferenceException("Не определил ListBox в чате");
+                if (chat.Items.Count != 0)
+                    chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
+                AppEventManager.AfteropenDialogueEvent();
+            }));
+            back.RunWorkerAsync();
         }
 
         public void AddNewMessageToChat(Dialogue dialogue)
@@ -151,6 +160,8 @@ namespace ZappChat.Controls
             _vinTextBox = GetTemplateChild("VinTextBox") as TextBox;
             if (_vinTextBox == null) throw new NullReferenceException("Не определил TextBox в чате!");
             _vinTextBox.GotMouseCapture += TextBoxGotMouseCapture;
+            _messageLoad = GetTemplateChild("MessageLoad") as StackPanel;
+            if (_messageLoad == null) throw new NullReferenceException("Не определил StackPanel в чате!");
 
             ChatMessages = new ObservableCollection<ChatMessage>();
             CurrentDialogue = new Dialogue();
@@ -295,6 +306,18 @@ namespace ZappChat.Controls
             if (stringLength <= minSymbolChangeCount) return defaultFontSize;
             var changedFontSize = maxLength/stringLength;
             return changedFontSize >= minFontSize ? changedFontSize : minFontSize;
+        }
+
+        public void BeginMessageLoad()
+        {
+            _blocker.Visibility = Visibility.Visible;
+            _messageLoad.Visibility = Visibility.Visible;
+        }
+
+        public void EndMessageLoad()
+        {
+            _blocker.Visibility = Visibility.Collapsed;
+            _messageLoad.Visibility = Visibility.Collapsed;
         }
     }
 }

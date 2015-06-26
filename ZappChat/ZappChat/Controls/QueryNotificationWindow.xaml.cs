@@ -131,15 +131,18 @@ namespace ZappChat.Controls
         {
             if (App.ConnectionStatus == ConnectionStatus.Connect)
             {
-                var historyRequest = new HistoryRequest
-                {
-                    @from = null,
-                    to = null,
-                    chat_room_id = Dialogue.RoomId
-                };
-                var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
-                AppWebSocketEventManager.SendObject(historyRequestToJson);
+//                var historyRequest = new HistoryRequest
+//                {
+//                    @from = null,
+//                    to = null,
+//                    chat_room_id = Dialogue.RoomId
+//                };
+//                var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
+//                AppWebSocketEventManager.SendObject(historyRequestToJson);
+                AppEventManager.CloseNotificationEvent(Dialogue.RoomId, true);
                 App.ShowCurrentWindow();
+                AppEventManager.PreopenDialogueEvent(Dialogue.RoomId, null, null);
+                return;
             }
             AppEventManager.CloseNotificationEvent(Dialogue.RoomId, true);
         }

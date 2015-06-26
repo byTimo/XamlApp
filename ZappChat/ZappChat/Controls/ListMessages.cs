@@ -128,17 +128,17 @@ namespace ZappChat.Controls
             if(App.ConnectionStatus != ConnectionStatus.Connect) return;
 
             var selectedMessageControl = (SelectedItem as MessageControl);
-            if(selectedMessageControl == null) return;
-            
-            var historyRequest = new HistoryRequest
-            {
-                from = null,
-                to = null,
-                chat_room_id = selectedMessageControl.Dialogue.RoomId
-            };
-            var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
-            AppWebSocketEventManager.SendObject(historyRequestToJson);
+            if(selectedMessageControl == null) return;            
+//            var historyRequest = new HistoryRequest
+//            {
+//                from = null,
+//                to = null,
+//                chat_room_id = selectedMessageControl.Dialogue.RoomId
+//            };
+//            var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
+//            AppWebSocketEventManager.SendObject(historyRequestToJson);
             SelectedIndex = -1;
+            AppEventManager.PreopenDialogueEvent(selectedMessageControl.Dialogue.RoomId, null, null);
         }
         public Dialogue ChangeMessageStatus(ulong roomId, List<Message> messages)
         {

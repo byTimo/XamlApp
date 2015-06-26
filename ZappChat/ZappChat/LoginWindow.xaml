@@ -25,7 +25,7 @@
                         <RowDefinition Height="40*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="ZAPPCHAT" HorizontalAlignment="Center" VerticalAlignment="Bottom" FontSize="166.667" FontFamily="/ZappChat;component/Fonts/#Phosphate Solid" Foreground="White" />
-                    <controls:CircularProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Width="40" Height="40"/>
+                    <controls:CircularProgressBar Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Width="40" Height="40" Foreground="White"/>
                 </Grid>
 
             </Border>

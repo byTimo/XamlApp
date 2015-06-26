@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -37,6 +38,8 @@ namespace ZappChat
             AppEventManager.SetCarInfo += SetCarInfo;
             AppEventManager.AnswerOnQuery += AnswerOnQuery;
             AppEventManager.NotificationAnswer +=AppEventManager_NotificationAnswer;
+            AppEventManager.PreopenDialogue += AppEventManagerOnPreopenDialogue;
+            AppEventManager.AfteropenDialogue += AppEventManagerOnAfteropenDialogue;
             TabNow.Queries = new ObservableCollection<QueryControl>();
             TabYesterday.Queries = new ObservableCollection<QueryControl>();
         }
@@ -290,6 +293,27 @@ namespace ZappChat
             }
         }
 
+        private void AppEventManagerOnPreopenDialogue(ulong roomId, string f, string t)
+        {           
+            ControlBlocker.Visibility = Visibility.Visible;
+            ShowDialogue(true);
+            chat.BeginMessageLoad();
+            var historyRequest = new HistoryRequest
+            {
+                @from = f,
+                to = t,
+                chat_room_id = roomId
+            };
+            var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
+            AppWebSocketEventManager.SendObject(historyRequestToJson);
+        }
+
+        private void AppEventManagerOnAfteropenDialogue()
+        {
+            ControlBlocker.Visibility = Visibility.Collapsed;
+            chat.EndMessageLoad();
+        }
+
         private void TabControlReceiveQuery(Dialogue dialogue)
         {
             var dateNow = DateTime.Now;
@@ -308,6 +332,7 @@ namespace ZappChat
             tabs.Visibility = solution ? Visibility.Hidden : Visibility.Visible;
             chat.Visibility = solution ? Visibility.Visible : Visibility.Hidden;
         }
+
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Hide();

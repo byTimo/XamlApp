@@ -78,12 +78,28 @@ namespace ZappChat.Core
                 UpdateCounter.Invoke();
         }
 
+        public static event Action<ulong, string, string> PreopenDialogue;
+
+        public static void PreopenDialogueEvent(ulong roomId, string from, string to)
+        {
+            if (PreopenDialogue != null)
+                PreopenDialogue.Invoke(roomId, from, to);
+        }
+
         public static event Action<ulong, List<Message>> OpenDialogue;
 
         public static void OpenDialogueEvent(ulong roomId, List<Message> messages)
         {
             if (OpenDialogue != null)
                 OpenDialogue.Invoke(roomId, messages);
+        }
+
+        public static event Action AfteropenDialogue;
+
+        public static void AfteropenDialogueEvent()
+        {
+            if(AfteropenDialogue != null)
+                AfteropenDialogue.Invoke();
         }
 
         public static event CloseDialogueEventHandler CloseDialogue;

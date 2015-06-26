@@ -17,7 +17,6 @@
                 <ResourceDictionary Source="/Themes/GreyButtonTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/BlueTopMenuTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/MenuButtonTemplate.xaml"/>
-                <ResourceDictionary Source="/Themes/FlipPanelTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/TabControlZappChatTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/ListMessagesTemplate.xaml"/>
                 <ResourceDictionary Source="/Themes/ChatTemplate.xaml"/>

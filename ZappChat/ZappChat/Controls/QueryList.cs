@@ -30,16 +30,16 @@ namespace ZappChat.Controls
 
             var selectedQueryControl = (SelectedItem as QueryControl);
             if (selectedQueryControl == null) return;
-
-            var historyRequest = new HistoryRequest
-            {
-                from = null,
-                to = null,
-                chat_room_id = selectedQueryControl.Dialogue.RoomId
-            };
-            var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
-            AppWebSocketEventManager.SendObject(historyRequestToJson);
+//            var historyRequest = new HistoryRequest
+//            {
+//                from = null,
+//                to = null,
+//                chat_room_id = selectedQueryControl.Dialogue.RoomId
+//            };
+//            var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
+//            AppWebSocketEventManager.SendObject(historyRequestToJson);
             SelectedIndex = -1;
+            AppEventManager.PreopenDialogueEvent(selectedQueryControl.Dialogue.RoomId, null, null);
         }
     }
 }

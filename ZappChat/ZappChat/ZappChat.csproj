@@ -156,7 +156,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Controls\BlueTopMenu.cs" />
-    <Compile Include="Controls\FlipPanel.cs" />
     <Compile Include="Controls\SliderButton.cs" />
     <Compile Include="Controls\StatusButton.cs" />
     <Compile Include="Core\Delegates.cs" />
@@ -196,10 +195,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\TabControlZappChatTemplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\FlipPanelTemplate.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
