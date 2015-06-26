@@ -62,7 +62,7 @@
                     <controls:QueryList x:Name="TabYesterday"/>
                 </TabItem>
             </TabControl>
-            <controls:Chat x:Name="chat" Grid.Column="1" Background="White" Margin="15,55,15,0" Visibility="Hidden"/>
+            <controls:Chat x:Name="chat" Grid.Column="1" Background="White" Margin="15,55,15,0" FontSize="42.667" Visibility="Hidden"/>
         </Grid>
 	</Border>
 

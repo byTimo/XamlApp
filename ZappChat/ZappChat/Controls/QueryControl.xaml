@@ -7,7 +7,7 @@
 	mc:Ignorable="d"
 	x:Class="ZappChat.Controls.QueryControl"
 	x:Name="quaryControl"
-	d:DesignWidth="640" d:DesignHeight="480" Height="100" Width="Auto" Cursor="Hand">
+	d:DesignWidth="640" d:DesignHeight="480" Height="100" Width="Auto" Cursor="Hand" MaxWidth="598">
 	<UserControl.Resources>
 		<Storyboard x:Key="OnMouseEnter1">
 			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="LayoutRoot">
@@ -40,7 +40,7 @@
 		<Rectangle Grid.Column="0" x:Name="Line" HorizontalAlignment="Right" Fill="#FFCDCBCB" Width="2" Margin="0,0,10,0" StrokeThickness="0"/>
 		<Ellipse x:Name="Elipce" Grid.Column="0" Fill="White" HorizontalAlignment="Left" StrokeThickness="3" VerticalAlignment="Top" Stroke="#FF1FB6E4" Margin="10,20,0,0" Width="18" Height="18"/>
 		<TextBlock Grid.Column="1" HorizontalAlignment="Left" Text="Поступил запрос:" VerticalAlignment="Top" Margin="15,20,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="16" Foreground="#FF505050"/>
-		<TextBlock x:Name="TextQuary" Grid.Column="1" Text="{Binding ElementName=quaryControl, Path=Text}" VerticalAlignment="Top" Margin="15,43,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="16" FontWeight="Bold" Foreground="#FF505050"/>		
+		<TextBlock x:Name="TextQuary" Grid.Column="1" Text="{Binding ElementName=quaryControl, Path=Text}" VerticalAlignment="Top" Margin="15,43,0,0" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="16" FontWeight="Bold" Foreground="#FF505050" Width="557"/>		
 		<Border x:Name="VinBorder" Grid.Column="2" VerticalAlignment="Top" Margin="2,15,2,0" Padding="7,2" CornerRadius="10" BorderThickness="1" BorderBrush="#FFD3DAE4" Width="0">
 			<TextBlock x:Name="VinText" Text="VIN" FontFamily="/ZappChat;component/Fonts/#PT Sans" FontSize="10.667" Foreground="#FFD3DAE4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</Border>

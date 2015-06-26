@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
@@ -54,7 +55,11 @@ namespace ZappChat.Controls
         public string DialogueTitle
         {
             get { return GetValue(DialogueTitleProperty) as string; }
-            set { SetValue(DialogueTitleProperty, value); }
+            set
+            {
+                FontSize = FontSizeChange(28.0, 563, value.Length, 15.0);
+                SetValue(DialogueTitleProperty, value);
+            }
         }
 
         public static readonly DependencyProperty CarProperty = DependencyProperty.Register("Car", typeof (string),
@@ -75,6 +80,7 @@ namespace ZappChat.Controls
             get { return GetValue(VinProperty) as string; }
             set { SetValue(VinProperty, value); }
         }
+
         static Chat()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Chat), new FrameworkPropertyMetadata(typeof(Chat)));
@@ -281,6 +287,14 @@ namespace ZappChat.Controls
             _selling.Visibility = Visibility.Collapsed;
             _noSelling.Visibility = Visibility.Collapsed;
             _onOrder.Visibility = Visibility.Collapsed;
+        }
+
+        private double FontSizeChange(double defaultFontSize, int maxLength, int stringLength, double minFontSize = 20)
+        {
+            var minSymbolChangeCount = maxLength/defaultFontSize;
+            if (stringLength <= minSymbolChangeCount) return defaultFontSize;
+            var changedFontSize = maxLength/stringLength;
+            return changedFontSize >= minFontSize ? changedFontSize : minFontSize;
         }
     }
 }

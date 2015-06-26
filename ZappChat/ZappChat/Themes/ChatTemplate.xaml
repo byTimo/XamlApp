@@ -8,14 +8,14 @@
                     <Grid Background="{TemplateBinding Background}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="70"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="37"/>
                             <RowDefinition Height="39.467"/>
                         </Grid.RowDefinitions>
-                        <local:CornerRadiusButton x:Name="Back" CornerRadius="5" Grid.Row="0" HorizontalAlignment="Left" Margin="30,15,0,10" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" BorderThickness="0" Padding="0" BorderBrush="{x:Null}" Cursor="Hand" Width="71.207" Height="Auto">
+                        <local:CornerRadiusButton x:Name="Back" CornerRadius="5" Grid.Row="0" HorizontalAlignment="Left" Margin="30,15,0,5" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" BorderThickness="0" Padding="0" BorderBrush="{x:Null}" Cursor="Hand" Width="71.207" Height="Auto">
                             <local:CornerRadiusButton.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#FFFDFEFE" Offset="0"/>
@@ -23,12 +23,12 @@
                                     <GradientStop Color="#FFFDFEFE" Offset="0.57"/>
                                 </LinearGradientBrush>
                             </local:CornerRadiusButton.Background>
-                            <StackPanel Orientation="Horizontal" Margin="10,5">
+                            <StackPanel Orientation="Horizontal" Margin="10,5,10,0">
                                 <Image Height="8" Source="/ZappChat;component/Images/Cross.png" Stretch="Fill" Width="8" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,5,0"/>
                                 <TextBlock Text="Назад" Width="Auto" Height="Auto" FontFamily="/ZappChat;component/Fonts/#Arial" FontSize="13.333" Foreground="#FFA1A2A2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                             </StackPanel>
                         </local:CornerRadiusButton>
-                        <TextBox x:Name="TitleTextBox" Grid.Row="1" Text="{TemplateBinding DialogueTitle}" FontFamily="Arial" FontSize="32" Foreground="#FF2FB6E5" Margin="30,5,5,0" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" SelectionBrush="#FFE2E2E3" Style="{DynamicResource TextBoxStyle}" IsReadOnly="True" Height="38.797"/>
+                        <TextBox x:Name="TitleTextBox" Grid.Row="1" FontFamily="Arial" Foreground="#FF2FB6E5" Margin="30,0,5,0" VerticalAlignment="Center" Background="Transparent" BorderBrush="Transparent" SelectionBrush="#FFE2E2E3" Style="{DynamicResource TextBoxStyle}" IsReadOnly="True" Height="Auto" TextWrapping="Wrap" FontSize="{TemplateBinding FontSize}" Text="{TemplateBinding DialogueTitle}"/>
                         <Grid Grid.Row="2" Margin="30,0,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="13*"/>
