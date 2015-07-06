@@ -130,7 +130,7 @@ namespace ZappChat.Controls
 
         public void AddNewMessageToChat(Dialogue dialogue)
         {
-            ChatMessages.Add(new ChatMessage(dialogue.Messages[0]));
+            ChatMessages.Add(new ChatMessage(dialogue.GetLastMessage()));
             DialogueTitle = CurrentDialogue.GetTitleMessage();
             var chat = GetTemplateChild("MessageChat") as ListBox;
             if (chat == null) throw new NullReferenceException("Не определил ListBox в чате");
@@ -199,7 +199,7 @@ namespace ZappChat.Controls
             if (userMessage == "") return;
             _userInput.Text = "";
             var newMessage = new Message(0, userMessage, "outgoing", Guid.NewGuid().ToString(),
-                DateTime.Now.ToString(CultureInfo.InvariantCulture), "") { IsSuccessfully = false };
+                DateTime.Now.ToString(CultureInfo.InvariantCulture), "", CurrentDialogue.RoomId) { IsSuccessfully = false };
             var sendMessageRequest = new SendMessageRequest
             {
                 room_id = CurrentDialogue.RoomId,
@@ -218,7 +218,7 @@ namespace ZappChat.Controls
                 chat.ScrollIntoView(chat.Items[chat.Items.Count - 1]);
         }
 
-        public void SendMessageSuccess(ulong roomId, ulong messageId, string hash)
+        public void SendMessageSuccess(long roomId, long messageId, string hash)
         {
             if(CurrentDialogue.RoomId != roomId) return;
             var control = ChatMessages.FirstOrDefault(c => c.Message.Hash == hash);
@@ -273,7 +273,7 @@ namespace ZappChat.Controls
                     : "Нет в продаже";
 
             var newMessage = new Message(0, text, "outgoing", Guid.NewGuid().ToString(),
-                DateTime.Now.ToString(CultureInfo.InvariantCulture), "") { IsSuccessfully = false };
+                DateTime.Now.ToString(CultureInfo.InvariantCulture), "", CurrentDialogue.RoomId) { IsSuccessfully = false };
             var sendMessageRequest = new SendMessageRequest
             {
                 room_id = CurrentDialogue.RoomId,

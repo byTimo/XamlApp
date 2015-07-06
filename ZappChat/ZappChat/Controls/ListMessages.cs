@@ -31,7 +31,7 @@ namespace ZappChat.Controls
             }
             foreach (var messageControl in DialogueWithoutQuery)
             {
-                if (App.IsThisUnreadMessage(messageControl.Dialogue.RoomId, messageControl.Dialogue.GetLastMessage().Id))
+                if (App.IsThisUnreadMessage(messageControl.Dialogue.RoomId, messageControl.Dialogue.GetLastMessage().MessageId))
                     return messageControl.Dialogue;
             
             }
@@ -54,7 +54,7 @@ namespace ZappChat.Controls
             if (thisDialogueInListQuery)
             {
                 var thisDialogue = DialogueWithQuery.First(x => Equals(x.Dialogue, dialogue));
-                thisDialogue.Dialogue.AddMessage(dialogue.Messages[0]);
+                //thisDialogue.Dialogue.AddMessage(dialogue.Messages[0]);
                 var indexThisDialogue = DialogueWithQuery.IndexOf(thisDialogue);
                 DialogueWithQuery.Move(indexThisDialogue, 0);
                 var thisDialogueWithoutQuery = DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
@@ -72,7 +72,7 @@ namespace ZappChat.Controls
                 }
                 else
                 {
-                    thisDialogue.Dialogue.AddMessage(dialogue.Messages[0]);
+                    //thisDialogue.Dialogue.AddMessage(dialogue.Messages[0]);
                     var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
                     DialogueWithoutQuery.Move(indexThisDialogue, 0);
 
@@ -88,7 +88,7 @@ namespace ZappChat.Controls
             }
         }
 
-        public void RemoveDialogueFromLists(ulong dialogueId)
+        public void RemoveDialogueFromLists(long dialogueId)
         {
             var delDialogue = DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.RoomId == dialogueId);
             if (delDialogue != null)
@@ -140,7 +140,7 @@ namespace ZappChat.Controls
             SelectedIndex = -1;
             AppEventManager.PreopenDialogueEvent(selectedMessageControl.Dialogue.RoomId, null, null);
         }
-        public Dialogue ChangeMessageStatus(ulong roomId, List<Message> messages)
+        public Dialogue ChangeMessageStatus(long roomId, List<Message> messages)
         {
             var controlWithoutQuery =
                 DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);

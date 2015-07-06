@@ -1,33 +1,33 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZappChat.Core
 {
-    public class Dialogue
+    public sealed class Dialogue
     {
-        public ulong RoomId { get; private set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long RoomId { get; private set; }
+        public long QueryId { get; private set; }
+        public long CarId { get; private set; }
         public DialogueStatus Status { get; set; }
         public string Query { get; set; }
         public DateTime LastDateTime { get; private set; }
         public string LastMessageDate { get; private set; }
-        public List<Message> Messages { get; set; }
-        public ulong QueryId { get; private set; }
-
-        public ulong CarId { get; private set; }
-
         public string CarBrand { get; set; }
         public string CarModel { get; set; }
         public string VIN { get; set; }
         public string Year { get; set; }
 
+        public List<Message> Messages { get; set; }
+
         public Dialogue() { }
-        public Dialogue(ulong roomId, string quary, ulong queryId, string lastUpdate, ulong carId, DialogueStatus status)
+        public Dialogue(long roomId, string quary, long queryId, string lastUpdate, long carId, DialogueStatus status)
         {
             RoomId = roomId;
             QueryId = queryId;
@@ -39,7 +39,7 @@ namespace ZappChat.Core
             Status = status;
         }
 
-        public Dialogue(ulong roomId, Message message)
+        public Dialogue(long roomId, Message message)
         {
             RoomId = roomId;
             LastDateTime = message.DateTime;
@@ -55,7 +55,7 @@ namespace ZappChat.Core
             Messages.Add(newMessage);
         }
 
-        public void AddQuery(ulong queryId,string query, string lastUpdate)
+        public void AddQuery(long queryId,string query, string lastUpdate)
         {
             QueryId = queryId;
             Query = query;
@@ -71,7 +71,8 @@ namespace ZappChat.Core
         {
             return Messages.LastOrDefault(x => x.Type == MessageType.Incoming);
         }
-        protected bool Equals(Dialogue other)
+
+        private bool Equals(Dialogue other)
         {
             return RoomId == other.RoomId;
         }
@@ -87,7 +88,7 @@ namespace ZappChat.Core
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Dialogue) obj);
         }
 

@@ -11,15 +11,6 @@
         Disconnect,
         Error
     }
-
-    public enum MessageStatus
-    {
-        Sent,
-        Delivered,
-        Read,
-        Error
-    }
-
     public enum MessageType
     {
         Outgoing,

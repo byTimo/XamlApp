@@ -56,7 +56,7 @@ namespace ZappChat
         private static DispatcherTimer updateTryTimer;
         private static DispatcherTimer updateCountersDispatcherTimer;
 
-        public static Dictionary<ulong, string> DialoguesStatuses;
+        public static Dictionary<long, string> DialoguesStatuses;
 
         enum OpenedWindow
         {
@@ -121,7 +121,7 @@ namespace ZappChat
             updateCountersDispatcherTimer.Tick += (o, args) => AppEventManager.UpdateCounterEvent();
         }
 
-        private void AppEventManagerOnAnswerOnQuery(ulong queryId)
+        private void AppEventManagerOnAnswerOnQuery(long queryId)
         {
             var dialogue = MainWin.Dialogues.DialogueWithQuery.FirstOrDefault(d => d.Dialogue.QueryId == queryId);
             if (dialogue != null)
@@ -142,7 +142,7 @@ namespace ZappChat
                 SwitchWindow(OpenedWindow.Login);
             updateCountersDispatcherTimer.Stop();
         }
-        private void AppEventManagerOnOpenDialogue(ulong id, List<Message> messages)
+        private void AppEventManagerOnOpenDialogue(long id, List<Message> messages)
         {
             var notification = AppNotificationManager.GetNotificationOnRoomId(id);
             if(notification == null) return;
@@ -150,7 +150,7 @@ namespace ZappChat
             AppEventManager.CloseNotificationEvent(id, notification.Type != NotificationType.Message);
         }
 
-        private void AppEventManager_CloseNotification(ulong id, bool flag)
+        private void AppEventManager_CloseNotification(long id, bool flag)
         {
             if (flag)
                 AppNotificationManager.CloseNotificationWithReshow(id);
@@ -244,19 +244,19 @@ namespace ZappChat
         {
             return currentWindow == OpenedWindow.Chat ? MainWin.IsVisible : LoginWin.IsVisible;
         }
-        public static bool IsThisDialogueDeleted(ulong roomId)
+        public static bool IsThisDialogueDeleted(long roomId)
         {
             return DialoguesStatuses.Any(x => x.Key == roomId && x.Value == "d");
         }
 
-        public static bool IsThisUnreadMessage(ulong roomId, ulong messageId)
+        public static bool IsThisUnreadMessage(long roomId, long messageId)
         {
             if (!DialoguesStatuses.ContainsKey(roomId)) return true;
             if (!char.IsDigit(DialoguesStatuses[roomId][0])) return false;
-            return ulong.Parse(DialoguesStatuses[roomId]) < messageId;
+            return long.Parse(DialoguesStatuses[roomId]) < messageId;
         }
 
-        public static void ChangeDialogueStatus(ulong roomId, string status)
+        public static void ChangeDialogueStatus(long roomId, string status)
         {
             if (!DialoguesStatuses.ContainsKey(roomId))
                 DialoguesStatuses.Add(roomId, status);

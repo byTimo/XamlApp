@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZappChat.Core
 {
     public class Message
     {
-        public ulong Id { get; set; }
-        public MessageStatus Status { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long MessageId { get; set; }
         public string Author { get; private set; }
         public DateTime DateTime { get; private set; }
         public string Date { get; private set; }
@@ -19,10 +17,13 @@ namespace ZappChat.Core
         public string Hash { get; private set; }
         public bool IsSuccessfully { get; set; }
         public bool IsUnread { get; set; }
+        [ForeignKey("Dialogue")]
+        public long DialogueId { get; set; }
+        public Dialogue Dialogue { get; set; }
 
-        public Message(ulong id, string message, string type, string hash, string date, string userName)
+        public Message(long id, string message, string type, string hash, string date, string userName, long dialogueId)
         {
-            Id = id;
+            MessageId = id;
             Text = message;
             Type = type == "incoming" ? MessageType.Incoming : MessageType.Outgoing;
             Hash = hash;
@@ -31,10 +32,11 @@ namespace ZappChat.Core
             Date = DateTime.ToString("M", new CultureInfo("ru-RU"));
             IsSuccessfully = true;
             IsUnread = false;
+            DialogueId = dialogueId;
         }
 
-        public Message(ulong id, string message, string type, string hash, string date, string userName, bool isUnread)
-            : this(id, message, type, hash, date, userName)
+        public Message(long id, string message, string type, string hash, string date, string userName, bool isUnread, long dialogueId)
+            : this(id, message, type, hash, date, userName, dialogueId)
         {
             IsUnread = isUnread;
         }
@@ -47,7 +49,7 @@ namespace ZappChat.Core
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Message) obj);
         }
 

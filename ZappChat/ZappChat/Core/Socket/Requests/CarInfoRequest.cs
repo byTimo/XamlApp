@@ -8,7 +8,7 @@ namespace ZappChat.Core.Socket.Requests
 {
     class CarInfoRequest : Request
     {
-        public ulong request_id { get; set; }
+        public long request_id { get; set; }
 
         public CarInfoRequest()
         {

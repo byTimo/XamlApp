@@ -55,7 +55,7 @@ namespace ZappChat.Core
                 currentNotification = null;
             }
         }
-        public static void SetCarInfo(ulong id, string brand, string model, string vin, string year)
+        public static void SetCarInfo(long id, string brand, string model, string vin, string year)
         {
             if (currentNotification != null)
                 if (currentNotification.Dialogue.CarId == id)
@@ -67,7 +67,7 @@ namespace ZappChat.Core
                 notificationInQueue.SetCarInfo(brand, model, vin, year);
         }
 
-        public static void CloseNotificationWithReshow(ulong roomId)
+        public static void CloseNotificationWithReshow(long roomId)
         {
             if (currentNotification != null)
                 if (currentNotification.Dialogue.RoomId == roomId)
@@ -85,7 +85,7 @@ namespace ZappChat.Core
             }
 
         }
-        public static void CloseNotificationWithoutReshow(ulong roomId)
+        public static void CloseNotificationWithoutReshow(long roomId)
         {
             if (currentNotification != null)
                 if (currentNotification.Dialogue.RoomId == roomId)
@@ -108,14 +108,14 @@ namespace ZappChat.Core
 
         }
 
-        public static void ReshowNotificationOnRoomId(ulong roomId)
+        public static void ReshowNotificationOnRoomId(long roomId)
         {
             var reshowingNotification = WaitingNotifications.FirstOrDefault(n => n.Dialogue.RoomId == roomId);
             if (reshowingNotification != null)
                 CreateNotification(reshowingNotification);
         }
 
-        public static INotification GetNotificationOnRoomId(ulong roomId)
+        public static INotification GetNotificationOnRoomId(long roomId)
         {
             if (currentNotification != null && currentNotification.Dialogue.RoomId == roomId)
                 return currentNotification;

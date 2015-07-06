@@ -199,7 +199,7 @@ namespace ZappChat.Controls
         private void SendAnswerMessageRequest(string text)
         {
             var newMessage = new Message(0, text, "outgoing", Guid.NewGuid().ToString(),
-               DateTime.Now.ToString(CultureInfo.InvariantCulture), "") { IsSuccessfully = false };
+               DateTime.Now.ToString(CultureInfo.InvariantCulture), "", Dialogue.RoomId) { IsSuccessfully = false };
             var sendMessageRequest = new SendMessageRequest
             {
                 room_id = Dialogue.RoomId,

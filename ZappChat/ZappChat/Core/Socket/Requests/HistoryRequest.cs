@@ -12,7 +12,7 @@ namespace ZappChat.Core.Socket.Requests
     {
         public string from { get; set; }
         public string to { get; set; }
-        public ulong chat_room_id { get; set; }
+        public long chat_room_id { get; set; }
 
         public HistoryRequest()
         {

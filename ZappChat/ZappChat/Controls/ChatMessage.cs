@@ -96,9 +96,9 @@ namespace ZappChat.Controls
             }
         }
 
-        public void SetMessageId(ulong messageId)
+        public void SetMessageId(long messageId)
         {
-            Message.Id = messageId;
+            Message.MessageId = messageId;
             Message.IsSuccessfully = true;
             Opacity = OpacityValueFromSuccessfullyMessage(Message);
         }

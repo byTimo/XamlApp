@@ -127,7 +127,7 @@ namespace ZappChat.Core
 
         }
 
-        public static void WriteAllCollection(string path, Dictionary<ulong, string> statuses)
+        public static void WriteAllCollection(string path, Dictionary<long, string> statuses)
         {
             var fileDataBuilder = new StringBuilder();
             foreach (var statuse in statuses)
@@ -138,20 +138,20 @@ namespace ZappChat.Core
             File.WriteAllText(path, fileDataBuilder.ToString());
         }
 
-        public static Dictionary<ulong, string> ReadAllCollection(string path)
+        public static Dictionary<long, string> ReadAllCollection(string path)
         {
             return File.ReadAllText(path)
                 .Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries)
-                .ToDictionary(x => ulong.Parse(x.Split(':')[0]), x => x.Split(':')[1]);
+                .ToDictionary(x => long.Parse(x.Split(':')[0]), x => x.Split(':')[1]);
         }
 
-        public static void RewriteFileCollection(string path, Dictionary<ulong, string> statuses)
+        public static void RewriteFileCollection(string path, Dictionary<long, string> statuses)
         {
             if (File.Exists(path)) File.Delete(path);
             WriteAllCollection(path, statuses);
         }
 
-        public static void SynchronizeDialogueStatuses(Dictionary<ulong, string> statuses)
+        public static void SynchronizeDialogueStatuses(Dictionary<long, string> statuses)
         {
             var dictionaryInFile = ReadAllCollection(FullPathToDialogueInformation);
             var currentDifferents = statuses.Except(dictionaryInFile);
@@ -252,7 +252,7 @@ namespace ZappChat.Core
     [TestFixture]
     internal class TestCollectionClass
     {
-        private Dictionary<ulong, string> _collectionInformation;
+        private Dictionary<long, string> _collectionInformation;
 
         [SetUp]
         public void SaveSetting()
@@ -273,7 +273,7 @@ namespace ZappChat.Core
         [Test]
         public void WriteDialogueStatuses()
         {
-            var dic = new Dictionary<ulong, string>
+            var dic = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},
@@ -290,7 +290,7 @@ namespace ZappChat.Core
         [Test]
         public void ReadDialogueStatuses()
         {
-            var dicSuccess = new Dictionary<ulong, string>
+            var dicSuccess = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},
@@ -307,7 +307,7 @@ namespace ZappChat.Core
         [Test]
         public void SyncAddTest()
         {
-            var startDic = new Dictionary<ulong, string>
+            var startDic = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},
@@ -315,7 +315,7 @@ namespace ZappChat.Core
                 {4, "125"}
             };
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPathToDialogueInformation,startDic);
-            var endDic = new Dictionary<ulong, string>
+            var endDic = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},
@@ -332,7 +332,7 @@ namespace ZappChat.Core
         [Test]
         public void SyncChangeTest()
         {
-            var startDic = new Dictionary<ulong, string>
+            var startDic = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},
@@ -340,7 +340,7 @@ namespace ZappChat.Core
                 {4, "125"}
             };
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPathToDialogueInformation, startDic);
-            var endDic = new Dictionary<ulong, string>
+            var endDic = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},
@@ -355,7 +355,7 @@ namespace ZappChat.Core
         [Test]
         public void SyncDeleteTest()
         {
-            var startDic = new Dictionary<ulong, string>
+            var startDic = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},
@@ -363,7 +363,7 @@ namespace ZappChat.Core
                 {4, "125"}
             };
             FileDispetcher.WriteAllCollection(FileDispetcher.FullPathToDialogueInformation, startDic);
-            var endDic = new Dictionary<ulong, string>
+            var endDic = new Dictionary<long, string>
             {
                 {1, "d"},
                 {2, "d"},

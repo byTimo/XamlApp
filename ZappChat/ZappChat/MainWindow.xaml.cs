@@ -76,11 +76,10 @@ namespace ZappChat
         {
             if (App.IsThisDialogueDeleted(dialogue.RoomId)) return;
 
-            var message = dialogue.Messages[0];
-            message.Status = MessageStatus.Delivered;
+            var message = dialogue.GetLastMessage();
 
-            if (!message.IsUnread && App.IsThisUnreadMessage(dialogue.RoomId, message.Id))
-                App.ChangeDialogueStatus(dialogue.RoomId, message.Id.ToString());
+            if (!message.IsUnread && App.IsThisUnreadMessage(dialogue.RoomId, message.MessageId))
+                App.ChangeDialogueStatus(dialogue.RoomId, message.MessageId.ToString());
             //Реагирование на приход нового сообщения:
             //Списка диалогов
             Dialogues.AddNewMessageToList(dialogue);
@@ -88,8 +87,7 @@ namespace ZappChat
             if (Equals(dialogue, chat.CurrentDialogue))
             {
                 var lastMessageCurrent = dialogue.GetLastMessage();
-                if(lastMessageCurrent != null) App.ChangeDialogueStatus(dialogue.RoomId, lastMessageCurrent.Id.ToString());
-                message.Status = MessageStatus.Read;
+                if(lastMessageCurrent != null) App.ChangeDialogueStatus(dialogue.RoomId, lastMessageCurrent.MessageId.ToString());
                 chat.AddNewMessageToChat(dialogue);
 
                 var readType = new ReadRoomRequest { room_id = dialogue.RoomId };
@@ -100,13 +98,13 @@ namespace ZappChat
             var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
             var lastMessage = dialogue.GetLastMessage();
             if (control != null && !Equals(chat.CurrentDialogue, dialogue) &&
-                App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0)
+                App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.MessageId : 0)
                 && !control.ContaintUnreadMessages)
             {
                 messageButton.MessagesCount++;
                 control.ContaintUnreadMessages = true;
             }
-            if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.Id : 0))
+            if (App.IsThisUnreadMessage(dialogue.RoomId, lastMessage != null ? lastMessage.MessageId : 0))
                 AppNotificationManager.CreateMessageNotification(dialogue);
             if (Equals(chat.CurrentDialogue, dialogue) && !IsActive)
             {
@@ -134,7 +132,6 @@ namespace ZappChat
             //Реагирование по запросу на удаление:
             if (e.IsConfirmed)
             {
-                App.Taskbar.CloseBalloon();
                 //Чата
                 if (Equals(chat.CurrentDialogue, e.DeletedDialogue))
                 {
@@ -167,7 +164,7 @@ namespace ZappChat
                 chat.BlockingChat(false);
         }
 
-        private void OpenDialogue(ulong roomId, List<Message> messages)
+        private void OpenDialogue(long roomId, List<Message> messages)
         {
             ShowDialogue(true);
 
@@ -177,7 +174,7 @@ namespace ZappChat
             //Файла статусов диалогов
             var lastMessage = openedDialogue.GetLastMessage();
             if (lastMessage != null)
-                App.ChangeDialogueStatus(roomId, lastMessage.Id.ToString());
+                App.ChangeDialogueStatus(roomId, lastMessage.MessageId.ToString());
             //Чата
             chat.OpenDialogue(openedDialogue);
             //Кнопки сообщения:
@@ -200,7 +197,7 @@ namespace ZappChat
             AppWebSocketEventManager.SendObject(readTypeToJson);
         }
 
-        private void AppEventManager_NotificationAnswer(ulong obj)
+        private void AppEventManager_NotificationAnswer(long obj)
         {
             var control = Dialogues.DialogueWithoutQuery.FirstOrDefault(x => x.Dialogue.RoomId == obj);
             if (control != null && control.ContaintUnreadMessages)
@@ -245,7 +242,7 @@ namespace ZappChat
             }
         }
 
-        private void SetCarInfo(ulong id, string brand, string model, string vin, string year)
+        private void SetCarInfo(long id, string brand, string model, string vin, string year)
         {
             //Реагирование на получение информации об автомобиле
             //Список диалогов
@@ -267,7 +264,7 @@ namespace ZappChat
                 chat.SetCarInfoAdapter(brand, model, vin, year);
         }
 
-        private void AnswerOnQuery(ulong obj)
+        private void AnswerOnQuery(long obj)
         {
             //Реагирование на получение информации об автомобиле
             //Список диалогов
@@ -293,7 +290,7 @@ namespace ZappChat
             }
         }
 
-        private void AppEventManagerOnPreopenDialogue(ulong roomId, string f, string t)
+        private void AppEventManagerOnPreopenDialogue(long roomId, string f, string t)
         {           
             ControlBlocker.Visibility = Visibility.Visible;
             ShowDialogue(true);

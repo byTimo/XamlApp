@@ -47,9 +47,9 @@ namespace ZappChat.Core
             if (ReceiveQuery != null) ReceiveQuery.Invoke(sender, dialogue);
         }
 
-        public static event Action<ulong, ulong, string> SendMessageSuccess;
+        public static event Action<long, long, string> SendMessageSuccess;
 
-        public static void SendMessageSuccessEvent(ulong roomId, ulong id, string hash)
+        public static void SendMessageSuccessEvent(long roomId, long id, string hash)
         {
             if (SendMessageSuccess != null)
                 SendMessageSuccess.Invoke(roomId, id, hash);
@@ -78,17 +78,17 @@ namespace ZappChat.Core
                 UpdateCounter.Invoke();
         }
 
-        public static event Action<ulong, string, string> PreopenDialogue;
+        public static event Action<long, string, string> PreopenDialogue;
 
-        public static void PreopenDialogueEvent(ulong roomId, string from, string to)
+        public static void PreopenDialogueEvent(long roomId, string from, string to)
         {
             if (PreopenDialogue != null)
                 PreopenDialogue.Invoke(roomId, from, to);
         }
 
-        public static event Action<ulong, List<Message>> OpenDialogue;
+        public static event Action<long, List<Message>> OpenDialogue;
 
-        public static void OpenDialogueEvent(ulong roomId, List<Message> messages)
+        public static void OpenDialogueEvent(long roomId, List<Message> messages)
         {
             if (OpenDialogue != null)
                 OpenDialogue.Invoke(roomId, messages);
@@ -109,38 +109,38 @@ namespace ZappChat.Core
             if (CloseDialogue != null) CloseDialogue();
         }
 
-        public static event Action<ulong, string, string, string, string> SetCarInfo;
+        public static event Action<long, string, string, string, string> SetCarInfo;
 
-        public static void SetCarInfoEvent(ulong id, string brand, string model, string vin, string year)
+        public static void SetCarInfoEvent(long id, string brand, string model, string vin, string year)
         {
             if (SetCarInfo != null) SetCarInfo.Invoke(id, brand, model, vin, year);
         }
 
-        public static event Action<ulong> AnswerOnQuery;
+        public static event Action<long> AnswerOnQuery;
 
-        public static void AnswerOnQueryEvent(ulong queryId)
+        public static void AnswerOnQueryEvent(long queryId)
         {
             var handler = AnswerOnQuery;
             if (handler != null) handler(queryId);
         }
 
-        public static event Action<ulong,bool> CloseNotification;
+        public static event Action<long,bool> CloseNotification;
 
-        public static void CloseNotificationEvent(ulong roomId, bool reshowNotificationInFuture)
+        public static void CloseNotificationEvent(long roomId, bool reshowNotificationInFuture)
         {
             if(CloseNotification != null)
                 CloseNotification.Invoke(roomId, reshowNotificationInFuture);
         }
 
-        public static event Action<ulong> NotificationAnswer;
+        public static event Action<long> NotificationAnswer;
 
-        public static void NotificationAnswerEvent(ulong roomId)
+        public static void NotificationAnswerEvent(long roomId)
         {
             if(NotificationAnswer != null)
                 NotificationAnswer.Invoke(roomId);
         }
-        public static event Action<ulong> ReshowNotification;
-        public static void ReshowNotificationEvent(ulong roomId)
+        public static event Action<long> ReshowNotification;
+        public static void ReshowNotificationEvent(long roomId)
         {
             if (ReshowNotification != null)
                 ReshowNotification.Invoke(roomId);
