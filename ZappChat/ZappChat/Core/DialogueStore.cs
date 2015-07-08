@@ -32,6 +32,7 @@ namespace ZappChat.Core
 
         public static void LoadDbInformation()
         {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ZappDbContext, Migrations.Configuration>());
             Instance.Dialogues.Load();
             Instance.Messages.Load();
         }

@@ -104,6 +104,7 @@ namespace ZappChat.Controls
 	    {
 	        Dialogue = dialogue;
 	        Text = dialogue.Query;
+	        SetCarInfoAdapter(dialogue.CarBrand, dialogue.CarModel, dialogue.VIN, dialogue.Year);
 	        PastTime = PastTimeCalculate(dialogue.LastDateTime);
 	        AppEventManager.UpdateCounter += () => PastTime = PastTimeCalculate(dialogue.LastDateTime);
 	    }
