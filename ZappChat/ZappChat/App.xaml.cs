@@ -4,11 +4,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
-using ZappChat.Controls;
 using ZappChat.Core;
 using ZappChat.Core.Socket;
 
@@ -66,8 +64,9 @@ namespace ZappChat
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            LastLogId = 0;
             FileDispetcher.InitializeFileDispetcher();
+            var settingValueToString = FileDispetcher.GetSetting("logId");
+            LastLogId = settingValueToString == null ? 0 : ulong.Parse(settingValueToString);
             DialoguesStatuses = FileDispetcher.ReadAllCollection(FileDispetcher.FullPathToDialogueInformation);
             LoginWin = new LoginWindow();
             MainWin = new MainWindow();
@@ -76,7 +75,7 @@ namespace ZappChat
             AppUpdateManager.SetUrlRemoteServer(UpdateFeedUrl);
 #endif
             var socketOpener = new BackgroundWorker();
-            socketOpener.DoWork += (o, args) => AppWebSocketEventManager.OpenWebSocket();
+            socketOpener.DoWork += SocketOpenerOnDoWork;
             LoginWin.Show();
             currentWindow = OpenedWindow.Login;
             updateTryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(InterbalBetweenUpdateTryInSeconds) };
@@ -121,9 +120,9 @@ namespace ZappChat
             updateCountersDispatcherTimer.Tick += (o, args) => AppEventManager.UpdateCounterEvent();
         }
 
-        private void AppEventManagerOnAnswerOnQuery(long queryId)
+        private void AppEventManagerOnAnswerOnQuery(long roomId)
         {
-            var dialogue = MainWin.Dialogues.DialogueWithQuery.FirstOrDefault(d => d.Dialogue.QueryId == queryId);
+            var dialogue = MainWin.Dialogues.DialogueWithQuery.FirstOrDefault(d => d.Dialogue.RoomId == roomId);
             if (dialogue != null)
                 AppEventManager.CloseNotificationEvent(dialogue.Dialogue.RoomId, false);
         }
@@ -142,6 +141,7 @@ namespace ZappChat
                 SwitchWindow(OpenedWindow.Login);
             updateCountersDispatcherTimer.Stop();
         }
+
         private void AppEventManagerOnOpenDialogue(long id, List<Message> messages)
         {
             var notification = AppNotificationManager.GetNotificationOnRoomId(id);
@@ -156,6 +156,12 @@ namespace ZappChat
                 AppNotificationManager.CloseNotificationWithReshow(id);
             else
                 AppNotificationManager.CloseNotificationWithoutReshow(id);
+        }
+
+        private void SocketOpenerOnDoWork(object sender, DoWorkEventArgs doWorkEventArgs)
+        {
+            DialogueStore.LoadDbInformation();
+            AppWebSocketEventManager.OpenWebSocket();
         }
 
         private void InicializeTaskbar()
@@ -239,10 +245,6 @@ namespace ZappChat
                 LoginWin.Hide();
                 updateTryTimer.Start();
             }
-        }
-        public static bool IsCurrentWindowVisible()
-        {
-            return currentWindow == OpenedWindow.Chat ? MainWin.IsVisible : LoginWin.IsVisible;
         }
         public static bool IsThisDialogueDeleted(long roomId)
         {

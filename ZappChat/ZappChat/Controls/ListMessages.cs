@@ -21,30 +21,36 @@ namespace ZappChat.Controls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ListMessages), new FrameworkPropertyMetadata(typeof(ListMessages)));
         }
-
-        public Dialogue CheckUnreadedDialogues()
+        public void InitListMessages()
         {
-            foreach (var messageControl in DialogueWithQuery)
-            {
-                if (App.IsThisUnreadMessage(messageControl.Dialogue.RoomId, 0))
-                    return messageControl.Dialogue;
-            }
-            foreach (var messageControl in DialogueWithoutQuery)
-            {
-                if (App.IsThisUnreadMessage(messageControl.Dialogue.RoomId, messageControl.Dialogue.GetLastMessage().MessageId))
-                    return messageControl.Dialogue;
-            
-            }
-            return null;
-
+            if (DialogueWithQuery == null)
+                DialogueWithQuery = new ObservableCollection<MessageControl>();
+            if(DialogueWithoutQuery == null)
+                DialogueWithoutQuery = new ObservableCollection<MessageControl>();
         }
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            DialogueWithQuery = new ObservableCollection<MessageControl>();
-            DialogueWithoutQuery = new ObservableCollection<MessageControl>();
+            InitListMessages();
             SelectionChanged += OpenDialogue;
             SelectWithQuery();
+        }
+
+        public void AddDialogueIntoDataBase(Dialogue dialogue)
+        {
+            var messageControl = new MessageControl(dialogue)
+            {
+                DialogueOpened = dialogue.Status != DialogueStatus.Created,
+                ContaintUnreadMessages = dialogue.Messages.Any(m => m.IsUnread)
+            };
+            if (dialogue.QueryId > 0)
+            {
+                DialogueWithQuery.Insert(0, messageControl);
+            }
+            if (dialogue.Messages.Count > 0)
+            {
+                DialogueWithoutQuery.Insert(0, messageControl);
+            }
         }
 
         public void AddNewMessageToList(Dialogue dialogue)
@@ -54,7 +60,6 @@ namespace ZappChat.Controls
             if (thisDialogueInListQuery)
             {
                 var thisDialogue = DialogueWithQuery.First(x => Equals(x.Dialogue, dialogue));
-                //thisDialogue.Dialogue.AddMessage(dialogue.Messages[0]);
                 var indexThisDialogue = DialogueWithQuery.IndexOf(thisDialogue);
                 DialogueWithQuery.Move(indexThisDialogue, 0);
                 var thisDialogueWithoutQuery = DialogueWithoutQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
@@ -72,7 +77,6 @@ namespace ZappChat.Controls
                 }
                 else
                 {
-                    //thisDialogue.Dialogue.AddMessage(dialogue.Messages[0]);
                     var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
                     DialogueWithoutQuery.Move(indexThisDialogue, 0);
 
@@ -108,7 +112,6 @@ namespace ZappChat.Controls
                 thisDialogue.Dialogue.Query = dialogue.Query;
                 var indexThisDialogue = DialogueWithoutQuery.IndexOf(thisDialogue);
                 DialogueWithoutQuery.Move(indexThisDialogue, 0);
-                // Добавление диалога с запросом и сообщениями в список диалогов с запросами - нужно ли так делать?
                 DialogueWithQuery.Insert(0,thisDialogue);
 
                 thisDialogue.UpdateControl();
@@ -129,14 +132,6 @@ namespace ZappChat.Controls
 
             var selectedMessageControl = (SelectedItem as MessageControl);
             if(selectedMessageControl == null) return;            
-//            var historyRequest = new HistoryRequest
-//            {
-//                from = null,
-//                to = null,
-//                chat_room_id = selectedMessageControl.Dialogue.RoomId
-//            };
-//            var historyRequestToJson = JsonConvert.SerializeObject(historyRequest);
-//            AppWebSocketEventManager.SendObject(historyRequestToJson);
             SelectedIndex = -1;
             AppEventManager.PreopenDialogueEvent(selectedMessageControl.Dialogue.RoomId, null, null);
         }

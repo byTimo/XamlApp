@@ -19,7 +19,7 @@ namespace ZappChat.Core
         public bool IsUnread { get; set; }
         [ForeignKey("Dialogue")]
         public long DialogueId { get; set; }
-        public Dialogue Dialogue { get; set; }
+        public virtual Dialogue Dialogue { get; set; }
 
         public Message(long id, string message, string type, string hash, string date, string userName, long dialogueId)
         {
@@ -34,7 +34,7 @@ namespace ZappChat.Core
             IsUnread = false;
             DialogueId = dialogueId;
         }
-
+        public Message() { }
         public Message(long id, string message, string type, string hash, string date, string userName, bool isUnread, long dialogueId)
             : this(id, message, type, hash, date, userName, dialogueId)
         {

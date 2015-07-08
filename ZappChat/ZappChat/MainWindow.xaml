@@ -6,7 +6,7 @@
     mc:Ignorable="d" x:Class="ZappChat.MainWindow"
         Title="MainWindow" WindowStyle="None"
 		AllowsTransparency="True" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinHeight="500" MinWidth="800" Height="687" Width="1024"
-		ResizeMode="CanResizeWithGrip" WindowStartupLocation="Manual">
+		ResizeMode="CanResizeWithGrip" WindowStartupLocation="Manual" Loaded="Window_Loaded">
 	<Border x:Name="border" CornerRadius="10,10,0,10" Background="#FFEEF1F3" BorderBrush="#FFADB4BA" BorderThickness="1">
 		<Grid x:Name="mainGrid" >
 			<Grid.ColumnDefinitions>

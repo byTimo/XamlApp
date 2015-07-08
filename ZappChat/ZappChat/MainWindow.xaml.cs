@@ -1,13 +1,10 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using Newtonsoft.Json;
 using ZappChat.Controls;
 using ZappChat.Core;
@@ -21,11 +18,12 @@ namespace ZappChat
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _databaseLoaded;
         public MainWindow()
         {
             InitializeComponent();
-            AppEventManager.Connect += Connection; //Активация элементов управления
-            AppEventManager.Disconnect += Disconnect; //Деактивация элементов управления
+            AppEventManager.Connect += Connection;
+            AppEventManager.Disconnect += Disconnect;
             AppEventManager.AuthorizationSuccess += AuthorizationSucces;
 
             AppEventManager.DeleteConfirmationDialogue += DeleteConfirmationDialogue;
@@ -61,15 +59,81 @@ namespace ZappChat
             NoConnectionImage.Visibility = Visibility.Visible;
             NoConnectionText.Visibility = Visibility.Visible;
         }
-
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            GetDialoguesIntoDatabase();
+        }
         private void AuthorizationSucces(object sender, AuthorizationType type)
         {
+            if(!_databaseLoaded) return;
             var auditRequest = new AuditRequest
             {
                 log_id = App.LastLogId
             };
             var auditRequestToJson = JsonConvert.SerializeObject(auditRequest);
             AppWebSocketEventManager.SendObject(auditRequestToJson);
+        }
+
+        private void GetDialoguesIntoDatabase()
+        {
+            Dialogues.InitListMessages();
+            TabNow.InitQueryList();
+            TabYesterday.InitQueryList();
+            foreach (var dialogue in DialogueStore.GetAllDialogues().OrderBy(d => d.LastDateTime))
+            {
+                if(App.IsThisDialogueDeleted(dialogue.RoomId)) continue;
+
+                Dialogues.AddDialogueIntoDataBase(dialogue);
+                if(dialogue.QueryId > 0)
+                    TabControlReceiveQuery(dialogue);
+                if (dialogue.Messages.Any(d => d.IsUnread))
+                {
+                    messageButton.MessagesCount++;
+                    AppNotificationManager.CreateMessageNotification(dialogue);
+                }
+                if (dialogue.Status == DialogueStatus.Created && dialogue.QueryId > 0)
+                {
+                    myQuaryButton.MessagesCount++;
+                    AppNotificationManager.CreateQueryNotification(dialogue);
+                }
+            }
+            var auditRequest = new AuditRequest
+            {
+                log_id = App.LastLogId
+            };
+            var auditRequestToJson = JsonConvert.SerializeObject(auditRequest);
+            AppWebSocketEventManager.SendObject(auditRequestToJson);
+            _databaseLoaded = true;
+        }
+
+        private void ReceivingQuery(object sender, Dialogue dialogue)
+        {
+            if(App.IsThisDialogueDeleted(dialogue.RoomId)) return;
+
+            if (dialogue.Status != DialogueStatus.Created && App.IsThisUnreadMessage(dialogue.RoomId,0))
+                App.ChangeDialogueStatus(dialogue.RoomId, "0");
+            //Реагирование на получение запроса:
+            //Списка диалогов
+            Dialogues.TakeQuery(dialogue);
+            //TabControl
+            TabControlReceiveQuery(dialogue);
+            //Чата
+            if (Equals(chat.CurrentDialogue, dialogue))
+                chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
+            //Кнопки запросов
+            if (/*!Equals(chat.CurrentDialogue, dialogue) && App.IsThisUnreadMessage(dialogue.RoomId,0)*/
+                dialogue.Status == DialogueStatus.Created && dialogue.QueryId > 0)
+            {
+                myQuaryButton.MessagesCount++;
+                var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
+                if (control != null) control.DialogueOpened = false;
+                if(!Equals(chat.CurrentDialogue, dialogue))
+                    AppNotificationManager.CreateQueryNotification(dialogue);
+            }
+            if(Equals(chat.CurrentDialogue, dialogue) && !IsActive)
+            {
+                AppNotificationManager.CreateQueryNotification(dialogue);
+            }
         }
 
         private void ReceivingMessage(object sender, Dialogue dialogue)
@@ -167,10 +231,20 @@ namespace ZappChat
         private void OpenDialogue(long roomId, List<Message> messages)
         {
             ShowDialogue(true);
-
+            var openedDialogue = DialogueStore.GetDialogueOnRoomId(roomId);
+            foreach (var message in messages)
+            {
+                var messageInDb = openedDialogue.Messages.FirstOrDefault(m => m.MessageId == message.MessageId);
+                if (messageInDb != null)
+                {
+                    messageInDb.IsUnread = false;
+                }
+                else
+                {
+                    openedDialogue.AddMessage(message);
+                }
+            }
             //Реагирование на открытие диалога:
-            //Список диалогов:
-            var openedDialogue = Dialogues.ChangeMessageStatus(roomId, messages);
             //Файла статусов диалогов
             var lastMessage = openedDialogue.GetLastMessage();
             if (lastMessage != null)
@@ -184,14 +258,8 @@ namespace ZappChat
                 messageButton.MessagesCount--;
                 control.ContaintUnreadMessages = false;
             }
-            //Кнопка запросов:
-            /*control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
-            if (control != null && !control.DialogueOpened)
-            {
-                myQuaryButton.MessagesCount--;
-                //control.DialogueOpened = true;
-            }*/
 
+            DialogueStore.SaveChanges();
             var readType = new ReadRoomRequest {room_id = roomId};
             var readTypeToJson = JsonConvert.SerializeObject(readType);
             AppWebSocketEventManager.SendObject(readTypeToJson);
@@ -211,34 +279,6 @@ namespace ZappChat
             {
                 myQuaryButton.MessagesCount--;
                 control.DialogueOpened = true;
-            }
-        }
-
-        private void ReceivingQuery(object sender, Dialogue dialogue)
-        {
-            if(App.IsThisDialogueDeleted(dialogue.RoomId)) return;
-
-            if (dialogue.Status != DialogueStatus.Created && App.IsThisUnreadMessage(dialogue.RoomId,0))
-                App.ChangeDialogueStatus(dialogue.RoomId, "0");
-            //Реагирование на получение запроса:
-            //Списка диалогов
-            Dialogues.TakeQuery(dialogue);
-            //TabControl
-            TabControlReceiveQuery(dialogue);
-            //Чата
-            if (Equals(chat.CurrentDialogue, dialogue))
-                chat.DialogueTitle = chat.CurrentDialogue.GetTitleMessage();
-            //Кнопки запросов
-            if (!Equals(chat.CurrentDialogue, dialogue) && App.IsThisUnreadMessage(dialogue.RoomId,0))
-            {
-                myQuaryButton.MessagesCount++;
-                var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => Equals(x.Dialogue, dialogue));
-                if (control != null) control.DialogueOpened = false;
-                AppNotificationManager.CreateQueryNotification(dialogue);
-            }
-            if(Equals(chat.CurrentDialogue, dialogue) && !IsActive)
-            {
-                AppNotificationManager.CreateQueryNotification(dialogue);
             }
         }
 
@@ -264,30 +304,21 @@ namespace ZappChat
                 chat.SetCarInfoAdapter(brand, model, vin, year);
         }
 
-        private void AnswerOnQuery(long obj)
+        private void AnswerOnQuery(long roomId)
         {
-            //Реагирование на получение информации об автомобиле
-            //Список диалогов
-            var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.QueryId == obj);
+            var dialogue = DialogueStore.GetDialogueOnRoomId(roomId);
+            dialogue.Status = DialogueStatus.Answered;
+            myQuaryButton.MessagesCount--;
+            var control = Dialogues.DialogueWithQuery.FirstOrDefault(x => x.Dialogue.RoomId == roomId);
             if (control != null)
             {
-                control.Dialogue.Status = DialogueStatus.Answered;
-                if (App.IsThisUnreadMessage(control.Dialogue.RoomId, 0))
-                    App.ChangeDialogueStatus(control.Dialogue.RoomId, "0");
-                if (!control.DialogueOpened)
-                    myQuaryButton.MessagesCount--;
                 control.DialogueOpened = true;
             }
-            //Табов
-            var todayQuery = TabNow.Queries.FirstOrDefault(x => x.Dialogue.QueryId == obj);
-            if (todayQuery != null) todayQuery.Dialogue.Status = DialogueStatus.Answered;
-            var yestQuery = TabYesterday.Queries.FirstOrDefault(x => x.Dialogue.QueryId == obj);
-            if (yestQuery != null) yestQuery.Dialogue.Status = DialogueStatus.Answered;
-            //Чата
-            if (chat.CurrentDialogue.QueryId == obj)
+            if (chat.CurrentDialogue.RoomId == roomId)
             {
                 chat.ChangeDialogueStatus();
             }
+            DialogueStore.SaveChanges();
         }
 
         private void AppEventManagerOnPreopenDialogue(long roomId, string f, string t)
@@ -364,6 +395,5 @@ namespace ZappChat
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
         }
-
     }
 }

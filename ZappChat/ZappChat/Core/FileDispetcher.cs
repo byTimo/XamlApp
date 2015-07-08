@@ -44,22 +44,19 @@ namespace ZappChat.Core
             if (!File.Exists(FullPathToDialogueInformation)) File.WriteAllText(FullPathToDialogueInformation, "");
         }
 
-        public static string GetToken()
-        {
-            return GetSetting("token");
-        }
-
         public static string FindFieldInfoLineInFile(string path, string field)
         {
             if (!File.Exists(path)) File.Create(path);
             return GetAllLineInFile(path).FirstOrDefault(str => str.StartsWith(field));
         }
-
         public static bool SaveSettings(string field, string setting)
         {
             return SaveInformationToFile(FullPathToSettingFile, field, setting);
         }
-
+        /// <summary>
+        /// Возвращает значение поля настроек в строковом формате или возращает null.
+        /// </summary>
+        /// <param name="field">Поле настроек.</param>
         public static string GetSetting(string field)
         {
             return GetFieldInfoInFile(FullPathToSettingFile, field);

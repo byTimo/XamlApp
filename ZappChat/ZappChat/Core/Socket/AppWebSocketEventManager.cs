@@ -37,7 +37,7 @@ namespace ZappChat.Core.Socket
             string token;
             try
             {
-                token = Application.Current.Dispatcher.Invoke(new Func<string>(FileDispetcher.GetToken)) as string;
+                token = Application.Current.Dispatcher.Invoke(new Func<string>(() => FileDispetcher.GetSetting("token"))) as string;
             }
             catch
             {
@@ -184,7 +184,11 @@ namespace ZappChat.Core.Socket
         private static void HandlingNewRequest(JObject responseJson)
         {
             if ((string) responseJson["log_id"] != null)
+            {
                 App.LastLogId = ulong.Parse((string) responseJson["log_id"]);
+                Application.Current.Dispatcher.Invoke(
+                    new Action(() => FileDispetcher.SaveSettings("logId", App.LastLogId.ToString())));
+            }
             var request = responseJson["request"];
             var status = (string)request["status"] == "created"
                ? DialogueStatus.Created
@@ -203,17 +207,6 @@ namespace ZappChat.Core.Socket
             SendObject(carInfoRequestToJson);
         }
 
-        private static void HandlingPongResponce(JObject responseJson)
-        {
-            return;
-        }
-
-        private static void HndlingAuditResponce(JObject responseJson)
-        {
-            if ((string) responseJson["status"] == "ok")
-                App.LastLogId = ulong.Parse((string) responseJson["log_id"]);
-        }
-
         private static void HandlingChatMessage(JObject responseJson)
         {
             var responceType = (string) responseJson["type"];
@@ -223,7 +216,11 @@ namespace ZappChat.Core.Socket
                     var roomId = long.Parse((string) responseJson["room_id"]);
                     var logId = (string) responseJson["log_id"];
                     if (logId != null)
-                        App.LastLogId = ulong.Parse(logId);
+                    {
+                        App.LastLogId = ulong.Parse((string)responseJson["log_id"]);
+                        Application.Current.Dispatcher.Invoke(
+                            new Action(() => FileDispetcher.SaveSettings("logId", App.LastLogId.ToString())));
+                    }
                     var mes = responseJson["message"];
                     var mesId = long.Parse((string) mes["id"]);
                     var hash = (string) mes["hash"];
@@ -233,11 +230,11 @@ namespace ZappChat.Core.Socket
                     var lastUpdata = (string) mes["created_at"];
                     var isUnread = (string)mes["unread"] == "1";
                     var message = new Message(mesId, text, type, hash, lastUpdata, author, isUnread, roomId);
-//@COM пытаемся сделать общее хранилище                    var dialogue = new Dialogue(roomId, message);
                     var dialogue = DialogueStore.GetDialogueOnRoomId(roomId);
                     if (dialogue != null)
                     {
                         dialogue.AddMessage(message);
+                        DialogueStore.SaveChanges();
                     }
                     else
                     {
@@ -254,6 +251,24 @@ namespace ZappChat.Core.Socket
                     Application.Current.Dispatcher.Invoke(
                         new Action(() => AppEventManager.SendMessageSuccessEvent(roomIdSend, mesIdSend, hashSend)));
                     break;
+            }
+        }
+
+        private static void HandlingPongResponce(JObject responseJson)
+        {
+            return;
+        }
+
+        private static void HndlingAuditResponce(JObject responseJson)
+        {
+            ulong logId = 0;
+            if ((string) responseJson["status"] == "ok")
+                logId = ulong.Parse((string) responseJson["log_id"]);
+            if (logId > App.LastLogId)
+            {
+                App.LastLogId = logId;
+                Application.Current.Dispatcher.Invoke(
+                    new Action(() => FileDispetcher.SaveSettings("logId", App.LastLogId.ToString())));
             }
         }
 
@@ -282,6 +297,11 @@ namespace ZappChat.Core.Socket
             var model = (string) car["model"];
             var vin = (string) car["vin"];
             var year = (string) car["year"];
+            foreach(var dialogue in DialogueStore.Instance.Dialogues.Where(d => d.CarId == carId))
+            {
+                dialogue.SetCarInformation(brand, model, vin, year);
+                DialogueStore.SaveChanges();
+            }
             Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.SetCarInfoEvent(carId, brand, model, vin, year)));
         }
 
@@ -289,24 +309,13 @@ namespace ZappChat.Core.Socket
         {
             if ((string)responseJson["status"] != "ok") return;
             var request = responseJson["request"];
-            var id = long.Parse((string) request["id"]);
+            var id = long.Parse((string)request["chat_room_id"]);
             Application.Current.Dispatcher.Invoke(new Action(() => AppEventManager.AnswerOnQueryEvent(id)));
         }
 
         private static void HandlingListResponce(JObject responseJson)
         {
             //@TODO - В этом нет необходимости, возмжно, пока
-
-            //if((string)responseJson["status"] != "ok") throw new Exception((string)responseJson["reason"]);
-            //foreach (var dialogue in responseJson["list"])
-            //{
-            //    var id = int.Parse((string)dialogue["id"]);
-            //    var query = (string)dialogue["query"];
-            //    var newDialog = new Dialogue(id, query);
-            //    var action = new Action<object, Dialogue>(AppEventManager.TakeNewDialogueEvent);
-            //    MainWindow.Dispatcher.Invoke(action, _webSocket, newDialog);
-            //}
-
         }
     }
 }

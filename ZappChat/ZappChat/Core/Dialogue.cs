@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 
 namespace ZappChat.Core
 {
-    public sealed class Dialogue
+    public class Dialogue
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -24,7 +23,7 @@ namespace ZappChat.Core
         public string VIN { get; set; }
         public string Year { get; set; }
 
-        public List<Message> Messages { get; set; }
+        public virtual List<Message> Messages { get; set; }
 
         public Dialogue() { }
         public Dialogue(long roomId, string quary, long queryId, string lastUpdate, long carId, DialogueStatus status)
@@ -53,14 +52,6 @@ namespace ZappChat.Core
             LastDateTime = newMessage.DateTime;
             LastMessageDate = newMessage.Date;
             Messages.Add(newMessage);
-        }
-
-        public void AddQuery(long queryId,string query, string lastUpdate)
-        {
-            QueryId = queryId;
-            Query = query;
-            LastDateTime = DateTime.Parse(lastUpdate);
-            LastMessageDate = LastDateTime.ToString("M", new CultureInfo("ru-RU"));
         }
         public string GetTitleMessage()
         {

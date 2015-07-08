@@ -19,9 +19,18 @@ namespace ZappChat.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            ItemsSource = Queries;
+            InitQueryList();
             SelectionChanged += OpenDialogue;
             SelectedIndex = -1;
+        }
+
+        public void InitQueryList()
+        {
+            if (Queries == null)
+            {
+                Queries = new ObservableCollection<QueryControl>();
+            }
+            ItemsSource = Queries;
         }
 
         private void OpenDialogue(object sender, SelectionChangedEventArgs e)
